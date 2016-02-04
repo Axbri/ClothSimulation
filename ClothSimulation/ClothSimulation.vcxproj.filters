@@ -107,4 +107,30 @@
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="cover02.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="font.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="gaze01.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="groundTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="jeans05.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="testTexture.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textil01.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="tile_normal.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
