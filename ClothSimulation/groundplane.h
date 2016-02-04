@@ -15,6 +15,7 @@ public:
 
 private: 
 	Model groundModel;
+	GLuint normalMapTexture; 
 	Shader groundShader;
 };
 

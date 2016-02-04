@@ -87,4 +87,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="fontFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="fontVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="groundFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="groundVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mainFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="mainVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

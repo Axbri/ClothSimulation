@@ -36,6 +36,8 @@ GroundPlane::GroundPlane(Loader loader)
 	// load texture attach it to the ground plane. 	
 	GLuint groundTexture = loader.loadBMPtexture("groundTexture.bmp");
 	groundModel.set_texture(groundTexture);
+
+	normalMapTexture = loader.loadBMPtexture("tile_normal.bmp"); 
 }
 
 void GroundPlane::render(GLFWwindow * window, Camera camera)
@@ -49,6 +51,8 @@ void GroundPlane::render(GLFWwindow * window, Camera camera)
 	groundModel.getModelMatrix(modelMatrix);
 
 	groundShader.start();
+	groundShader.setUniformInt("mainTexture", 0);
+	groundShader.setUniformInt("normalTexture", 1);
 	groundShader.setUniformMat4("projectionMatrix", projectionMatrix);
 	groundShader.setUniformMat4("viewMatrix", viewMatrix);
 	groundShader.setUniformMat4("modelMatrix", modelMatrix);
@@ -63,7 +67,11 @@ void GroundPlane::render(GLFWwindow * window, Camera camera)
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, groundModel.get_texture());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normalMapTexture);
+
 	glDrawElements(GL_TRIANGLES, groundModel.get_vertexcount(), GL_UNSIGNED_INT, 0);
+	
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

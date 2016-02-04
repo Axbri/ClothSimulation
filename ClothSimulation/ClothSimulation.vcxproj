@@ -178,6 +178,14 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="userinput.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="fontFrag.glsl" />
+    <None Include="fontVert.glsl" />
+    <None Include="groundFragment.glsl" />
+    <None Include="groundVertex.glsl" />
+    <None Include="mainFragment.glsl" />
+    <None Include="mainVertex.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

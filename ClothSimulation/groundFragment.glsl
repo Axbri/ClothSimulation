@@ -9,10 +9,11 @@ in vec3 toCameraVector;
 out vec4 pixel_color; 
 
 uniform sampler2D mainTexture; 
+uniform sampler2D normalTexture; 
 
 const vec3 lightColor = vec3(1.0);
-const float shineDampener = 10.0; 
-const float reflectance = 0.3; 
+const float shineDampener = 20.0; 
+const float reflectance = 0.5; 
 const float ambient = 0.15; 
 	
 void main (void) 
@@ -21,13 +22,16 @@ void main (void)
 	vec3 unitToCameraVector = normalize(toCameraVector);	
 	vec3 totalDiffuse = vec3(0.0); 
 	vec3 totalSpecular = vec3(0.0); 
+
+	vec3 normal = normalize((texture(normalTexture, interpolatedTextureCoords * 100).xzy * 2.0) - 1.0); 
+	normal.z = -normal.z; 
 	
 	// for loop for multiple lights goes here
 	vec3 unitToLightVector = normalize(toLightVector); 		
-	float nDot1 = dot(interpolatedNormal, unitToLightVector); 
+	float nDot1 = dot(normal, unitToLightVector); 
 	float brightness = max(nDot1, 0.0); 		
 	vec3 lightDirection = -unitToLightVector; 	
-	vec3 reflectedLightDirection = reflect(lightDirection, interpolatedNormal); 	
+	vec3 reflectedLightDirection = reflect(lightDirection, normal); 	
 	float specularFactor = max(dot(unitToCameraVector, reflectedLightDirection), 0.0); 
 	totalDiffuse = totalDiffuse + (brightness * lightColor); 
 	totalSpecular = totalSpecular + pow(specularFactor, shineDampener) * lightColor * clamp(reflectance, 0.0, 1.0); 
