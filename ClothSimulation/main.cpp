@@ -101,7 +101,7 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
-	Sphere sphere{ 3, 1, 3, 10, loader }; 
+	Sphere sphere{ 0, 3, 0, 1, loader }; 
 	Cloth cloth{ loader, 2, 1 }; 
 	
 	// create a new camera object using the current window's aspect ratio 
@@ -128,12 +128,14 @@ int main(void)
 		// draw the groundplane
 		groundPlane.render(window, camera); 
 
-		// render the sphere
-		sphere.render(window, camera); 
+		
 
 		// enable wireframe rendering if the user hold down the right mouse button. 
 		if (UserInput::getRightMouseButton())
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		// render the sphere
+		sphere.render(window, camera);
 
 		// draw the cloth
 		cloth.render(window, camera); 

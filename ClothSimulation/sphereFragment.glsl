@@ -13,7 +13,7 @@ const vec3 lightColor = vec3(1.0);
 const float shineDampener = 20.0; 
 const float reflectance = 0.5; 
 const float ambient = 0.15; 
-const vec3 color = vec3(0.9, 0.7, 0.2); 
+const vec3 color = vec3(0.9, 0.4, 0.2); 
 	
 void main (void) 
 {

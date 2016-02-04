@@ -1,32 +1,61 @@
 #include "sphere.h"
 
-Sphere::Sphere(double x, double y, double z, int numberOfSegments, Loader loader)
+Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 {
-	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
+	radius = r; 
 
-	float groundPos[] = {
-		-1.0f,  0.0f,  1.0f,
-		-1.0f,  0.0f, -1.0f,
-		1.0f,  0.0f, -1.0f,
-		1.0f,  0.0f,  1.0f
-	};
-	
-	float normals[] = {
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f
-	};
+	int indices[(V_NUMBER_OF_VERTICES - 1) * (H_NUMBER_OF_VERTICES - 1) * 6];
+	float positions[V_NUMBER_OF_VERTICES * H_NUMBER_OF_VERTICES * 3];
+	float normals[V_NUMBER_OF_VERTICES * H_NUMBER_OF_VERTICES * 3];
+	int indicesIndex{ 0 }, positionIndex{ 0 }, normalIndex{ 0 };
 
-	int indices[] = {
-		0, 1, 3, 3, 1, 2
-	};
+	for (int p{ 0 }; p < H_NUMBER_OF_VERTICES; p++)
+	{
+		for (int a{ 0 }; a < V_NUMBER_OF_VERTICES; a++)
+		{
+			double phi = (double)(p * 3.1415 * 4) / (double)(H_NUMBER_OF_VERTICES);
+			double alpha = (double)(a * 3.1415) / (double)(V_NUMBER_OF_VERTICES);
+			
+			Vec3 pos{ radius * cos(phi) * sin(alpha) , radius * cos(alpha) , radius * sin(phi) * sin(alpha) };
 
-	sphereModel = loader.createTexturelessModel(groundPos, 12, normals, 12, indices, 6);
+			positions[positionIndex++] = pos.x;
+			positions[positionIndex++] = pos.y;
+			positions[positionIndex++] = pos.z;
+
+			Vec3 normal{ pos };
+			normal.normalize();
+
+			normals[normalIndex++] = normal.x;
+			normals[normalIndex++] = normal.y;
+			normals[normalIndex++] = normal.z;
+		}
+	}
+
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+	for (int p{ 0 }; p < H_NUMBER_OF_VERTICES - 1; p++)
+	{
+		for (int a{ 0 }; a < V_NUMBER_OF_VERTICES - 1; a++)
+		{
+			topLeft = (a * V_NUMBER_OF_VERTICES) + p;
+			topRight = topLeft + 1;
+			bottomLeft = ((a + 1) * V_NUMBER_OF_VERTICES) + p;
+			bottomRight = bottomLeft + 1;
+			indices[indicesIndex++] = topLeft;
+			indices[indicesIndex++] = bottomLeft;
+			indices[indicesIndex++] = topRight;
+			indices[indicesIndex++] = topRight;
+			indices[indicesIndex++] = bottomLeft;
+			indices[indicesIndex++] = bottomRight;
+		}
+	}
+
+	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);
 	sphereModel.setPosition(x, y, z);
 
 	GLuint groundTexture = loader.loadBMPtexture("testTexture.bmp");
 	sphereModel.set_texture(groundTexture);
+
+	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
 }
 
 void Sphere::render(GLFWwindow * window, Camera camera)
