@@ -164,6 +164,7 @@
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="userinput.cpp" />
+    <ClCompile Include="vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="userinput.h" />
+    <ClInclude Include="vec3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fontFrag.glsl" />

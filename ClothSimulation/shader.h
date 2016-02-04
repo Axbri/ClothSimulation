@@ -1,5 +1,4 @@
-#ifndef SHADER_H_INCLUDED
-#define SHADER_H_INCLUDED
+#pragma once
 
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>  
@@ -37,5 +36,3 @@ private:
 	GLuint thisShader; 
 
 };
-
-#endif
