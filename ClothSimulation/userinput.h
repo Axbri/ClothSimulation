@@ -1,5 +1,4 @@
-#ifndef USERINPUT_H_INCLUDED
-#define USERINPUT_H_INCLUDED
+#pragma once
 
 #include <GLFW/glfw3.h>  
 
@@ -30,6 +29,3 @@ private:
 	static double deltaScroll;
 
 };
-
-
-#endif

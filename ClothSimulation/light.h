@@ -1,15 +1,12 @@
 #pragma once
+
+#include "vec3.h"
+
 class Light
 {
 public:
 	Light();
 	Light(double xPos, double yPos, double zPos);
-	~Light();
-	double get_xPos(); 
-	double get_yPos();
-	double get_zPos();
-
-private: 
-	double xPos, yPos, zPos; 
+	Vec3 pos;
 };
 

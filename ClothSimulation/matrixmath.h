@@ -1,5 +1,4 @@
-#ifndef MATRIXMATH_H_INCLUDED
-#define MATRIXMATH_H_INCLUDED
+#pragma once
 
 #include <GL/glew.h> 
 #include <math.h>
@@ -25,5 +24,3 @@ public:
 	static void rotzMat4(float M[], float angle);
 	static void mat4proj(float M[], float aspectRatio, float fov);	
 };
-
-#endif

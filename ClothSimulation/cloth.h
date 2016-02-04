@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "loader.h"
 #include "shader.h"
+#include "vec3.h"
 
 class Cloth
 {
@@ -17,7 +18,7 @@ public:
 
 private: 
 	void updateVBOs();
-
+	void updateNormals(); 
 	static const int NUMBER_OF_VERTICES = 48;
 	Particle particles[NUMBER_OF_VERTICES][NUMBER_OF_VERTICES];
 	Model clothModel; 

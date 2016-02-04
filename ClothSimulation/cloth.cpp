@@ -1,20 +1,16 @@
 #include "cloth.h"
 
-
-
-
 Cloth::Cloth(Loader loader, double size, double totalWeight)
 {
 	theLoader = loader;
-
 	shader.createShader( "mainVertex.glsl", "mainFragment.glsl" );
 
 	// create all the particles
 	double particleMass = totalWeight / (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES); 
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleYpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
@@ -25,38 +21,38 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			particles[x][y] = Particle(particleXpos, particleYpos, particleZpos, particleUtextureCoord, particleVtextureCoord, particleMass);
 		}
 	}
-
-	
+		
 	// create the model objcet
 	int indices[(NUMBER_OF_VERTICES - 1) * (NUMBER_OF_VERTICES - 1) * 6];
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
 	float textureCoords[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 2];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	int indicesIndex = 0, positionIndex = 0, textureCoordIndex = 0, normalIndex = 0;
+	int indicesIndex{ 0 }, positionIndex{ 0 }, textureCoordIndex{ 0 }, normalIndex{ 0 };
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
-			positions[positionIndex++] = particles[x][y].xPos;
-			positions[positionIndex++] = particles[x][y].yPos;
-			positions[positionIndex++] = particles[x][y].zPos;		
-			textureCoords[textureCoordIndex++] = particles[x][y].uTexture;
-			textureCoords[textureCoordIndex++] = particles[x][y].vTexture;
-			normals[normalIndex++] = particles[x][y].xNormal;
-			normals[normalIndex++] = particles[x][y].yNormal;
-			normals[normalIndex++] = particles[x][y].zNormal;
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.x;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.y;
+			normals[normalIndex++] = particles[x][y].normal.x;
+			normals[normalIndex++] = particles[x][y].normal.y;
+			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
-
-	for (int x = 0; x < NUMBER_OF_VERTICES - 1; x++)
+	
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES - 1; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
 		{
-			int topLeft = (y * NUMBER_OF_VERTICES) + x;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
-			int bottomRight = bottomLeft + 1;
+			topLeft = (y * NUMBER_OF_VERTICES) + x;
+			topRight = topLeft + 1;
+			bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
+			bottomRight = bottomLeft + 1;
 			indices[indicesIndex++] = topLeft;
 			indices[indicesIndex++] = bottomLeft;
 			indices[indicesIndex++] = topRight;
@@ -75,26 +71,26 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 
 Cloth::~Cloth()
 {
-
+	cleanUp(); 
 }
 
-
+// update the cloth, this function will handle the phisics simulation of the cloth. 
 void Cloth::update(double delta_time, double time)
 {
 	// update the particle's positions
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
-			particles[x][y].zPos = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
+			particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
 		}
 	}
 
-	// update the VBOs on the GPU with the new data
+	updateNormals(); 	
 	updateVBOs(); 
 }
 
-
+// render this cloth on the provided window from the provided camera's viewpoint. 
 void Cloth::render(GLFWwindow * window, Camera camera)
 {
 	float projectionMatrix[16];
@@ -132,31 +128,76 @@ void Cloth::cleanUp()
 	shader.cleanUp(); 
 }
 
+// update the vertex buffer objects for positions and normals on the GPU with new data. 
 void Cloth::updateVBOs()
 {
 	// create the new model-arrays: 
-	int indices[(NUMBER_OF_VERTICES - 1) * (NUMBER_OF_VERTICES - 1) * 6];
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	float textureCoords[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 2];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	int indicesIndex = 0, positionIndex = 0, textureCoordIndex = 0, normalIndex = 0;
+	int positionIndex{ 0 }, normalIndex{ 0 };
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
-			positions[positionIndex++] = particles[x][y].xPos;
-			positions[positionIndex++] = particles[x][y].yPos;
-			positions[positionIndex++] = particles[x][y].zPos;
-			textureCoords[textureCoordIndex++] = particles[x][y].uTexture;
-			textureCoords[textureCoordIndex++] = particles[x][y].vTexture;
-			normals[normalIndex++] = particles[x][y].xNormal;
-			normals[normalIndex++] = particles[x][y].yNormal;
-			normals[normalIndex++] = particles[x][y].zNormal;
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			normals[normalIndex++] = particles[x][y].normal.x;
+			normals[normalIndex++] = particles[x][y].normal.y;
+			normals[normalIndex++] = particles[x][y].normal.z;
+		}
+	}
+	theLoader.updateDataInAtributeList(clothModel.get_position_vbo(), positions, positionIndex);
+	theLoader.updateDataInAtributeList(clothModel.get_normal_vbo(), normals, normalIndex);
+}
+
+// calculate the normals of all particles. 
+void Cloth::updateNormals()
+{
+	Vec3 pos1{};
+	Vec3 pos2{};
+	Vec3 pos3{};
+
+	Vec3 vector1{};
+	Vec3 vector2{};
+	Vec3 normal{};
+
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
+	{
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
+		{
+			topLeft = (y * NUMBER_OF_VERTICES) + x;
+			topRight = topLeft + 1;
+			bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
+			bottomRight = bottomLeft + 1;
+
+			pos1.set(particles[x][y].pos.x, particles[x][y].pos.y, particles[x][y].pos.z);
+			pos2.set(particles[x + 1][y].pos.x, particles[x + 1][y].pos.y, particles[x + 1][y].pos.z);
+			pos3.set(particles[x][y + 1].pos.x, particles[x][y + 1].pos.y, particles[x][y + 1].pos.z);
+
+			vector1.set(pos2);
+			vector1.subtract(pos1);
+			vector2.set(pos3);
+			vector2.subtract(pos2);
+			normal.set(0, 0, 0);
+			normal.cross(vector1, vector2);
+
+			particles[x][y].normal.x = normal.x;
+			particles[x][y].normal.y = normal.y;
+			particles[x][y].normal.z = normal.z;
+			particles[x + 1][y].normal.x = normal.x;
+			particles[x + 1][y].normal.y = normal.y;
+			particles[x + 1][y].normal.z = normal.z;
+			particles[x][y + 1].normal.x = normal.x;
+			particles[x][y + 1].normal.y = normal.y;
+			particles[x][y + 1].normal.z = normal.z;
 		}
 	}
 
-	theLoader.updateDataInAtributeList(clothModel.get_position_vbo(), positions, positionIndex);
-	theLoader.updateDataInAtributeList(clothModel.get_texture_vbo(), textureCoords, textureCoordIndex);
-	theLoader.updateDataInAtributeList(clothModel.get_normal_vbo(), normals, normalIndex);
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.x = normal.x;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.y = normal.y;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.z = normal.z;
 }

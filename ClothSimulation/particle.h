@@ -1,4 +1,8 @@
 #pragma once
+
+#include "vec3.h"
+#include "vec2.h"
+
 class Particle
 {
 public:
@@ -6,14 +10,9 @@ public:
 	Particle(double x, double y, double z, double u, double v, double m);
 	~Particle();
 
-	double xPos; 
-	double yPos; 
-	double zPos; 
-	double uTexture; 
-	double vTexture; 
-	double xNormal;
-	double yNormal; 
-	double zNormal; 
+	Vec3 pos; 
+	Vec2 textureCoord; 
+	Vec3 normal; 
 
 	double mass; 
 
