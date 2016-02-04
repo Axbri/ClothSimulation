@@ -10,14 +10,7 @@ Sphere::Sphere(double x, double y, double z, int numberOfSegments, Loader loader
 		1.0f,  0.0f, -1.0f,
 		1.0f,  0.0f,  1.0f
 	};
-
-	float textureCoords[] = {
-		0, 0,
-		0, 1,
-		1, 1,
-		1, 0
-	};
-
+	
 	float normals[] = {
 		0.0f,  1.0f,  0.0f,
 		0.0f,  1.0f,  0.0f,
@@ -29,7 +22,7 @@ Sphere::Sphere(double x, double y, double z, int numberOfSegments, Loader loader
 		0, 1, 3, 3, 1, 2
 	};
 
-	sphereModel = loader.createModel(groundPos, 12, textureCoords, 8, normals, 12, indices, 6);
+	sphereModel = loader.createTexturelessModel(groundPos, 12, normals, 12, indices, 6);
 	sphereModel.setPosition(x, y, z);
 
 	GLuint groundTexture = loader.loadBMPtexture("testTexture.bmp");

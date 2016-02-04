@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec3 interpolatedPosition;
-in vec2 interpolatedTextureCoords; 
 in vec3 interpolatedNormal;
 in vec3 toLightVector; 
 in vec3 toCameraVector; 
@@ -14,10 +13,11 @@ const vec3 lightColor = vec3(1.0);
 const float shineDampener = 20.0; 
 const float reflectance = 0.5; 
 const float ambient = 0.15; 
+const vec3 color = vec3(0.9, 0.7, 0.2); 
 	
 void main (void) 
 {
-	vec4 textureColor = texture(mainTexture, interpolatedTextureCoords); 
+
 	vec3 unitToCameraVector = normalize(toCameraVector);	
 	vec3 totalDiffuse = vec3(0.0); 
 	vec3 totalSpecular = vec3(0.0); 
@@ -39,7 +39,7 @@ void main (void)
 	totalDiffuse = min(totalDiffuse, 1.0);
 	totalSpecular = min(totalSpecular, 1.0);
 	
-	vec3 materialAndLighting = textureColor.xyz * totalDiffuse + totalSpecular; 
+	vec3 materialAndLighting = color * totalDiffuse + totalSpecular; 
 	
 	
 	float distance = length(interpolatedPosition); 

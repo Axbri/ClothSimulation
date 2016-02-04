@@ -15,6 +15,7 @@ class Loader
 {
 public:
 	Model createModel(float positions[], int size_pos, float textureCoords[], int size_texCoords, float normals[], int size_normals, int indices[], int size_index);
+	Model createTexturelessModel(float positions[], int size_pos, float normals[], int size_normals, int indices[], int size_index);
 	GLuint create2Dmodel(float positions[], int size_pos);
 	GLuint loadBMPtexture(const char * imagepath);
 	void cleanUp(); 

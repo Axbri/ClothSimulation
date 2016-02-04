@@ -8,12 +8,21 @@ Model::Model()
 	MatrixMath::identityMat4(modelMatrix);
 }
 
-Model::Model(const int id, const int count, GLuint position_vao, GLuint texture_vao, GLuint normal_vao)
+Model::Model(const int id, const int size, GLuint position_vao, GLuint texture_vao, GLuint normal_vao)
 {
 	vao_id = id;
-	vertex_count = count;
+	vertex_count = size;
 	pos_vbo = position_vao;
 	tex_vbo = texture_vao;
+	norm_vbo = normal_vao;
+	MatrixMath::identityMat4(modelMatrix);
+}
+
+Model::Model(const int id, const int size, GLuint position_vao, GLuint normal_vao)
+{
+	vao_id = id;
+	vertex_count = size;
+	pos_vbo = position_vao;
 	norm_vbo = normal_vao;
 	MatrixMath::identityMat4(modelMatrix);
 }
