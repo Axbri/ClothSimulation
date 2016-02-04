@@ -3,15 +3,14 @@
 Cloth::Cloth(Loader loader, double size, double totalWeight)
 {
 	theLoader = loader;
-
 	shader.createShader( "mainVertex.glsl", "mainFragment.glsl" );
 
 	// create all the particles
 	double particleMass = totalWeight / (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES); 
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleYpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
@@ -22,18 +21,17 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			particles[x][y] = Particle(particleXpos, particleYpos, particleZpos, particleUtextureCoord, particleVtextureCoord, particleMass);
 		}
 	}
-
-	
+		
 	// create the model objcet
 	int indices[(NUMBER_OF_VERTICES - 1) * (NUMBER_OF_VERTICES - 1) * 6];
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
 	float textureCoords[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 2];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	int indicesIndex = 0, positionIndex = 0, textureCoordIndex = 0, normalIndex = 0;
+	int indicesIndex{ 0 }, positionIndex{ 0 }, textureCoordIndex{ 0 }, normalIndex{ 0 };
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			positions[positionIndex++] = particles[x][y].pos.x;
 			positions[positionIndex++] = particles[x][y].pos.y;
@@ -45,15 +43,16 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
-
-	for (int x = 0; x < NUMBER_OF_VERTICES - 1; x++)
+	
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES - 1; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
 		{
-			int topLeft = (y * NUMBER_OF_VERTICES) + x;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
-			int bottomRight = bottomLeft + 1;
+			topLeft = (y * NUMBER_OF_VERTICES) + x;
+			topRight = topLeft + 1;
+			bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
+			bottomRight = bottomLeft + 1;
 			indices[indicesIndex++] = topLeft;
 			indices[indicesIndex++] = bottomLeft;
 			indices[indicesIndex++] = topRight;
@@ -79,16 +78,15 @@ Cloth::~Cloth()
 void Cloth::update(double delta_time, double time)
 {
 	// update the particle's positions
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
 		}
 	}
 
-	updateNormals(); 
-	
+	updateNormals(); 	
 	updateVBOs(); 
 }
 
@@ -136,11 +134,11 @@ void Cloth::updateVBOs()
 	// create the new model-arrays: 
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	int positionIndex = 0, normalIndex = 0;
+	int positionIndex{ 0 }, normalIndex{ 0 };
 
-	for (int x = 0; x < NUMBER_OF_VERTICES; x++)
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			positions[positionIndex++] = particles[x][y].pos.x;
 			positions[positionIndex++] = particles[x][y].pos.y;
@@ -165,14 +163,16 @@ void Cloth::updateNormals()
 	Vec3 vector2{};
 	Vec3 normal{};
 
-	for (int x = 0; x < NUMBER_OF_VERTICES - 1; x++)
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
-		for (int y = 0; y < NUMBER_OF_VERTICES - 1; y++)
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
 		{
-			int topLeft = (y * NUMBER_OF_VERTICES) + x;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
-			int bottomRight = bottomLeft + 1;
+			topLeft = (y * NUMBER_OF_VERTICES) + x;
+			topRight = topLeft + 1;
+			bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
+			bottomRight = bottomLeft + 1;
 
 			pos1.set(particles[x][y].pos.x, particles[x][y].pos.y, particles[x][y].pos.z);
 			pos2.set(particles[x + 1][y].pos.x, particles[x + 1][y].pos.y, particles[x + 1][y].pos.z);

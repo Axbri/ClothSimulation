@@ -29,7 +29,7 @@ GroundPlane::GroundPlane(Loader loader)
 		0, 1, 3, 3, 1, 2
 	};
 
-	// create a ground-plane that is 2x2 meters and scale it so it becomes 50x50 meters. 
+	// create a ground-plane that is 2x2 meters and scale it so it becomes 100x100 meters. 
 	groundModel = loader.createModel(groundPos, 12, textureCoords, 8, normals, 12, indices, 6);
 	groundModel.setScale(50, 1, 50);
 
