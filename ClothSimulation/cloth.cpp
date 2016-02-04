@@ -35,14 +35,14 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 	{
 		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
 		{
-			positions[positionIndex++] = particles[x][y].xPos;
-			positions[positionIndex++] = particles[x][y].yPos;
-			positions[positionIndex++] = particles[x][y].zPos;		
-			textureCoords[textureCoordIndex++] = particles[x][y].uTexture;
-			textureCoords[textureCoordIndex++] = particles[x][y].vTexture;
-			normals[normalIndex++] = particles[x][y].xNormal;
-			normals[normalIndex++] = particles[x][y].yNormal;
-			normals[normalIndex++] = particles[x][y].zNormal;
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.x;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.y;
+			normals[normalIndex++] = particles[x][y].normal.x;
+			normals[normalIndex++] = particles[x][y].normal.y;
+			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
 
@@ -83,7 +83,7 @@ void Cloth::update(double delta_time, double time)
 	{
 		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
 		{
-			particles[x][y].zPos = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
+			particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
 		}
 	}
 
@@ -142,12 +142,12 @@ void Cloth::updateVBOs()
 	{
 		for (int y = 0; y < NUMBER_OF_VERTICES; y++)
 		{
-			positions[positionIndex++] = particles[x][y].xPos;
-			positions[positionIndex++] = particles[x][y].yPos;
-			positions[positionIndex++] = particles[x][y].zPos;
-			normals[normalIndex++] = particles[x][y].xNormal;
-			normals[normalIndex++] = particles[x][y].yNormal;
-			normals[normalIndex++] = particles[x][y].zNormal;
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			normals[normalIndex++] = particles[x][y].normal.x;
+			normals[normalIndex++] = particles[x][y].normal.y;
+			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
 	theLoader.updateDataInAtributeList(clothModel.get_position_vbo(), positions, positionIndex);
@@ -174,9 +174,9 @@ void Cloth::updateNormals()
 			int bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
 			int bottomRight = bottomLeft + 1;
 
-			pos1.set(particles[x][y].xPos, particles[x][y].yPos, particles[x][y].zPos);
-			pos2.set(particles[x + 1][y].xPos, particles[x + 1][y].yPos, particles[x + 1][y].zPos);
-			pos3.set(particles[x][y + 1].xPos, particles[x][y + 1].yPos, particles[x][y + 1].zPos);
+			pos1.set(particles[x][y].pos.x, particles[x][y].pos.y, particles[x][y].pos.z);
+			pos2.set(particles[x + 1][y].pos.x, particles[x + 1][y].pos.y, particles[x + 1][y].pos.z);
+			pos3.set(particles[x][y + 1].pos.x, particles[x][y + 1].pos.y, particles[x][y + 1].pos.z);
 
 			vector1.set(pos2);
 			vector1.subtract(pos1);
@@ -185,19 +185,19 @@ void Cloth::updateNormals()
 			normal.set(0, 0, 0);
 			normal.cross(vector1, vector2);
 
-			particles[x][y].xNormal = normal.x;
-			particles[x][y].yNormal = normal.y;
-			particles[x][y].zNormal = normal.z;
-			particles[x + 1][y].xNormal = normal.x;
-			particles[x + 1][y].yNormal = normal.y;
-			particles[x + 1][y].zNormal = normal.z;
-			particles[x][y + 1].xNormal = normal.x;
-			particles[x][y + 1].yNormal = normal.y;
-			particles[x][y + 1].zNormal = normal.z;
+			particles[x][y].normal.x = normal.x;
+			particles[x][y].normal.y = normal.y;
+			particles[x][y].normal.z = normal.z;
+			particles[x + 1][y].normal.x = normal.x;
+			particles[x + 1][y].normal.y = normal.y;
+			particles[x + 1][y].normal.z = normal.z;
+			particles[x][y + 1].normal.x = normal.x;
+			particles[x][y + 1].normal.y = normal.y;
+			particles[x][y + 1].normal.z = normal.z;
 		}
 	}
 
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].xNormal = normal.x;
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].yNormal = normal.y;
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].zNormal = normal.z;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.x = normal.x;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.y = normal.y;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.z = normal.z;
 }
