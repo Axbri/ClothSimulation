@@ -72,7 +72,6 @@ void GroundPlane::render(GLFWwindow * window, Camera camera)
 
 	glDrawElements(GL_TRIANGLES, groundModel.get_vertexcount(), GL_UNSIGNED_INT, 0);
 	
-
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);

@@ -8,9 +8,7 @@ class GroundPlane
 {
 public:
 	GroundPlane(Loader loader);
-
-	void render(GLFWwindow* window, Camera camera);
-	
+	void render(GLFWwindow* window, Camera camera);	
 	void cleanUp();
 
 private: 

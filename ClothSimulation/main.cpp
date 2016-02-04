@@ -13,6 +13,7 @@
 #include "cloth.h"
 #include "groundplane.h"
 #include "font.h"
+#include "sphere.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -100,6 +101,7 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
+	Sphere sphere{ 3, 1, 3, 10, loader }; 
 	Cloth cloth{ loader, 2, 1 }; 
 	
 	// create a new camera object using the current window's aspect ratio 
@@ -125,6 +127,9 @@ int main(void)
 				
 		// draw the groundplane
 		groundPlane.render(window, camera); 
+
+		// render the sphere
+		sphere.render(window, camera); 
 
 		// enable wireframe rendering if the user hold down the right mouse button. 
 		if (UserInput::getRightMouseButton())

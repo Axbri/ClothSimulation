@@ -57,6 +57,9 @@
     <ClCompile Include="vec2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -98,6 +101,9 @@
     <ClInclude Include="vec2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fontFrag.glsl">
@@ -116,6 +122,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="mainVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sphereFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sphereVertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -163,6 +163,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="sphere.cpp" />
     <ClCompile Include="userinput.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="vec3.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="userinput.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="vec3.h" />
@@ -189,6 +191,8 @@
     <None Include="groundVertex.glsl" />
     <None Include="mainFragment.glsl" />
     <None Include="mainVertex.glsl" />
+    <None Include="sphereFragment.glsl" />
+    <None Include="sphereVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="cover02.bmp" />
