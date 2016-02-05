@@ -4,17 +4,17 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 {
 	radius = r; 
 
-	int indices[(V_NUMBER_OF_VERTICES - 1) * (H_NUMBER_OF_VERTICES - 1) * 6];
-	float positions[V_NUMBER_OF_VERTICES * H_NUMBER_OF_VERTICES * 3];
-	float normals[V_NUMBER_OF_VERTICES * H_NUMBER_OF_VERTICES * 3];
+	int indices[(NUMBER_OF_SEGMENTS - 1) * (NUMBER_OF_SEGMENTS - 1) * 6];
+	float positions[(NUMBER_OF_SEGMENTS) * (NUMBER_OF_SEGMENTS) * 3];
+	float normals[(NUMBER_OF_SEGMENTS) * (NUMBER_OF_SEGMENTS) * 3];
 	int indicesIndex{ 0 }, positionIndex{ 0 }, normalIndex{ 0 };
 
-	for (int p{ 0 }; p < H_NUMBER_OF_VERTICES; p++)
+	for (int p{ 0 }; p < NUMBER_OF_SEGMENTS; p++)
 	{
-		for (int a{ 0 }; a < V_NUMBER_OF_VERTICES; a++)
+		for (int a{ 0 }; a < NUMBER_OF_SEGMENTS; a++)
 		{
-			double phi = (double)(p * 3.1415 * 2) / (double)(H_NUMBER_OF_VERTICES);
-			double alpha = (double)(a * 3.1415) / (double)(V_NUMBER_OF_VERTICES) + 1.5;
+			double phi = (double)(p * 3.1415 * 2) / (double)(NUMBER_OF_SEGMENTS -1);
+			double alpha = -3.1415 + (double)(a * 3.1415) / (double)(NUMBER_OF_SEGMENTS -1);
 			
 			Vec3 pos{ radius * cos(phi) * sin(alpha) , radius * cos(alpha) , radius * sin(phi) * sin(alpha) };
 			positions[positionIndex++] = pos.x;
@@ -32,13 +32,13 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
 
 	
-	for (int p{ 0 }; p < H_NUMBER_OF_VERTICES - 1; p++)
+	for (int p{ 0 }; p < NUMBER_OF_SEGMENTS -1; p++)
 	{
-		for (int a{ 0 }; a < V_NUMBER_OF_VERTICES - 1; a++)
+		for (int a{ 0 }; a < NUMBER_OF_SEGMENTS -1; a++)
 		{
-			topLeft = (a * V_NUMBER_OF_VERTICES) + p;
+			topLeft = (a * NUMBER_OF_SEGMENTS) + p;
 			topRight = topLeft + 1;
-			bottomLeft = ((a + 1) * V_NUMBER_OF_VERTICES) + p;
+			bottomLeft = ((a + 1) * NUMBER_OF_SEGMENTS) + p;
 			bottomRight = bottomLeft + 1;
 			indices[indicesIndex++] = topLeft;
 			indices[indicesIndex++] = bottomLeft;

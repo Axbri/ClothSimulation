@@ -13,8 +13,7 @@ public:
 	void cleanUp();
 
 private: 
-	static const int H_NUMBER_OF_VERTICES = 40;
-	static const int V_NUMBER_OF_VERTICES = 20;
+	static const int NUMBER_OF_SEGMENTS = 32;
 	Vec3 position; 
 	double radius; 
 	Model sphereModel;
