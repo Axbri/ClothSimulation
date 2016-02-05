@@ -8,7 +8,7 @@ using namespace std;
 Camera::Camera(float aspectRatio)
 {
 	xPos = 0.0f;	// the camera centeres this position in frame
-	yPos = 1.0f;
+	yPos = 3.0f;
 	zPos = 0.0f;
 	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 
 	orbitAngle = 0.0f;	// the camera's orbiting angle around the center position in radians

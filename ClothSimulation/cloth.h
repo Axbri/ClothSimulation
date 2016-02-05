@@ -19,7 +19,7 @@ public:
 private: 
 	void updateVBOs();
 	void updateNormals(); 
-	static const int NUMBER_OF_VERTICES = 48;
+	static const int NUMBER_OF_VERTICES = 30;
 	Particle particles[NUMBER_OF_VERTICES][NUMBER_OF_VERTICES];
 	Model clothModel; 
 	Loader theLoader; 
