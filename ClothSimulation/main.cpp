@@ -5,6 +5,7 @@
 #include <stdlib.h>  
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 #include "loader.h"
 #include "camera.h"
@@ -14,6 +15,7 @@
 #include "groundplane.h"
 #include "font.h"
 #include "sphere.h"
+#include "light.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -105,6 +107,12 @@ int main(void)
 	Sphere sphere{ 0, 3, 0, 1, loader }; 
 	Cloth cloth{ loader, 2, 100 }; 
 	
+	vector<Light> allLights;					// a dynamic list on lights
+	allLights.push_back(Light{ 200, 200, 200 });		// two lights
+	allLights.push_back(Light{ -200, 200, -200 });
+	allLights.push_back(Light{ -200, 200, 200 });
+	allLights[2].color.set(1.0, 0.2, 0.4); 
+
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ (float)windowHeight / (float)windowWidth };
 
@@ -127,7 +135,7 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
 		// draw the groundplane
-		groundPlane.render(window, camera); 
+		groundPlane.render(window, camera, allLights);
 
 		
 
