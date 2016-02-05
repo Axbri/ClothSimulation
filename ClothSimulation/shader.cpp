@@ -25,10 +25,22 @@ void Shader::setUniformVec3(char *variableName, float x1, float x2, float x3)
 	glUniform3f(location, x1, x2, x3);
 }
 
+void Shader::setUniformVec3(char * variableName, Vec3 vector)
+{
+	GLint location = glGetUniformLocation(thisShader, variableName);
+	glUniform3f(location, vector.x, vector.y, vector.z);
+}
+
 void Shader::setUniformVec2(char *variableName, float x1, float x2)
 {
 	GLint location = glGetUniformLocation(thisShader, variableName);
 	glUniform2f(location, x1, x2);
+}
+
+void Shader::setUniformVec2(char * variableName, Vec2 vector)
+{
+	GLint location = glGetUniformLocation(thisShader, variableName);
+	glUniform2f(location, vector.x, vector.y);
 }
 
 void Shader::setUniformFloat(char *variableName, float value)
