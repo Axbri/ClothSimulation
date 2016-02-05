@@ -24,5 +24,8 @@ private:
 	Model clothModel; 
 	Loader theLoader; 
 	Shader shader;
+	double time_passed = 0;
+	double restlength;
+	double size;
 };
 

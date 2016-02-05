@@ -11,6 +11,7 @@ public:
 	~Particle();
 
 	Vec3 pos; 
+	Vec3 pos_old;
 	Vec2 textureCoord; 
 	Vec3 normal; 
 

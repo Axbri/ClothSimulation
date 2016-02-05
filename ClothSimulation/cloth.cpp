@@ -4,9 +4,11 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 {
 	theLoader = loader;
 	shader.createShader( "mainVertex.glsl", "mainFragment.glsl" );
+	this->size = size;
 
 	// create all the particles
 	double particleMass = totalWeight / (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES); 
+	restlength = size / (NUMBER_OF_VERTICES - 1);
 
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
@@ -14,7 +16,7 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleYpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleZpos = 0.1 * (sin(x) + sin(y));
+			double particleZpos = 0.01 * (sin(x) + sin(y));
 			double particleUtextureCoord = ((double)x / (double)NUMBER_OF_VERTICES);
 			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);
 			
@@ -77,14 +79,83 @@ Cloth::~Cloth()
 // update the cloth, this function will handle the phisics simulation of the cloth. 
 void Cloth::update(double delta_time, double time)
 {
-	// update the particle's positions
-	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
+	Vec3 g = Vec3(0, -9.81, 0);
+	double step = 0.02;
+	time_passed += delta_time;
+	if (time_passed > step)
 	{
-		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
+		time_passed -= step;
+		// update the particle's positions
+		for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 		{
-			particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
+			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
+			{
+				//particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
+				double mass = particles[x][y].mass;
+				Vec3 p_curr = Vec3(particles[x][y].pos);
+				Vec3 p_old = Vec3(particles[x][y].pos_old);
+
+				particles[x][y].pos += p_curr - p_old + g*mass*step*step;
+				particles[x][y].pos_old = p_curr;
+
+				for (int r{ 0 }; r < 1; r++) 
+				{
+					if (y < NUMBER_OF_VERTICES-1) {
+						// ||||
+						Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
+						double deltalength = ((delta*delta / restlength) + restlength) / 2;
+						double diff = (deltalength - restlength) / (deltalength * 2 / mass);
+
+						particles[x][y].pos += delta*(1 / mass)*diff;
+						particles[x][y+1].pos -= delta*(1 / mass)*diff;
+
+					}
+					if(x < NUMBER_OF_VERTICES-1) {
+						// ----
+						Vec3 delta = particles[x+1][y].pos - particles[x][y].pos;
+						double deltalength = ((delta*delta / restlength) + restlength) / 2;
+						double diff = (deltalength - restlength) / (deltalength * 2 / mass);
+
+						particles[x][y].pos += delta*(1 / mass)*diff;
+						particles[x+1][y].pos -= delta*(1 / mass)*diff;
+
+					}
+					if (y < NUMBER_OF_VERTICES - 1) {
+						// ||||
+						Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
+						double deltalength = ((delta*delta / restlength) + restlength) / 2;
+						double diff = (deltalength - restlength) / (deltalength * 2 / mass);
+
+						particles[x][y].pos += delta*(1 / mass)*diff;
+						particles[x][y + 1].pos -= delta*(1 / mass)*diff;
+
+					}
+					if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
+						// cross forward
+						Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
+						double deltalength = ((delta*delta / 1.4142*restlength) + 1.4142*restlength) / 2;
+						double diff = (deltalength - 1.4142*restlength) / (deltalength * 2 / mass);
+
+						particles[x][y].pos += delta*(1 / mass)*diff;
+						particles[x + 1][y + 1].pos -= delta*(1 / mass)*diff;
+
+
+						// cross back
+						delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
+						deltalength = ((delta*delta / 1.4142*restlength) + 1.4142*restlength) / 2;
+						diff = (deltalength - 1.4142*restlength) / (deltalength * 2 / mass);
+
+						particles[x][y + 1].pos += delta*(1 / mass)*diff;
+						particles[x + 1][y].pos -= delta*(1 / mass)*diff;
+
+					}
+				}
+			}
 		}
 	}
+	particles[0][0].pos = Vec3(0, 0, 0);
+	particles[int((NUMBER_OF_VERTICES-1)/2)][0].pos = Vec3(size/2, 0, 0);
+	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size, 0, 0);
 
 	updateNormals(); 	
 	updateVBOs(); 
