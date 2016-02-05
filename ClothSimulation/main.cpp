@@ -103,7 +103,7 @@ int main(void)
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
 	Sphere sphere{ 0, 3, 0, 1, loader }; 
-	Cloth cloth{ loader, 2, 1 }; 
+	Cloth cloth{ loader, 2, 100 }; 
 	
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ (float)windowHeight / (float)windowWidth };
@@ -136,7 +136,7 @@ int main(void)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// render the sphere
-		sphere.render(window, camera);
+		//sphere.render(window, camera);
 
 		// draw the cloth
 		cloth.render(window, camera); 
