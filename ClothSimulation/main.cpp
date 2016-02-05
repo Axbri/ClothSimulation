@@ -62,7 +62,8 @@ GLFWwindow* init()
 	glfwSetMouseButtonCallback(window, UserInput::mouse_button_callback);
 	glfwSetScrollCallback(window, UserInput::scroll_callback);
 
-	//Initialize GLEW    
+	//Initialize GLEW   
+	glewExperimental = GL_TRUE;
 	if (GLenum err = glewInit() != GLEW_OK)
 	{
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
