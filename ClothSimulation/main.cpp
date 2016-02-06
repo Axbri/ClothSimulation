@@ -103,7 +103,7 @@ int main(void)
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
 	Sphere sphere{ 0, 3, 0, 1, loader }; 
-	Cloth cloth{ loader, 2, 100 }; 
+	Cloth cloth{ loader, 2, 5}; 
 	
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ (float)windowHeight / (float)windowWidth };
@@ -115,7 +115,7 @@ int main(void)
 		
 	// variables used in the main loop 
 	double previus_time = 0, delta_time = 0; 
-		
+
 	do //Main Loop  
 	{ 
 		// ================================== update ==================================
