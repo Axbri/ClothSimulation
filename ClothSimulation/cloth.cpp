@@ -15,8 +15,9 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleYpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleZpos = 0.01 * (sin(x) + sin(y));
+			double particleZpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
+			double particleYpos = 0.05 * (sin(x) + sin(y));
+			// jag bytta platts på z och y här ovan för att få tyget att generar i x-z planet istället
 			double particleUtextureCoord = ((double)x / (double)NUMBER_OF_VERTICES);
 			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);
 			
@@ -25,12 +26,13 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 	}
 		
 	// create the model objcet
-	int indices[(NUMBER_OF_VERTICES - 1) * (NUMBER_OF_VERTICES - 1) * 6];
-	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	float textureCoords[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 2];
-	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
+	int indices[(NUMBER_OF_VERTICES - 1) * (NUMBER_OF_VERTICES - 1) * 6 * 2];
+	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
+	float textureCoords[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 2 * 2];
+	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	int indicesIndex{ 0 }, positionIndex{ 0 }, textureCoordIndex{ 0 }, normalIndex{ 0 };
-
+		
+	// data for front side
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
@@ -45,8 +47,26 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
+		
+	// data for back side
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
+	{
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
+		{
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.x;
+			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.y;
+			normals[normalIndex++] = -particles[x][y].normal.x;
+			normals[normalIndex++] = -particles[x][y].normal.y;
+			normals[normalIndex++] = -particles[x][y].normal.z;
+		}
+	}
 	
 	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+
+	// indeices for front side
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
@@ -60,6 +80,24 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			indices[indicesIndex++] = topRight;
 			indices[indicesIndex++] = topRight;
 			indices[indicesIndex++] = bottomLeft;
+			indices[indicesIndex++] = bottomRight;
+		}
+	}
+
+	// indeices for back side
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
+	{
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
+		{
+			topLeft = (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES) + (y * NUMBER_OF_VERTICES) + x;
+			topRight = topLeft + 1;
+			bottomLeft = (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES) + ((y + 1) * NUMBER_OF_VERTICES) + x;
+			bottomRight = bottomLeft + 1;
+			indices[indicesIndex++] = topLeft;
+			indices[indicesIndex++] = topRight;
+			indices[indicesIndex++] = bottomLeft;
+			indices[indicesIndex++] = bottomLeft;
+			indices[indicesIndex++] = topRight;
 			indices[indicesIndex++] = bottomRight;
 		}
 	}
@@ -82,8 +120,8 @@ void Cloth::update(double delta_time, double time)
 	Vec3 g = Vec3(0, -9.81, 0);
 	//Vec3 g = Vec3(0, 0, -9.81);
 
-	double step = 0.06;
-	double con_inf[3] = {0.8, 0.1, 0.4 };
+	double step = 0.016; // 0.06 motsvarar 16 uppdateringar per sekund, vilket är för långsamt, du kansek tänkte 0.016 -> 60 updates / sek?
+	double con_inf[3] = { 0.2, 0.05, 0.2 };   //{0.8, 0.1, 0.4 };	// jag lekte lite med värdet på dessa :) De komenterade är de gamla /Axel
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
@@ -168,8 +206,11 @@ void Cloth::update(double delta_time, double time)
 			}
 		}
 	}
+
 	particles[0][0].pos = Vec3(0, 0, 0);
-	particles[int((NUMBER_OF_VERTICES-1)/2)][0].pos = Vec3(size/2, 0, 0);
+	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
+	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
+	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
 	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size, 0, 0);
 
 	updateNormals(); 	
@@ -219,8 +260,8 @@ void Cloth::cleanUp()
 void Cloth::updateVBOs()
 {
 	// create the new model-arrays: 
-	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
-	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3];
+	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
+	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	int positionIndex{ 0 }, normalIndex{ 0 };
 
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
@@ -235,6 +276,20 @@ void Cloth::updateVBOs()
 			normals[normalIndex++] = particles[x][y].normal.z;
 		}
 	}
+
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
+	{
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
+		{
+			positions[positionIndex++] = particles[x][y].pos.x;
+			positions[positionIndex++] = particles[x][y].pos.y;
+			positions[positionIndex++] = particles[x][y].pos.z;
+			normals[normalIndex++] = -particles[x][y].normal.x;
+			normals[normalIndex++] = -particles[x][y].normal.y;
+			normals[normalIndex++] = -particles[x][y].normal.z;
+		}
+	}
+
 	theLoader.updateDataInAtributeList(clothModel.get_position_vbo(), positions, positionIndex);
 	theLoader.updateDataInAtributeList(clothModel.get_normal_vbo(), normals, normalIndex);
 }
@@ -252,10 +307,8 @@ void Cloth::updateNormals()
 			pos2.set(particles[x + 1][y].pos);
 			pos3.set(particles[x][y + 1].pos);
 
-			vector1.set(pos3);
-			vector1.subtract(pos1);
-			vector2.set(pos2);
-			vector2.subtract(pos1);
+			vector1.set(pos3 - pos1);
+			vector2.set(pos2 - pos1);
 			normal.set(0, 0, 0);
 			normal.cross(vector1, vector2);
 
@@ -264,8 +317,5 @@ void Cloth::updateNormals()
 			particles[x][y + 1].normal.set(normal);
 		}
 	}
-
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.x = normal.x;
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.y = normal.y;
-	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal.z = normal.z;
+	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal = normal;
 }

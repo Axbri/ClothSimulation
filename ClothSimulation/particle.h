@@ -11,7 +11,7 @@ public:
 	~Particle();
 
 	Vec3 pos; 
-	Vec3 pos_old;
+	Vec3 pos_old;			// denna kanske kan vara private? den används ju inte utanför denna klassen?
 	Vec2 textureCoord; 
 	Vec3 normal; 
 

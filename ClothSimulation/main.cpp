@@ -105,23 +105,27 @@ int main(void)
 	allLights.push_back(Light{ 50, 400, 400 });	
 	allLights[0].color.set(0.6, 0.6, 0.6);
 
-	// 4 point point lights aranged in a square aorund the cloth
-	
-	Vec3 color{ 0.6, 0.6, 0.5 };
+	// 4 point point lights aranged in a square around the cloth	
+	Vec3 frontColor{ 0.8, 0.4, 0.4 };
+	Vec3 backColor{ 0.5, 0.5, 0.9 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
 	double distance = 7; 
 	double hight = 8;
-	allLights.push_back(Light{ distance, hight, -distance });
-	allLights[1].color.set(color);
-	allLights[1].attenuation.set(attenuation);
-	allLights.push_back(Light{ -distance, hight, -distance });
-	allLights[2].color.set(color);
-	allLights[2].attenuation.set(attenuation);
+
 	allLights.push_back(Light{ distance, hight, distance });
-	allLights[3].color.set(color);
-	allLights[3].attenuation.set(attenuation);
+	allLights[1].color.set(frontColor);
+	allLights[1].attenuation.set(attenuation);
+
 	allLights.push_back(Light{ -distance, hight, distance });
-	allLights[4].color.set(color);
+	allLights[2].color.set(frontColor);
+	allLights[2].attenuation.set(attenuation);
+
+	allLights.push_back(Light{ distance, hight, -distance });
+	allLights[3].color.set(backColor);
+	allLights[3].attenuation.set(attenuation);
+
+	allLights.push_back(Light{ -distance, hight, -distance });
+	allLights[4].color.set(backColor);
 	allLights[4].attenuation.set(attenuation);
 
 	// create a new camera object using the current window's aspect ratio 
@@ -131,8 +135,8 @@ int main(void)
 	glClearColor(0.4f, 0.6f, 0.7f, 0.0f);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 		
 	// variables used in the main loop 
 	double previus_time = 0, delta_time = 0; 
@@ -140,32 +144,25 @@ int main(void)
 	do //Main Loop  
 	{ 
 		// ================================== update ==================================
-
 		cloth.update(delta_time, previus_time);
 		camera.update(delta_time); 
-
-		
+				
 		if (UserInput::pollKey(window, GLFW_KEY_UP))
-		{
 			spherePos -= delta_time * 2;
-			sphere.setPos(0, 0.5, spherePos);
-		}
-		
-		if (UserInput::pollKey(window, GLFW_KEY_DOWN))
-		{
+			
+		if (UserInput::pollKey(window, GLFW_KEY_DOWN))		
 			spherePos += delta_time * 2;
-			sphere.setPos(0, 0.5, spherePos);
-		}
+
+		sphere.setPos(0, 0.5, spherePos);
 		
-		
+				
 		// ================================== render ==================================
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				
+		glEnable(GL_CULL_FACE);
+
 		// draw the groundplane
 		groundPlane.render(window, camera, allLights);
-
 		
-
 		// enable wireframe rendering if the user hold down the right mouse button. 
 		if (UserInput::getRightMouseButton())
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

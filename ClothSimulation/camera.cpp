@@ -11,7 +11,7 @@ Camera::Camera(float aspectRatio)
 	yPos = 2.0f;
 	zPos = 0.0f;
 	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 
-	orbitAngle = 0.0f;	// the camera's orbiting angle around the center position in radians
+	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
 	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
 	updateViewMatrix(); 
 	MatrixMath::mat4proj(projMatrix, aspectRatio, 1.2f);

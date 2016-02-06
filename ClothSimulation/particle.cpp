@@ -3,6 +3,7 @@
 Particle::Particle()
 {
 	pos.set(0, 0, 0);
+	pos_old.set(pos);
 	textureCoord.set(0, 0);
 	normal.set(0, 0, 0);
 	mass = 1;
