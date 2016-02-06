@@ -175,7 +175,7 @@ void Cloth::update(double delta_time, double time)
 }
 
 // render this cloth on the provided window from the provided camera's viewpoint. 
-void Cloth::render(GLFWwindow * window, Camera camera)
+void Cloth::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	float projectionMatrix[16];
 	float viewMatrix[16];
@@ -189,6 +189,7 @@ void Cloth::render(GLFWwindow * window, Camera camera)
 	shader.setUniformMat4("projectionMatrix", projectionMatrix);
 	shader.setUniformMat4("viewMatrix", viewMatrix);	
 	shader.setUniformMat4("modelMatrix", modelMatrix);
+	Light::loadLightsToShader(shader, allLights);
 
 	glBindVertexArray(clothModel.get_id());
 	glEnableVertexAttribArray(0);

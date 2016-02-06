@@ -3,7 +3,6 @@
 layout (location = 0) in vec3 position; 
 layout (location = 1) in vec3 normal; 
 
-out vec3 interpolatedPosition;
 out vec3 interpolatedNormal;
 out vec3 toLightVector[8]; 
 out vec3 toCameraVector; 
@@ -17,9 +16,7 @@ void main (void)
 {
 	vec4 worldPosition = modelMatrix * vec4(position, 1.0);
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;	
-	
-	interpolatedPosition = worldPosition.xyz; 
-		
+			
 	interpolatedNormal = mat3(modelMatrix) * normal;  	
 	
 	for (int i = 0; i < 8; i++) {

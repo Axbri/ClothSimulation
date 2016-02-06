@@ -82,16 +82,6 @@ GLFWwindow* init()
 	return window;
 }
 
-
-// close the GLFW-windoe and tenminate GLFW
-void cleanup(GLFWwindow* window)
-{
-	//Close OpenGL window and terminate GLFW  
-	glfwDestroyWindow(window);
-	//Finalize and clean up GLFW  
-	glfwTerminate();
-}
-
 // This is the main function that starts the program. 
 int main(void)
 {
@@ -107,7 +97,7 @@ int main(void)
 	Sphere sphere{ 2, 0.5, 2, 0.5, loader }; 
 	Cloth cloth{ loader, 2, 5}; 
 	
-	vector<Light> allLights;					// a dynamic list on lights
+	vector<Light> allLights;					// a dynamic list of lights
 
 	// one light realy far away (without attenuation)
 	allLights.push_back(Light{ 50, 400, 400 });	
@@ -117,7 +107,7 @@ int main(void)
 	Vec3 color{ 0.6, 0.6, 0.5 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
 	double distance = 7; 
-	double hight = 10;
+	double hight = 8;
 	allLights.push_back(Light{ -distance, hight, -distance });
 	allLights[1].color.set(color);
 	allLights[1].attenuation.set(attenuation);
@@ -165,7 +155,7 @@ int main(void)
 		sphere.render(window, camera, allLights);
 
 		// draw the cloth
-		cloth.render(window, camera); 
+		cloth.render(window, camera, allLights);
 		
 		// wireframe rendering is of be default. 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -197,6 +187,11 @@ int main(void)
 	cloth.cleanUp(); 
 	groundPlane.cleanUp(); 
 	loader.cleanUp(); 
-	cleanup(window); 
+
+	//Close OpenGL window and terminate GLFW  
+	glfwDestroyWindow(window);
+	//Finalize and clean up GLFW  
+	glfwTerminate();
+
 	exit(EXIT_SUCCESS);
 }

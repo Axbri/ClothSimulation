@@ -5,6 +5,8 @@
 #include "loader.h"
 #include "shader.h"
 #include "vec3.h"
+#include "light.h"
+#include <vector>
 
 class Cloth
 {
@@ -13,7 +15,7 @@ public:
 	~Cloth();
 
 	void update(double delta_time, double time);
-	void render(GLFWwindow* window, Camera camera);
+	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp(); 
 
 private: 

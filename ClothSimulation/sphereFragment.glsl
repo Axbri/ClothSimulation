@@ -1,6 +1,5 @@
 #version 330 core
 
-in vec3 interpolatedPosition;
 in vec3 interpolatedNormal;
 in vec3 toLightVector[8]; 
 in vec3 toCameraVector; 
@@ -40,10 +39,6 @@ void main (void)
 	totalSpecular = min(totalSpecular, 1.0);
 	
 	vec3 materialAndLighting = color * totalDiffuse + totalSpecular; 
-		
-	float distance = length(interpolatedPosition); 
 	
-	float alpha = clamp(2-(distance / 20), 0.0, 1.0);
-	
-	pixel_color = vec4(materialAndLighting, alpha);
+	pixel_color = vec4(materialAndLighting, 1.0);
 }
