@@ -104,14 +104,32 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
-	Sphere sphere{ 0, 3, 0, 1, loader }; 
+	Sphere sphere{ 4, 0.5, 3, 0.5, loader }; 
 	Cloth cloth{ loader, 2, 5}; 
 	
 	vector<Light> allLights;					// a dynamic list on lights
-	allLights.push_back(Light{ 200, 200, 200 });		// two lights
-	allLights.push_back(Light{ -200, 200, -200 });
-	allLights.push_back(Light{ -200, 200, 200 });
-	allLights[2].color.set(1.0, 0.2, 0.4); 
+
+	// the sun (without attenuation)
+	allLights.push_back(Light{ 50, 400, 400 });	
+	allLights[0].color.set(0.7, 0.7, 0.7);
+
+	// add four other point light
+	Vec3 color{ 0.5, 0.5, 0.4 };
+	Vec3 attenuation{ 1.0, 0.01, 0.008 };
+	double distance = 10; 
+	double hight = 8;
+	allLights.push_back(Light{ -distance, hight, -distance });
+	allLights[1].color.set(color);
+	allLights[1].attenuation.set(attenuation);
+	allLights.push_back(Light{ -distance, hight, distance });
+	allLights[2].color.set(color);
+	allLights[2].attenuation.set(attenuation);
+	allLights.push_back(Light{ distance, hight, distance });
+	allLights[3].color.set(color);
+	allLights[3].attenuation.set(attenuation);
+	allLights.push_back(Light{ distance, hight, -distance });
+	allLights[4].color.set(color);
+	allLights[4].attenuation.set(attenuation);
 
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ (float)windowHeight / (float)windowWidth };
@@ -144,7 +162,7 @@ int main(void)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// render the sphere
-		//sphere.render(window, camera);
+		sphere.render(window, camera);
 
 		// draw the cloth
 		cloth.render(window, camera); 

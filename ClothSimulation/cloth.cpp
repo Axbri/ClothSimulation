@@ -65,7 +65,7 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 	}
 
 	clothModel = loader.createModel(positions, positionIndex, textureCoords, textureCoordIndex, normals, normalIndex, indices, indicesIndex);	
-	clothModel.setPosition(-1, 2, 0);
+	clothModel.setPosition(-1, 2.5, 0);
 
 	GLuint clothTexture = loader.loadBMPtexture("textil01.bmp");
 	clothModel.set_texture(clothTexture);
