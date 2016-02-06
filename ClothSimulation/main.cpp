@@ -104,20 +104,23 @@ int main(void)
 	allLights[0].color.set(0.6, 0.6, 0.6);
 
 	// 4 point point lights aranged in a square aorund the cloth
+	
 	Vec3 color{ 0.6, 0.6, 0.5 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
 	double distance = 7; 
 	double hight = 8;
-	allLights.push_back(Light{ -distance, hight, -distance });
+	allLights.push_back(Light{ distance, hight, -distance });
 	allLights[1].color.set(color);
 	allLights[1].attenuation.set(attenuation);
-	allLights.push_back(Light{ -distance, hight, distance });
+	allLights.push_back(Light{ -distance, hight, -distance });
 	allLights[2].color.set(color);
 	allLights[2].attenuation.set(attenuation);
+	
+	
 	allLights.push_back(Light{ distance, hight, distance });
 	allLights[3].color.set(color);
 	allLights[3].attenuation.set(attenuation);
-	allLights.push_back(Light{ distance, hight, -distance });
+	allLights.push_back(Light{ -distance, hight, distance });
 	allLights[4].color.set(color);
 	allLights[4].attenuation.set(attenuation);
 
@@ -128,6 +131,8 @@ int main(void)
 	glClearColor(0.4f, 0.6f, 0.7f, 0.0f);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_FRONT);
 		
 	// variables used in the main loop 
 	double previus_time = 0, delta_time = 0; 

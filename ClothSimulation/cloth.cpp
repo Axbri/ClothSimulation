@@ -80,6 +80,8 @@ Cloth::~Cloth()
 void Cloth::update(double delta_time, double time)
 {
 	Vec3 g = Vec3(0, -9.81, 0);
+	//Vec3 g = Vec3(0, 0, -9.81);
+
 	double step = 0.06;
 	double con_inf[3] = {0.8, 0.1, 0.4 };
 	time_passed += delta_time;
@@ -240,45 +242,26 @@ void Cloth::updateVBOs()
 // calculate the normals of all particles. 
 void Cloth::updateNormals()
 {
-	Vec3 pos1{};
-	Vec3 pos2{};
-	Vec3 pos3{};
-
-	Vec3 vector1{};
-	Vec3 vector2{};
-	Vec3 normal{};
-
-	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
+	Vec3 pos1{}, pos2{}, pos3{}, vector1{}, vector2{}, normal{};
 
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
 		{
-			topLeft = (y * NUMBER_OF_VERTICES) + x;
-			topRight = topLeft + 1;
-			bottomLeft = ((y + 1) * NUMBER_OF_VERTICES) + x;
-			bottomRight = bottomLeft + 1;
+			pos1.set(particles[x][y].pos);
+			pos2.set(particles[x + 1][y].pos);
+			pos3.set(particles[x][y + 1].pos);
 
-			pos1.set(particles[x][y].pos.x, particles[x][y].pos.y, particles[x][y].pos.z);
-			pos2.set(particles[x + 1][y].pos.x, particles[x + 1][y].pos.y, particles[x + 1][y].pos.z);
-			pos3.set(particles[x][y + 1].pos.x, particles[x][y + 1].pos.y, particles[x][y + 1].pos.z);
-
-			vector1.set(pos2);
+			vector1.set(pos3);
 			vector1.subtract(pos1);
-			vector2.set(pos3);
-			vector2.subtract(pos2);
+			vector2.set(pos2);
+			vector2.subtract(pos1);
 			normal.set(0, 0, 0);
 			normal.cross(vector1, vector2);
 
-			particles[x][y].normal.x = normal.x;
-			particles[x][y].normal.y = normal.y;
-			particles[x][y].normal.z = normal.z;
-			particles[x + 1][y].normal.x = normal.x;
-			particles[x + 1][y].normal.y = normal.y;
-			particles[x + 1][y].normal.z = normal.z;
-			particles[x][y + 1].normal.x = normal.x;
-			particles[x][y + 1].normal.y = normal.y;
-			particles[x][y + 1].normal.z = normal.z;
+			particles[x][y].normal.set(normal);
+			particles[x + 1][y].normal.set(normal);
+			particles[x][y + 1].normal.set(normal);
 		}
 	}
 
