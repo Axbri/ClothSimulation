@@ -104,20 +104,20 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
-	Sphere sphere{ 4, 0.5, 3, 0.5, loader }; 
+	Sphere sphere{ 2, 0.5, 2, 0.5, loader }; 
 	Cloth cloth{ loader, 2, 5}; 
 	
 	vector<Light> allLights;					// a dynamic list on lights
 
-	// the sun (without attenuation)
+	// one light realy far away (without attenuation)
 	allLights.push_back(Light{ 50, 400, 400 });	
-	allLights[0].color.set(0.7, 0.7, 0.7);
+	allLights[0].color.set(0.6, 0.6, 0.6);
 
-	// add four other point light
-	Vec3 color{ 0.5, 0.5, 0.4 };
+	// 4 point point lights aranged in a square aorund the cloth
+	Vec3 color{ 0.6, 0.6, 0.5 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
-	double distance = 10; 
-	double hight = 8;
+	double distance = 7; 
+	double hight = 10;
 	allLights.push_back(Light{ -distance, hight, -distance });
 	allLights[1].color.set(color);
 	allLights[1].attenuation.set(attenuation);
@@ -162,7 +162,7 @@ int main(void)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// render the sphere
-		sphere.render(window, camera);
+		sphere.render(window, camera, allLights);
 
 		// draw the cloth
 		cloth.render(window, camera); 

@@ -4,12 +4,14 @@
 #include "loader.h"
 #include "shader.h"
 #include "vec3.h"
+#include "light.h"
+#include <vector>
 
 class Sphere
 {
 public:
 	Sphere(double x, double y, double z, double r, Loader loader);
-	void render(GLFWwindow* window, Camera camera);
+	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp();
 
 private: 

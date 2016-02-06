@@ -55,7 +55,7 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
 }
 
-void Sphere::render(GLFWwindow * window, Camera camera)
+void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	float projectionMatrix[16];
 	float viewMatrix[16];
@@ -69,6 +69,7 @@ void Sphere::render(GLFWwindow * window, Camera camera)
 	sphereShader.setUniformMat4("projectionMatrix", projectionMatrix);
 	sphereShader.setUniformMat4("viewMatrix", viewMatrix);
 	sphereShader.setUniformMat4("modelMatrix", modelMatrix);
+	Light::loadLightsToShader(sphereShader, allLights);
 
 	glBindVertexArray(sphereModel.get_id());
 	glEnableVertexAttribArray(0);
