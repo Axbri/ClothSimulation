@@ -16,28 +16,28 @@ Light::Light(double x, double y, double z)
 void Light::loadLightsToShader(Shader shader, vector<Light> allLights)
 {
 	int numberOfLights = allLights.size(); 
+	ostringstream stream;
 
 	for (int i{ 0 }; i < 8; i++)	// max 8 lights are loaded to the shaderprogram
 	{
-		char lightPosLoc[128];	
-		char lightColorLoc[128];
-		char lightAttLoc[128];
+		char lightPosLoc[18];	
+		char lightColorLoc[15];
+		char lightAttLoc[21];
 
-		ostringstream stream1; 
-		ostringstream stream2;
-		ostringstream stream3;
+		stream << "lightPosition[" << i << "]";
+		strcpy_s(lightPosLoc, stream.str().c_str());
+		stream.clear();
+		stream.str("");
 
-		stream1 << "lightPosition[" << i << "]";
-		strcpy_s(lightPosLoc, stream1.str().c_str());
-		stream1.clear();
+		stream << "lightColor[" << i << "]";
+		strcpy_s(lightColorLoc, stream.str().c_str());
+		stream.clear();
+		stream.str("");
 
-		stream2 << "lightColor[" << i << "]";
-		strcpy_s(lightColorLoc, stream2.str().c_str());
-		stream2.clear();
-
-		stream3 << "lightAttenuation[" << i << "]";
-		strcpy_s(lightAttLoc, stream3.str().c_str());
-		stream3.clear();
+		stream << "lightAttenuation[" << i << "]";
+		strcpy_s(lightAttLoc, stream.str().c_str());
+		stream.clear();
+		stream.str("");
 		
 		if (i < numberOfLights)		// load light data for the given light. 
 		{
