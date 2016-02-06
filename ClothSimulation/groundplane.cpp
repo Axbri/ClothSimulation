@@ -2,45 +2,24 @@
 
 GroundPlane::GroundPlane(Loader loader)
 {
-	groundShader.createShader("groundVertex.glsl", "groundFragment.glsl");
-	
-	float groundPos[] = {
-		-1.0f,  0.0f,  1.0f,
-		-1.0f,  0.0f, -1.0f,
-		1.0f,  0.0f, -1.0f,
-		1.0f,  0.0f,  1.0f
-	};
-
-	float textureCoords[] = {
-		0, 0,
-		0, 1,
-		1, 1,
-		1, 0
-	};
-
-	float normals[] = {
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f,
-		0.0f,  1.0f,  0.0f
-	};
-
-	int indices[] = {
-		0, 1, 3, 3, 1, 2
-	};
+	float groundPos[] = {-1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f };
+	float textureCoords[] = { 0, 0,	0, 1, 1, 1, 1, 0};
+	float normals[] = {	0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+	int indices[] = {0, 1, 3, 3, 1, 2};
 
 	// create a ground-plane that is 2x2 meters and scale it so it becomes 100x100 meters. 
 	groundModel = loader.createModel(groundPos, 12, textureCoords, 8, normals, 12, indices, 6);
 	groundModel.setScale(50, 1, 50);
 
-	// load texture attach it to the ground plane. 	
+	// load textures attach them to the ground plane. 	
 	GLuint groundTexture = loader.loadBMPtexture("groundTexture.bmp");
 	groundModel.set_texture(groundTexture);
-
 	normalMapTexture = loader.loadBMPtexture("tile_normal.bmp"); 
+
+	groundShader.createShader("groundVertex.glsl", "groundFragment.glsl");
 }
 
-void GroundPlane::render(GLFWwindow * window, Camera camera)
+void GroundPlane::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	float projectionMatrix[16];
 	float viewMatrix[16];
@@ -50,12 +29,13 @@ void GroundPlane::render(GLFWwindow * window, Camera camera)
 	camera.getViewMatrix(viewMatrix);
 	groundModel.getModelMatrix(modelMatrix);
 
-	groundShader.start();
-	groundShader.setUniformInt("mainTexture", 0);
-	groundShader.setUniformInt("normalTexture", 1);
+	groundShader.start();	
 	groundShader.setUniformMat4("projectionMatrix", projectionMatrix);
 	groundShader.setUniformMat4("viewMatrix", viewMatrix);
 	groundShader.setUniformMat4("modelMatrix", modelMatrix);
+	Light::loadLightsToShader(groundShader, allLights); 
+	groundShader.setUniformInt("mainTexture", 0);
+	groundShader.setUniformInt("normalTexture", 1);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
