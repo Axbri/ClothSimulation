@@ -16,6 +16,7 @@
 #include "font.h"
 #include "sphere.h"
 #include "light.h"
+#include "userinput.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -94,7 +95,8 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
-	Sphere sphere{ 2, 0.5, 2, 0.5, loader }; 
+	double spherePos{ -3 };
+	Sphere sphere{ 0, 0.5, spherePos, 0.5, loader };
 	Cloth cloth{ loader, 2, 5}; 
 	
 	vector<Light> allLights;					// a dynamic list of lights
@@ -115,8 +117,6 @@ int main(void)
 	allLights.push_back(Light{ -distance, hight, -distance });
 	allLights[2].color.set(color);
 	allLights[2].attenuation.set(attenuation);
-	
-	
 	allLights.push_back(Light{ distance, hight, distance });
 	allLights[3].color.set(color);
 	allLights[3].attenuation.set(attenuation);
@@ -143,6 +143,20 @@ int main(void)
 
 		cloth.update(delta_time, previus_time);
 		camera.update(delta_time); 
+
+		
+		if (UserInput::pollKey(window, GLFW_KEY_UP))
+		{
+			spherePos -= delta_time * 2;
+			sphere.setPos(0, 0.5, spherePos);
+		}
+		
+		if (UserInput::pollKey(window, GLFW_KEY_DOWN))
+		{
+			spherePos += delta_time * 2;
+			sphere.setPos(0, 0.5, spherePos);
+		}
+		
 		
 		// ================================== render ==================================
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -168,8 +182,11 @@ int main(void)
 		font.render("Frame rate: ", -0.95, 0.92);
 		font.setColor(0, 1, 0.5); 
 		font.render((int)(1 / delta_time), -0.65, 0.92);
-		font.setColor(1, 1, 1);
 
+		font.setColor(1, 1, 0);
+		font.render("Move the sphere with the Up/Down keys", -0.95, -0.88);
+		
+		font.setColor(1, 1, 1);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
 
 		//Swap buffers  

@@ -9,8 +9,10 @@ public:
 	static void mouse_pos_callback(GLFWwindow* window, double x, double y);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
-	
+		
+	//static bool getKeyState(int key);
+	//static bool getKeyWasPressed(int key);
+	static bool pollKey(GLFWwindow* window, int key);
 	static void getMousePos(double &x, double &y);
 	static void getMouseVel(double &dx, double &dy);
 	static bool getLeftMouseButton(); 
@@ -27,5 +29,6 @@ private:
 	static bool centerMouseButton;
 	static bool rightMouseButton;
 	static double deltaScroll;
-
+	static bool keyStates[1024];
+	//static bool keyPressed[1024];
 };

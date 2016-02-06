@@ -55,6 +55,11 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
 }
 
+void Sphere::update(double delta_time)
+{
+	
+}
+
 void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	float projectionMatrix[16];
@@ -87,4 +92,9 @@ void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 void Sphere::cleanUp()
 {
 
+}
+
+void Sphere::setPos(double x, double y, double z)
+{
+	sphereModel.setPosition(x, y, z);
 }
