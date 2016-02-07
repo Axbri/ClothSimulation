@@ -16,7 +16,7 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleZpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleYpos = 0.05 * (sin(x) + sin(y));
+			double particleYpos = 0;// 0.05 * (sin(x) + sin(y));
 			// jag bytta platts på z och y här ovan för att få tyget att generar i x-z planet istället
 			double particleUtextureCoord = ((double)x / (double)NUMBER_OF_VERTICES);
 			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);
@@ -120,8 +120,8 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	Vec3 g = Vec3(0, -9.81, 0);
 	//Vec3 g = Vec3(0, 0, -9.81);
 
-	double step = 0.016; // 0.06 motsvarar 16 uppdateringar per sekund, vilket är för långsamt, du kansek tänkte 0.016 -> 60 updates / sek?
-	double con_inf[3] = { 0.2, 0.05, 0.2 };   //{0.8, 0.1, 0.4 };	// jag lekte lite med värdet på dessa :) De komenterade är de gamla /Axel
+	double step = 0.016; // 60 uppdateringar per sekund
+	double con_inf[3] = { 0.2, 0.05, 0.2 };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
@@ -203,7 +203,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					Vec3 p_curr = Vec3(particles[x][y].pos);
 					Vec3 p_old = Vec3(particles[x][y].pos_old);
 
-					particles[x][y].pos += (p_curr - p_old)*0.99 + g*mass*step*step;
+					particles[x][y].pos += (p_curr - p_old)*0.98 + g*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
 					particles[x][y].pos_old = p_curr;
 
 					Vec3 pos = sphere.getPos();
@@ -225,7 +225,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
 	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
 	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
-	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
+	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0-1, 0, 0);
 
 	updateNormals(); 	
 	updateVBOs(); 
