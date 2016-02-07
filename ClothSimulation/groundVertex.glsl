@@ -21,9 +21,7 @@ void main (void)
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;	
 	
 	interpolatedPosition = worldPosition.xyz; 
-	
-	interpolatedTextureCoords = textureCoords; 
-	
+	interpolatedTextureCoords = textureCoords; 	
 	interpolatedNormal = mat3(modelMatrix) * normal;  	
 	
 	for (int i = 0; i < 8; i++) {
