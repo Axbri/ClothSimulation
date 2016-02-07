@@ -115,7 +115,7 @@ Cloth::~Cloth()
 }
 
 // update the cloth, this function will handle the phisics simulation of the cloth. 
-void Cloth::update(double delta_time, double time)
+void Cloth::update(double delta_time, double time, Sphere sphere)
 {
 	Vec3 g = Vec3(0, -9.81, 0);
 	//Vec3 g = Vec3(0, 0, -9.81);
@@ -131,87 +131,101 @@ void Cloth::update(double delta_time, double time)
 		{
 			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 			{
-				//particles[x][y].pos.z = 0.1 * (sin(x/4.0 + time*4) + sin(y / 4.0 + time*4));
-				double mass = particles[x][y].mass;
-				Vec3 p_curr = Vec3(particles[x][y].pos);
-				Vec3 p_old = Vec3(particles[x][y].pos_old);
-
-				particles[x][y].pos += p_curr - p_old + g*mass*step*step;
-				particles[x][y].pos_old = p_curr;
-
-				for (int r{ 0 }; r < 2; r++) 
+				//resolve constraints
+				for (int r{ 0 }; r < 2; r++)
 				{
-					if (y < NUMBER_OF_VERTICES-1) {
+					if (y < NUMBER_OF_VERTICES - 1) {
 						// ||||
 						Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
-						double deltalength = sqrt(delta*delta);// ((delta*delta / restlength) + restlength) / 2;
-						double diff = (deltalength - restlength) / (deltalength * 2 / mass);
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - restlength) / deltalength;
 
-						particles[x][y].pos += delta*(1 / mass)*diff*con_inf[0];
-						particles[x][y+1].pos -= delta*(1 / mass)*diff*con_inf[0];
+						particles[x][y].pos += delta*0.5*diff*con_inf[0];
+						particles[x][y + 1].pos -= delta*0.5*diff*con_inf[0];
 
 					}
-					if(x < NUMBER_OF_VERTICES-1) {
+					if (x < NUMBER_OF_VERTICES - 1) {
 						// ----
-						Vec3 delta = particles[x+1][y].pos - particles[x][y].pos;
-						double deltalength = sqrt(delta*delta);//((delta*delta / restlength) + restlength) / 2;
-						double diff = (deltalength - restlength) / (deltalength * 2 / mass);
+						Vec3 delta = particles[x + 1][y].pos - particles[x][y].pos;
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - restlength) / deltalength;
 
-						particles[x][y].pos += delta*(1 / mass)*diff*con_inf[0];
-						particles[x+1][y].pos -= delta*(1 / mass)*diff*con_inf[0];
+						particles[x][y].pos += delta*0.5*diff*con_inf[0];
+						particles[x + 1][y].pos -= delta*0.5*diff*con_inf[0];
 
 					}
 					if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
 						// cross forward
 
 						Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
-						double deltalength = sqrt(delta*delta);//((delta*delta / (1.4142*restlength)) + 1.4142*restlength) / 2;
-						double diff = (deltalength - 1.4142*restlength) / (deltalength * 2 / mass);
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - 1.4142*restlength) / deltalength;
 
-						particles[x][y].pos += delta*(1 / mass)*diff*con_inf[1];
-						particles[x + 1][y + 1].pos -= delta*(1 / mass)*diff*con_inf[1];
+						particles[x][y].pos += delta*0.5*diff*con_inf[1];
+						particles[x + 1][y + 1].pos -= delta*0.5*diff*con_inf[1];
 
 					}
 					if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
 						// cross back
 						Vec3 delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
-						double deltalength = sqrt(delta*delta);//((delta*delta / (1.4142*restlength)) + 1.4142*restlength) / 2;
-						double diff = (deltalength - 1.4142*restlength) / (deltalength * 2 / mass);
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - 1.4142*restlength) / deltalength;
 
-						particles[x][y + 1].pos += delta*(1 / mass)*diff*con_inf[1];
-						particles[x + 1][y].pos -= delta*(1 / mass)*diff*con_inf[1];
-						
+						particles[x][y + 1].pos += delta*0.5*diff*con_inf[1];
+						particles[x + 1][y].pos -= delta*0.5*diff*con_inf[1];
+
 					}
 					if (y < NUMBER_OF_VERTICES - 2) {
 						// ||||
 						Vec3 delta = particles[x][y + 2].pos - particles[x][y].pos;
-						double deltalength = sqrt(delta*delta);// ((delta*delta / restlength) + restlength) / 2;
-						double diff = (deltalength - 2*restlength) / (deltalength * 2 / mass);
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - 2 * restlength) / deltalength;
 
-						particles[x][y].pos += delta*(1 / mass)*diff*con_inf[2];
-						particles[x][y + 2].pos -= delta*(1 / mass)*diff*con_inf[2];
+						particles[x][y].pos += delta*0.5*diff*con_inf[2];
+						particles[x][y + 2].pos -= delta*0.5*diff*con_inf[2];
 
 					}
-					if(x < NUMBER_OF_VERTICES - 2) {
+					if (x < NUMBER_OF_VERTICES - 2) {
 						// ----
 						Vec3 delta = particles[x + 2][y].pos - particles[x][y].pos;
-						double deltalength = sqrt(delta*delta);//((delta*delta / restlength) + restlength) / 2;
-						double diff = (deltalength - 2*restlength) / (deltalength * 2 / mass);
+						double deltalength = sqrt(delta*delta);
+						double diff = (deltalength - 2 * restlength) / deltalength;
 
-						particles[x][y].pos += delta*(1 / mass)*diff*con_inf[0];
-						particles[x + 2][y].pos -= delta*(1 / mass)*diff*con_inf[0];
+						particles[x][y].pos += delta*0.5*diff*con_inf[0];
+						particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
 
 					}
+
+					
+
+					//verlet
+					double mass = particles[x][y].mass;
+					Vec3 p_curr = Vec3(particles[x][y].pos);
+					Vec3 p_old = Vec3(particles[x][y].pos_old);
+
+					particles[x][y].pos += (p_curr - p_old)*0.99 + g*mass*step*step;
+					particles[x][y].pos_old = p_curr;
+
+					Vec3 pos = sphere.getPos();
+					double rad = sphere.getRadius();
+					Vec3 delta = pos - particles[x][y].pos;
+					double deltalength = sqrt(delta*delta);
+					if (deltalength < rad*1.05)
+					{
+						double diff = (deltalength - rad*1.05) / deltalength;
+						particles[x][y].pos += delta*diff;
+					}
+				
 				}
 			}
 		}
 	}
 
-	particles[0][0].pos = Vec3(0, 0, 0);
+	particles[0][0].pos = Vec3(0+0.1, 0, 0);
 	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
 	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
 	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
-	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size, 0, 0);
+	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
 	updateNormals(); 	
 	updateVBOs(); 

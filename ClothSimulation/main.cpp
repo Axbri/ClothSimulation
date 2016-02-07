@@ -96,8 +96,8 @@ int main(void)
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
 	double spherePos{ -3 };
-	Sphere sphere{ 0, 0.5, spherePos, 0.5, loader };
-	Cloth cloth{ loader, 2, 5}; 
+	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
+	Cloth cloth{ loader, 2, 100}; 
 	
 	vector<Light> allLights;					// a dynamic list of lights
 
@@ -144,9 +144,7 @@ int main(void)
 	do //Main Loop  
 	{ 
 		// ================================== update ==================================
-		cloth.update(delta_time, previus_time);
-		camera.update(delta_time); 
-				
+		
 		if (UserInput::pollKey(window, GLFW_KEY_UP))
 			spherePos -= delta_time * 2;
 			
@@ -155,6 +153,8 @@ int main(void)
 
 		sphere.setPos(0, 0.5, spherePos);
 		
+		cloth.update(delta_time, previus_time, sphere);
+		camera.update(delta_time);
 				
 		// ================================== render ==================================
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

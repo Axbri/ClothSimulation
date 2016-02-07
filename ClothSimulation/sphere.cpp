@@ -97,4 +97,15 @@ void Sphere::cleanUp()
 void Sphere::setPos(double x, double y, double z)
 {
 	sphereModel.setPosition(x, y, z);
+	position = Vec3(x+1, y-2.5, z); //sfär-pos eller cloth-pos är förskjuten, behöver undersökas
+}
+
+Vec3 Sphere::getPos() 
+{
+	return position;
+}
+
+double Sphere::getRadius()
+{
+	return radius;
 }

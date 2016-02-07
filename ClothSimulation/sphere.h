@@ -15,6 +15,8 @@ public:
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp();
 	void setPos(double x, double y, double z); 
+	Vec3 getPos();
+	double getRadius();
 
 private: 
 	static const int NUMBER_OF_SEGMENTS = 32;

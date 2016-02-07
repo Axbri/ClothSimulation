@@ -7,6 +7,7 @@
 #include "vec3.h"
 #include "light.h"
 #include <vector>
+#include "sphere.h"
 
 class Cloth
 {
@@ -14,7 +15,7 @@ public:
 	Cloth(Loader loader, double size, double totalWeight);
 	~Cloth();
 
-	void update(double delta_time, double time);
+	void update(double delta_time, double time, Sphere sphere);
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp(); 
 
