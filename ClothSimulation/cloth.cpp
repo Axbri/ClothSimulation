@@ -225,7 +225,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
 	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
 	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
-	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0-1, 0, 0);
+	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
 	updateNormals(); 	
 	updateVBOs(); 
