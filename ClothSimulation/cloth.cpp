@@ -17,7 +17,7 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleZpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
 			double particleYpos = 0.05 * (sin(x) + sin(y));
-			// jag bytta platts på z och y här ovan för att få tyget att generar i x-z planet istället
+			// jag bytte platts på z och y här ovan för att få tyget att generar i x-z planet istället
 			double particleUtextureCoord = ((double)x / (double)NUMBER_OF_VERTICES);
 			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);
 			
@@ -222,9 +222,9 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	}
 
 	particles[0][0].pos = Vec3(0+0.1, 0, 0);
-	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
+	particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
 	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
-	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
+	particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
 	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
 	updateNormals(); 	
@@ -277,6 +277,7 @@ void Cloth::updateVBOs()
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	int positionIndex{ 0 }, normalIndex{ 0 };
+
 
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 	{
