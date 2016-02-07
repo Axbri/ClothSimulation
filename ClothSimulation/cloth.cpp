@@ -121,7 +121,8 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	//Vec3 g = Vec3(0, 0, -9.81);
 
 	double step = 0.016; // 60 uppdateringar per sekund
-	double con_inf[3] = { 0.2, 0.05, 0.2 };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila
+	double nv = (double)NUMBER_OF_VERTICES;
+	double con_inf[3] = { nv / (120 + nv), nv / (120 + nv), nv / (45 + nv) };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila (0.2,0.2,0.4) för 30 verts
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
@@ -212,7 +213,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					double deltalength = sqrt(delta*delta);
 					if (deltalength < rad*1.05)
 					{
-						double diff = (deltalength - rad*1.05) / deltalength;
+						double diff = (deltalength - rad*1.05) / deltalength; // generalisera margin
 						particles[x][y].pos += delta*diff;
 					}
 				
