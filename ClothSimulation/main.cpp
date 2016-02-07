@@ -95,7 +95,7 @@ int main(void)
 	Loader loader;
 	Font font{ loader, 0.025 }; 
 	GroundPlane groundPlane{ loader };
-	double spherePos{ -3 };
+	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
 	Cloth cloth{ loader, 2, 100}; 
 	
@@ -107,7 +107,7 @@ int main(void)
 
 	// 4 point point lights aranged in a square around the cloth	
 	Vec3 frontColor{ 0.8, 0.4, 0.4 };
-	Vec3 backColor{ 0.5, 0.5, 0.9 };
+	Vec3 backColor{ 0.7, 0.7, 0.9 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
 	double distance = 7; 
 	double hight = 8;
@@ -146,12 +146,18 @@ int main(void)
 		// ================================== update ==================================
 		
 		if (UserInput::pollKey(window, GLFW_KEY_UP))
-			spherePos -= delta_time * 2;
+			spherePosZ -= delta_time * 2;
 			
 		if (UserInput::pollKey(window, GLFW_KEY_DOWN))		
-			spherePos += delta_time * 2;
+			spherePosZ += delta_time * 2;
 
-		sphere.setPos(0, 0.5, spherePos);
+		if (UserInput::pollKey(window, GLFW_KEY_LEFT))
+			spherePosX -= delta_time * 2;
+
+		if (UserInput::pollKey(window, GLFW_KEY_RIGHT))
+			spherePosX += delta_time * 2;
+
+		sphere.setPos(spherePosX, 0.5, spherePosZ);
 		
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
@@ -181,7 +187,7 @@ int main(void)
 		font.render((int)(1 / delta_time), -0.65, 0.92);
 
 		font.setColor(1, 1, 0);
-		font.render("Move the sphere with the Up/Down keys", -0.95, -0.88);
+		font.render("Move the sphere with the arrow keys", -0.95, -0.88);
 		
 		font.setColor(1, 1, 1);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
