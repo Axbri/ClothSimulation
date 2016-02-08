@@ -148,6 +148,9 @@
     <None Include="sphereVertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="glew32.dll">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="cover02.bmp">
