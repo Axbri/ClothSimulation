@@ -162,6 +162,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="loader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat4.cpp" />
     <ClCompile Include="matrixmath.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mousepicker.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="groundplane.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="loader.h" />
+    <ClInclude Include="mat4.h" />
     <ClInclude Include="matrixmath.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="mousepicker.h" />

@@ -90,16 +90,19 @@ bool UserInput::pollKey(GLFWwindow* window, int key)
 		return false;
 }
 
-// Get the absolute pixel position of the mouse curser in the window. 
+// Get the absolute pixel position of the mouse curser in the window. The possition is returnet in pixel coordinates
 Vec2 UserInput::getMousePos()
 {
 	return Vec2(mouseX, mouseY); 
 }
 
+// Get the absolute pixel position of the mouse curser in the window. The position is returned in 
+// normalized device coordinates. coords ranging from -1 to 1. 
 Vec2 UserInput::getMouseNormalizedDeviceCoords(int screenWithPixels, int screenHeightPixels)
 {
-	
-	return Vec2();
+	double normalizedX = ((mouseX / screenWithPixels) * 2) - 1;
+	double normalizedY = ((mouseY / screenHeightPixels) * 2) - 1;
+	return Vec2(normalizedX, normalizedY);
 }
 
 // get the velosity of the mouse curser. How mush the curser has moved sice 
