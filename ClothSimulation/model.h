@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GL/glew.h> 
-#include "matrixmath.h"
+#include "mat4.h"
 using namespace std;
 
 class Model
@@ -20,10 +20,8 @@ class Model
 		GLuint get_texture_vbo();
 		GLuint get_normal_vbo();
 
-		void getModelMatrix(float matrix[]);
-
-		void setPosition(float x, float y, float z); 
-		void setScale(float sx, float sy, float sz);
+		Mat4 getModelMatrix();
+		void setModelMatrix(Mat4 matrix);
 
 	private: 
 		GLuint vao_id;
@@ -32,5 +30,5 @@ class Model
 		GLuint norm_vbo;
 		GLuint texture_id; 
 		int vertex_count;
-		GLfloat modelMatrix[16];
+		Mat4 modelMatrix;
 };

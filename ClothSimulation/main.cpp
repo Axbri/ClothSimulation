@@ -157,8 +157,10 @@ int main(void)
 		if (UserInput::pollKey(window, GLFW_KEY_RIGHT))
 			spherePosX += delta_time * 2;
 
-		sphere.setPos(spherePosX, 0.5, spherePosZ);
+		sphere.setPos(Vec3{ spherePosX, 0.5, spherePosZ });
 		
+		sphere.updateModelMatrix(); 
+
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
 				

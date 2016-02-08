@@ -37,13 +37,12 @@ void Font::render(int number, double xPos, double yPos)
 
 void Font::render(char *str, double xPos, double yPos)
 {
-	GLfloat transformation[16];
-	GLfloat scale[16];
-	GLfloat pos[16];
 	float aspectRatioMultiplier = 0.66; // TODO
-	MatrixMath::scaleMat4(scale, fontSize * aspectRatioMultiplier, fontSize, 0);
-	MatrixMath::translateMat4(pos, xPos, yPos, 0);
-	MatrixMath::multMat4(scale, pos, transformation);
+	Mat4 pos, scale;
+	pos.loadTranslation(xPos, yPos, 0);
+	scale.loadScale(fontSize * aspectRatioMultiplier, fontSize, 0); 
+
+	Mat4 transformation = scale * pos; 
 
 	fontShader.start(); 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -62,9 +61,11 @@ void Font::render(char *str, double xPos, double yPos)
 		if (i != 0) {
 			ofsett += getCharWidth(str[i - 1]) * 1.4;
 		}
-		MatrixMath::translateMat4(pos, xPos + ofsett, yPos, 0);
-		MatrixMath::multMat4(scale, pos, transformation);
-		fontShader.setUniformMat4("transformationMatrix", transformation); 
+
+		pos.loadTranslation(xPos + ofsett, yPos, 0);
+		transformation = scale * pos;
+
+		fontShader.setUniformMat4("transformationMatrix", transformation.M);
 		fontShader.setUniformInt("character", str[i]);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);	// 4 vertices in the quad
 	}
