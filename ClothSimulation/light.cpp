@@ -2,15 +2,15 @@
 
 Light::Light()
 {
-	color.set(1, 1, 1); 
-	attenuation.set(1, 0, 0); 
+	color = Vec3(1, 1, 1);
+	attenuation = Vec3(1, 0, 0);
 }
 
 Light::Light(double x, double y, double z)
 {
-	pos.set(x, y, z); 
-	color.set(1, 1, 1);
-	attenuation.set(1, 0, 0);
+	pos = Vec3(x, y, z);
+	color = Vec3(1, 1, 1);
+	attenuation = Vec3(1, 0, 0);
 }
 
 void Light::loadLightsToShader(Shader shader, vector<Light> allLights)

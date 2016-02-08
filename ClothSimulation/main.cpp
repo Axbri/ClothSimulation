@@ -103,7 +103,7 @@ int main(void)
 
 	// one light realy far away (without attenuation)
 	allLights.push_back(Light{ 50, 400, 400 });	
-	allLights[0].color.set(0.6, 0.6, 0.6);
+	allLights[0].color = Vec3(0.6, 0.6, 0.6);
 
 	// 4 point point lights aranged in a square around the cloth	
 	Vec3 frontColor{ 0.8, 0.4, 0.4 };
@@ -113,20 +113,20 @@ int main(void)
 	double hight = 8;
 
 	allLights.push_back(Light{ distance, hight, distance });
-	allLights[1].color.set(frontColor);
-	allLights[1].attenuation.set(attenuation);
+	allLights[1].color = Vec3(frontColor);
+	allLights[1].attenuation = Vec3(attenuation);
 
 	allLights.push_back(Light{ -distance, hight, distance });
-	allLights[2].color.set(frontColor);
-	allLights[2].attenuation.set(attenuation);
+	allLights[2].color = Vec3(frontColor);
+	allLights[2].attenuation = Vec3(attenuation);
 
 	allLights.push_back(Light{ distance, hight, -distance });
-	allLights[3].color.set(backColor);
-	allLights[3].attenuation.set(attenuation);
+	allLights[3].color = Vec3(backColor);
+	allLights[3].attenuation = Vec3(attenuation);
 
 	allLights.push_back(Light{ -distance, hight, -distance });
-	allLights[4].color.set(backColor);
-	allLights[4].attenuation.set(attenuation);
+	allLights[4].color = Vec3(backColor);
+	allLights[4].attenuation = Vec3(attenuation);
 
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ (float)windowHeight / (float)windowWidth };

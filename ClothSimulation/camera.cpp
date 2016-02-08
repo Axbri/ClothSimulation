@@ -27,10 +27,9 @@ void Camera::update(double delta_time)
 	// rotate with the mouse. 
 	if (UserInput::getLeftMouseButton())
 	{
-		double dx = 0, dy = 0;
-		UserInput::getMouseVel(dx, dy);
-		orbitAngle -= dx * MOUSE_ROTATION_SENSITIVITY;
-		tiltAngle -= dy * MOUSE_ROTATION_SENSITIVITY;
+		Vec2 mouseVel = UserInput::getMouseVel();
+		orbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;
+		tiltAngle -= mouseVel.y * MOUSE_ROTATION_SENSITIVITY;
 		tiltAngle = max(-3.14 / 2, min(tiltAngle, 3.14 / 2));
 	}
 	

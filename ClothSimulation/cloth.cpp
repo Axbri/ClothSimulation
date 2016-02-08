@@ -318,18 +318,18 @@ void Cloth::updateNormals()
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
 		{
-			pos1.set(particles[x][y].pos);
-			pos2.set(particles[x + 1][y].pos);
-			pos3.set(particles[x][y + 1].pos);
+			pos1 = particles[x][y].pos;
+			pos2 = particles[x + 1][y].pos;
+			pos3 = particles[x][y + 1].pos;
 
-			vector1.set(pos3 - pos1);
-			vector2.set(pos2 - pos1);
-			normal.set(0, 0, 0);
+			vector1 = pos3 - pos1;
+			vector2 = pos2 - pos1;
+			normal = Vec3(0, 0, 0);
 			normal.cross(vector1, vector2);
 
-			particles[x][y].normal.set(normal);
-			particles[x + 1][y].normal.set(normal);
-			particles[x][y + 1].normal.set(normal);
+			particles[x][y].normal = normal;
+			particles[x + 1][y].normal = normal;
+			particles[x][y + 1].normal = normal;
 		}
 	}
 	particles[NUMBER_OF_VERTICES - 1][NUMBER_OF_VERTICES - 1].normal = normal;

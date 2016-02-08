@@ -80,24 +80,3 @@ void Vec3::cross(Vec3 v1, Vec3 v2)
 	y = v1.z * v2.x - v1.x * v2.z;
 	z = v1.x * v2.y - v1.y * v2.x;
 }
-
-void Vec3::subtract(Vec3 other)
-{
-	x -= other.x; 
-	y -= other.y; 
-	z -= other.z; 
-}
-
-void Vec3::set(Vec3 other)
-{
-	x = other.x;
-	y = other.y;
-	z = other.z;
-}
-
-void Vec3::set(double xValue, double yValue, double zValue)
-{
-	x = xValue;
-	y = yValue;
-	z = zValue;
-}

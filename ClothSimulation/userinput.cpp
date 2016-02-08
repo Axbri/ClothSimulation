@@ -13,14 +13,6 @@ double UserInput::deltaScroll = 0.0;
 // This function is called automaticaly every time a key on the keybord is pressed or relesed. 
 void UserInput::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*if (action == GLFW_PRESS) {
-		keyStates[10] = true;
-	}
-	
-	if (action == GLFW_RELEASE) {
-		keyStates[10] = false;		
-	}*/
-
 	// close the program if the user presses the escape-key
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) 
 	{
@@ -89,18 +81,6 @@ void UserInput::scroll_callback(GLFWwindow* window, double xoffset, double yoffs
 	deltaScroll = yoffset;
 }
 
-/** Check if a specific key is pressed down. */
-//bool UserInput::getKeyState(int key) {
-//	return keyStates[key];
-//}
-
-/** Check if a specific key is pressed down. */
-//bool UserInput::getKeyWasPressed(int key) {
-//	bool temp = keyPressed[key];
-//	keyPressed[key] = false;
-//	return temp;
-//}
-
 bool UserInput::pollKey(GLFWwindow* window, int key)
 {
 	int state = glfwGetKey(window, key);
@@ -111,20 +91,26 @@ bool UserInput::pollKey(GLFWwindow* window, int key)
 }
 
 // Get the absolute pixel position of the mouse curser in the window. 
-void UserInput::getMousePos(double &x, double &y)
+Vec2 UserInput::getMousePos()
 {
-	x = mouseX;
-	y = mouseY;
+	return Vec2(mouseX, mouseY); 
+}
+
+Vec2 UserInput::getMouseNormalizedDeviceCoords(int screenWithPixels, int screenHeightPixels)
+{
+	
+	return Vec2();
 }
 
 // get the velosity of the mouse curser. How mush the curser has moved sice 
 // the last time this function was called or the last time the mouse moved. 
-void UserInput::getMouseVel(double &dx, double &dy)
+Vec2 UserInput::getMouseVel()
 {
-	dx = MouseSpeedX;
-	dy = MouseSpeedY;
+	double dx = MouseSpeedX;
+	double dy = MouseSpeedY;
 	MouseSpeedX = 0; 
 	MouseSpeedY = 0;
+	return Vec2(dx, dy); 
 }
 
 // Get the boolean state the the left mouse button, 

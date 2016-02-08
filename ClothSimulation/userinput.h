@@ -1,6 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>  
+#include "vec3.h"
+#include "vec2.h"
 
 class UserInput
 {
@@ -10,11 +12,10 @@ public:
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 		
-	//static bool getKeyState(int key);
-	//static bool getKeyWasPressed(int key);
 	static bool pollKey(GLFWwindow* window, int key);
-	static void getMousePos(double &x, double &y);
-	static void getMouseVel(double &dx, double &dy);
+	static Vec2 getMousePos();
+	static Vec2 getMouseNormalizedDeviceCoords(int screenWithPixels, int screenHeightPixels);
+	static Vec2 getMouseVel();
 	static bool getLeftMouseButton(); 
 	static bool getCenterMouseButton();
 	static bool getRightMouseButton();
@@ -29,6 +30,4 @@ private:
 	static bool centerMouseButton;
 	static bool rightMouseButton;
 	static double deltaScroll;
-	static bool keyStates[1024];
-	//static bool keyPressed[1024];
 };

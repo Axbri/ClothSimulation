@@ -164,12 +164,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrixmath.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="mousepicker.cpp" />
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="userinput.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="vec3.cpp" />
+    <ClCompile Include="vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -180,12 +182,14 @@
     <ClInclude Include="loader.h" />
     <ClInclude Include="matrixmath.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="mousepicker.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="userinput.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="vec3.h" />
+    <ClInclude Include="vec4.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fontFrag.glsl" />
