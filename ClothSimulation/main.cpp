@@ -5,6 +5,7 @@
 #include <stdlib.h>  
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 #include "loader.h"
@@ -100,8 +101,11 @@ int main(void)
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
 	Cloth cloth{ loader, 2, 100}; 
-	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
 	
+	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
+	Sphere mouseDebugSphere{ 0, 0, 0, 0.2, loader };
+
+
 	vector<Light> allLights;					// a dynamic list of lights
 
 	// one light realy far away (without attenuation)
@@ -186,6 +190,9 @@ int main(void)
 		// render the sphere
 		sphere.render(window, camera, allLights);
 
+
+		mouseDebugSphere.render(window, camera, allLights);
+
 		// draw the cloth
 		cloth.render(window, camera, allLights);
 		
@@ -206,7 +213,7 @@ int main(void)
 		Vec3 ray = mousePicker.calculateMouseRay(camera);
 		char tempBuffer[100];
 		ostringstream stream;
-		stream << "Mouse picker ray: ( " << ray.x << "x, " << ray.y << "y, " << ray.z << "z )";
+		stream << fixed << setprecision(2) << "Mouse picker ray: ( " << ray.x << "x, " << ray.y << "y, " << ray.z << "z )";
 		strcpy_s(tempBuffer, stream.str().c_str());
 		font.setColor(0, 0, 0);
 		font.render(tempBuffer, -0.95, -0.81);
@@ -214,10 +221,23 @@ int main(void)
 		Vec3 cameraPos = mousePicker.getRayStartPoint(camera);
 		char tempBuffer2[100];
 		ostringstream stream2;
-		stream2 << "Camera world pos: ( " << cameraPos.x << "x, " << cameraPos.y << "y, " << cameraPos.z << "z )";
+		stream2 << fixed << setprecision(2) << "Camera world pos: ( " << cameraPos.x << "x, " << cameraPos.y << "y, " << cameraPos.z << "z )";
 		strcpy_s(tempBuffer2, stream2.str().c_str());
 		font.setColor(0, 0, 0);
 		font.render(tempBuffer2, -0.95, -0.74);
+
+		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0);
+		Vec2 mousePos = UserInput::getMouseNormalizedDeviceCoords((double)windowWidth, (double)windowHeight);
+		char tempBuffer3[100];
+		ostringstream stream3;
+		stream3 << fixed << setprecision(2) << "Ground plane intersection: ( " << planeIntersection.x << "x, " << planeIntersection.y << "y, " << planeIntersection.z << "z )";
+		//stream3 << setprecision(2) << "mouse pos: ( " << mousePos.x <<  "x, " << mousePos.y << "y )";
+		strcpy_s(tempBuffer3, stream3.str().c_str());
+		font.setColor(0, 0, 0);
+		font.render(tempBuffer3, -0.95, -0.67);
+
+		mouseDebugSphere.setPos(planeIntersection);
+
 		// =========================================================
 
 
