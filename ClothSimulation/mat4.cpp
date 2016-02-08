@@ -90,7 +90,7 @@ void Mat4::loadPerspectiveProjection(float aspectRatio, float fov)
 	M[14] = -1.0f;
 }
 
-Mat4 Mat4::inverse(const Mat4 & m) const
+Mat4 Mat4::inverse() const
 {
 
 	// TODO...

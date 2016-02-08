@@ -9,7 +9,8 @@ class MousePicker
 {
 public:
 
-	static Vec3 calculateMouseRay(const Camera camera); 
+	static Vec3 calculateMouseRay(Camera camera); 
+	static Vec3 getRayStartPoint(Camera camera); 
 
 };
 

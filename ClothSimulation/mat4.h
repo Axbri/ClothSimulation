@@ -19,7 +19,7 @@ public:
 	void loadTranslation(double dx, double dy, double dz);
 	void loadPerspectiveProjection(float aspectRatio, float fov);
 
-	Mat4 inverse(const Mat4 &m) const; 
+	Mat4 inverse() const; 
 
 	void operator=(const Mat4 &m);
 	Mat4 operator*(const Mat4 &m) const;

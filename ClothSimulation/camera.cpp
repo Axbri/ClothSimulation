@@ -7,9 +7,7 @@ using namespace std;
 // variables and creates the perspective projection matrix for the camera. 
 Camera::Camera(float aspectRatio)
 {
-	xPos = 0.0f;	// the camera centeres this position in frame
-	yPos = 1.2f;
-	zPos = 0.0f;
+	position = Vec3{ 0.0f, 1.2f, 0.0f };
 	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 
 	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
 	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
@@ -46,6 +44,21 @@ Mat4 Camera::getProjectionMatrix()
 	return projMatrix; 
 }
 
+Vec3 Camera::getPosition()
+{
+	return Vec3{ position };
+}
+
+Vec3 Camera::getViewVector()
+{
+	return Vec3{ sin(orbitAngle) * cos(tiltAngle), sin(tiltAngle), cos(orbitAngle) * cos(tiltAngle) };
+}
+
+double Camera::getDistance() const
+{
+	return distance;
+}
+
 
 // This function also updates the camera's view matrix using 
 // the variables describing it's position and rotation.
@@ -56,7 +69,7 @@ void Camera::updateViewMatrix()
 	Mat4 tiltRotation;
 	Mat4 distanceTranslation;
 
-	mainTranslation.loadTranslation((float)-xPos, (float)-yPos, (float)-zPos); 
+	mainTranslation.loadTranslation((float)-position.x, (float)-position.y, (float)-position.z);
 	orbitRotation.loadRotationY((float)orbitAngle); 
 	tiltRotation.loadRotationX((float)tiltAngle);
 	distanceTranslation.loadTranslation(0, 0, (float)-distance); 
