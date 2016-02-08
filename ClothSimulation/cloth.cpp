@@ -235,17 +235,17 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 // render this cloth on the provided window from the provided camera's viewpoint. 
 void Cloth::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
-	float projectionMatrix[16];
-	float viewMatrix[16];
+	Mat4 projectionMatrix;
+	Mat4 viewMatrix;
 	float modelMatrix[16];
 
-	camera.getProjectionMatrix(projectionMatrix);
-	camera.getViewMatrix(viewMatrix);
+	projectionMatrix = camera.getProjectionMatrix();
+	viewMatrix = camera.getViewMatrix();
 	clothModel.getModelMatrix(modelMatrix);
 
 	shader.start();
-	shader.setUniformMat4("projectionMatrix", projectionMatrix);
-	shader.setUniformMat4("viewMatrix", viewMatrix);	
+	shader.setUniformMat4("projectionMatrix", projectionMatrix.M);
+	shader.setUniformMat4("viewMatrix", viewMatrix.M);	
 	shader.setUniformMat4("modelMatrix", modelMatrix);
 	Light::loadLightsToShader(shader, allLights);
 

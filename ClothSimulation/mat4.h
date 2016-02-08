@@ -17,13 +17,13 @@ public:
 	void loadRotationZ(double angle);
 	void loadScale(double sx, double sy, double sz); 
 	void loadTranslation(double dx, double dy, double dz);
-	void loadPerspectiveProjection(float M[], float aspectRatio, float fov);
+	void loadPerspectiveProjection(float aspectRatio, float fov);
 
 	Mat4 inverse(const Mat4 &m) const; 
 
 	void operator=(const Mat4 &m);
-	Mat4 operator*(const Mat4 &m);
-	Mat4 operator*(const Vec4 &m);
+	Mat4 operator*(const Mat4 &m) const;
+	Vec4 operator*(const Vec4 &m) const;
 
 	GLfloat M[16];
 	// represents a 4x4 matrix using a array of floats.

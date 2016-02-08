@@ -62,17 +62,17 @@ void Sphere::update(double delta_time)
 
 void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
-	float projectionMatrix[16];
-	float viewMatrix[16];
+	Mat4 projectionMatrix;
+	Mat4 viewMatrix;
 	float modelMatrix[16];
 
-	camera.getProjectionMatrix(projectionMatrix);
-	camera.getViewMatrix(viewMatrix);
+	projectionMatrix = camera.getProjectionMatrix();
+	viewMatrix = camera.getViewMatrix();
 	sphereModel.getModelMatrix(modelMatrix);
 
 	sphereShader.start();
-	sphereShader.setUniformMat4("projectionMatrix", projectionMatrix);
-	sphereShader.setUniformMat4("viewMatrix", viewMatrix);
+	sphereShader.setUniformMat4("projectionMatrix", projectionMatrix.M);
+	sphereShader.setUniformMat4("viewMatrix", viewMatrix.M);
 	sphereShader.setUniformMat4("modelMatrix", modelMatrix);
 	Light::loadLightsToShader(sphereShader, allLights);
 

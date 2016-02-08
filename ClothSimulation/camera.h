@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "matrixmath.h"
 #include "userinput.h"
+#include "mat4.h"
 
 using namespace std;
 
@@ -12,8 +13,8 @@ class Camera
 public:
 	Camera(float aspectRatio);
 	void update(double delta_time);
-	void getViewMatrix(GLfloat matrix[]);
-	void getProjectionMatrix(GLfloat matrix[]);
+	Mat4 getViewMatrix();
+	Mat4 getProjectionMatrix();
 
 private:
 	void updateViewMatrix(); 
@@ -23,8 +24,8 @@ private:
 	double distance;
 	double orbitAngle;
 	double tiltAngle;
-	GLfloat viewMatrix[16];
-	GLfloat projMatrix[16];
+	Mat4 viewMatrix;
+	Mat4 projMatrix;
 
 	const double MOUSE_ROTATION_SENSITIVITY = 0.015;
 	const double DOLLY_SENSITIVITY = 0.1;
