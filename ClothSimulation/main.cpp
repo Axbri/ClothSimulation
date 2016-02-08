@@ -145,21 +145,26 @@ int main(void)
 	{ 
 		// ================================== update ==================================
 		
+		Vec3 spherePos = sphere.getPos(); 
+		Vec3 deltaVector;
+
 		if (UserInput::pollKey(window, GLFW_KEY_UP))
-			spherePosZ -= delta_time * 2;
-			
+			deltaVector.z = -delta_time * 2;			
 		if (UserInput::pollKey(window, GLFW_KEY_DOWN))		
-			spherePosZ += delta_time * 2;
+			deltaVector.z = delta_time * 2;
+
+		if (UserInput::pollKey(window, GLFW_KEY_SPACE))
+			deltaVector.y = delta_time * 2;
+		if (UserInput::pollKey(window, GLFW_KEY_LEFT_SHIFT))
+			deltaVector.y = -delta_time * 2;
 
 		if (UserInput::pollKey(window, GLFW_KEY_LEFT))
-			spherePosX -= delta_time * 2;
-
+			deltaVector.x = -delta_time * 2;
 		if (UserInput::pollKey(window, GLFW_KEY_RIGHT))
-			spherePosX += delta_time * 2;
+			deltaVector.x = delta_time * 2;
 
-		sphere.setPos(Vec3{ spherePosX, 0.5, spherePosZ });
-		
-		sphere.updateModelMatrix(); 
+		spherePos += deltaVector; 
+		sphere.setPos(spherePos);		
 
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
@@ -189,7 +194,7 @@ int main(void)
 		font.render((int)(1 / delta_time), -0.65, 0.92);
 
 		font.setColor(1, 1, 0);
-		font.render("Move the sphere with the arrow keys", -0.95, -0.88);
+		font.render("Move the sphere with the arrow keys and Space/L-shift", -0.95, -0.88);
 		
 		font.setColor(1, 1, 1);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
