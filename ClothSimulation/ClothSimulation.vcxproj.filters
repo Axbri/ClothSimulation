@@ -36,9 +36,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="matrixmath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,9 +84,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrixmath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="model.h">

@@ -2,7 +2,6 @@
 
 #include <GL/glew.h> 
 #include <algorithm>
-#include "matrixmath.h"
 #include "userinput.h"
 #include "mat4.h"
 
