@@ -212,3 +212,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 *.VC.opendb
+*.vcxproj
+*.vcxproj.filters
