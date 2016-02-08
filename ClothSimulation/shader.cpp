@@ -13,10 +13,20 @@ void Shader::setUniformMat4(char *variableName, float value[])
 	glUniformMatrix4fv(location, 1, GL_TRUE, value);	// 1 = one matrix is loaded to the GPU
 }
 
+void Shader::setUniformMat4(char * variableName, Mat4 matrix)
+{
+	setUniformMat4(variableName, matrix.M); 
+}
+
 void Shader::setUniformVec4(char *variableName, float x1, float x2, float x3, float x4)
 {
 	GLint location = glGetUniformLocation(thisShader, variableName);
 	glUniform4f(location, x1, x2, x3, x4);
+}
+
+void Shader::setUniformVec4(char * variableName, Vec4 vector)
+{
+	setUniformVec4(variableName, vector.x1, vector.x2, vector.x3, vector.x4);
 }
 
 void Shader::setUniformVec3(char *variableName, float x1, float x2, float x3)
@@ -27,8 +37,7 @@ void Shader::setUniformVec3(char *variableName, float x1, float x2, float x3)
 
 void Shader::setUniformVec3(char * variableName, Vec3 vector)
 {
-	GLint location = glGetUniformLocation(thisShader, variableName);
-	glUniform3f(location, vector.x, vector.y, vector.z);
+	setUniformVec3(variableName, vector.x, vector.y, vector.z);
 }
 
 void Shader::setUniformVec2(char *variableName, float x1, float x2)
@@ -39,8 +48,7 @@ void Shader::setUniformVec2(char *variableName, float x1, float x2)
 
 void Shader::setUniformVec2(char * variableName, Vec2 vector)
 {
-	GLint location = glGetUniformLocation(thisShader, variableName);
-	glUniform2f(location, vector.x, vector.y);
+	setUniformVec2(variableName, vector.x, vector.y);
 }
 
 void Shader::setUniformFloat(char *variableName, float value)

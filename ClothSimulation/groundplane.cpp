@@ -24,9 +24,9 @@ GroundPlane::GroundPlane(Loader loader)
 void GroundPlane::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	groundShader.start();	
-	groundShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix().M);
-	groundShader.setUniformMat4("viewMatrix", camera.getViewMatrix().M);
-	groundShader.setUniformMat4("modelMatrix", groundModel.getModelMatrix().M);
+	groundShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	groundShader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	groundShader.setUniformMat4("modelMatrix", groundModel.getModelMatrix());
 	Light::loadLightsToShader(groundShader, allLights); 
 	groundShader.setUniformInt("mainTexture", 0);
 	groundShader.setUniformInt("normalTexture", 1);

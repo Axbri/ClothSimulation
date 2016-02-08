@@ -63,9 +63,9 @@ void Sphere::updateModelMatrix()
 void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	sphereShader.start();
-	sphereShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix().M);
-	sphereShader.setUniformMat4("viewMatrix", camera.getViewMatrix().M);
-	sphereShader.setUniformMat4("modelMatrix", sphereModel.getModelMatrix().M);
+	sphereShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	sphereShader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	sphereShader.setUniformMat4("modelMatrix", sphereModel.getModelMatrix());
 	Light::loadLightsToShader(sphereShader, allLights);
 
 	glBindVertexArray(sphereModel.get_id());

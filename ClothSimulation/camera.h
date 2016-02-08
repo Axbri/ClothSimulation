@@ -10,7 +10,7 @@ using namespace std;
 class Camera
 {
 public:
-	Camera(float aspectRatio);
+	Camera(double aspectRatio);
 	void update(double delta_time);
 	Mat4 getViewMatrix();
 	Mat4 getProjectionMatrix();

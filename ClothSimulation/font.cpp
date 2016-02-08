@@ -1,11 +1,12 @@
 #include "font.h"
 
-Font::Font(Loader loader, double size)
+Font::Font(Loader loader, double size, double aspectRatio)
 {
-	fontSize = size; 
+	this->aspectRatio = aspectRatio; 
+	this->fontSize = size;
 	float positions[8] = { -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0 };
-	vao = loader.create2Dmodel(positions, 8);
-	texture = loader.loadBMPtexture("font.bmp"); 
+	this->vao = loader.create2Dmodel(positions, 8);
+	this->texture = loader.loadBMPtexture("font.bmp");
 	fontShader.createShader("fontVert.glsl", "fontFrag.glsl");
 	setColor(1, 1, 1); 
 }
@@ -37,10 +38,9 @@ void Font::render(int number, double xPos, double yPos)
 
 void Font::render(char *str, double xPos, double yPos)
 {
-	float aspectRatioMultiplier = 0.66; // TODO
 	Mat4 pos, scale;
 	pos.loadTranslation(xPos, yPos, 0);
-	scale.loadScale(fontSize * aspectRatioMultiplier, fontSize, 0); 
+	scale.loadScale(fontSize * aspectRatio, fontSize, 0);
 
 	Mat4 transformation = scale * pos; 
 

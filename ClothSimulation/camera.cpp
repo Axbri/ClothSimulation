@@ -5,7 +5,7 @@ using namespace std;
 
 // create a new instance of the camera class, this inizializes all 
 // variables and creates the perspective projection matrix for the camera. 
-Camera::Camera(float aspectRatio)
+Camera::Camera(double aspectRatio)
 {
 	position = Vec3{ 0.0f, 1.2f, 0.0f };
 	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 

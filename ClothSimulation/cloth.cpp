@@ -196,10 +196,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 						particles[x][y].pos += delta*0.5*diff*con_inf[0];
 						particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
-
 					}
-
-					
 
 					//verlet
 					double mass = particles[x][y].mass;
@@ -217,8 +214,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					{
 						double diff = (deltalength - rad*1.05) / deltalength; // generalisera margin
 						particles[x][y].pos += delta*diff;
-					}
-				
+					}				
 				}
 			}
 		}
@@ -243,9 +239,9 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 void Cloth::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
 	shader.start();
-	shader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix().M);
-	shader.setUniformMat4("viewMatrix", camera.getViewMatrix().M);
-	shader.setUniformMat4("modelMatrix", clothModel.getModelMatrix().M);
+	shader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	shader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	shader.setUniformMat4("modelMatrix", clothModel.getModelMatrix());
 	Light::loadLightsToShader(shader, allLights);
 
 	glBindVertexArray(clothModel.get_id());
