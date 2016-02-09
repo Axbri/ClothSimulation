@@ -102,8 +102,10 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 		}
 	}
 
+	position = Vec3{ -1, 2.5, 0 };	// position of the cloth in the world. 
+
 	clothModel = loader.createModel(positions, positionIndex, textureCoords, textureCoordIndex, normals, normalIndex, indices, indicesIndex);	
-	clothModel.setPosition(-1, 2.5, 0);
+	
 
 	GLuint clothTexture = loader.loadBMPtexture("textil01.bmp");
 	clothModel.set_texture(clothTexture);
@@ -194,10 +196,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 						particles[x][y].pos += delta*0.5*diff*con_inf[0];
 						particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
-
 					}
-
-					
 
 					//verlet
 					double mass = particles[x][y].mass;
@@ -209,14 +208,13 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 					Vec3 pos = sphere.getPos();
 					double rad = sphere.getRadius();
-					Vec3 delta = pos - particles[x][y].pos;
+					Vec3 delta = pos - (particles[x][y].pos + position);
 					double deltalength = sqrt(delta*delta);
 					if (deltalength < rad*1.05)
 					{
 						double diff = (deltalength - rad*1.05) / deltalength; // generalisera margin
 						particles[x][y].pos += delta*diff;
-					}
-				
+					}				
 				}
 			}
 		}
@@ -228,6 +226,11 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
 	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
+	// update the model matrix desribing the position of this cloth in the world. 
+	Mat4 modelMatrix;
+	modelMatrix.loadTranslation(position.x, position.y, position.z);
+	clothModel.setModelMatrix(modelMatrix);
+
 	updateNormals(); 	
 	updateVBOs(); 
 }
@@ -235,18 +238,10 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 // render this cloth on the provided window from the provided camera's viewpoint. 
 void Cloth::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
-	Mat4 projectionMatrix;
-	Mat4 viewMatrix;
-	float modelMatrix[16];
-
-	projectionMatrix = camera.getProjectionMatrix();
-	viewMatrix = camera.getViewMatrix();
-	clothModel.getModelMatrix(modelMatrix);
-
 	shader.start();
-	shader.setUniformMat4("projectionMatrix", projectionMatrix.M);
-	shader.setUniformMat4("viewMatrix", viewMatrix.M);	
-	shader.setUniformMat4("modelMatrix", modelMatrix);
+	shader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	shader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	shader.setUniformMat4("modelMatrix", clothModel.getModelMatrix());
 	Light::loadLightsToShader(shader, allLights);
 
 	glBindVertexArray(clothModel.get_id());

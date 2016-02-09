@@ -2,7 +2,8 @@
 
 Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 {
-	radius = r; 
+	radius = r;
+	position = Vec3{ x, y, z }; 
 
 	int indices[(NUMBER_OF_SEGMENTS - 1) * (NUMBER_OF_SEGMENTS - 1) * 6];
 	float positions[(NUMBER_OF_SEGMENTS) * (NUMBER_OF_SEGMENTS) * 3];
@@ -48,32 +49,23 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 			indices[indicesIndex++] = bottomRight;
 		}
 	}
-
-	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);
-	sphereModel.setPosition(x, y, z);
-
+	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);	
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
 }
 
-void Sphere::update(double delta_time)
+void Sphere::updateModelMatrix()
 {
-	
+	Mat4 translation;
+	translation.loadTranslation(position.x, position.y, position.z);
+	sphereModel.setModelMatrix(translation);
 }
 
 void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
-	Mat4 projectionMatrix;
-	Mat4 viewMatrix;
-	float modelMatrix[16];
-
-	projectionMatrix = camera.getProjectionMatrix();
-	viewMatrix = camera.getViewMatrix();
-	sphereModel.getModelMatrix(modelMatrix);
-
 	sphereShader.start();
-	sphereShader.setUniformMat4("projectionMatrix", projectionMatrix.M);
-	sphereShader.setUniformMat4("viewMatrix", viewMatrix.M);
-	sphereShader.setUniformMat4("modelMatrix", modelMatrix);
+	sphereShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	sphereShader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	sphereShader.setUniformMat4("modelMatrix", sphereModel.getModelMatrix());
 	Light::loadLightsToShader(sphereShader, allLights);
 
 	glBindVertexArray(sphereModel.get_id());
@@ -91,13 +83,13 @@ void Sphere::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 
 void Sphere::cleanUp()
 {
-
+	sphereShader.cleanUp(); 
 }
 
-void Sphere::setPos(double x, double y, double z)
-{
-	sphereModel.setPosition(x, y, z);
-	position = Vec3(x+1, y-2.5, z); //sfär-pos eller cloth-pos är förskjuten, behöver undersökas
+void Sphere::setPos(Vec3 pos)
+{	
+	position = pos;
+	updateModelMatrix(); 
 }
 
 Vec3 Sphere::getPos() 

@@ -11,10 +11,11 @@ class Sphere
 {
 public:
 	Sphere(double x, double y, double z, double r, Loader loader);
-	void update(double delta_time);
+
+	void updateModelMatrix();
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp();
-	void setPos(double x, double y, double z); 
+	void setPos(Vec3 pos);
 	Vec3 getPos();
 	double getRadius();
 

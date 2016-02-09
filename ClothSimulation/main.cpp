@@ -5,6 +5,7 @@
 #include <stdlib.h>  
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 #include "loader.h"
@@ -17,6 +18,7 @@
 #include "sphere.h"
 #include "light.h"
 #include "userinput.h"
+#include "mousepicker.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -91,14 +93,19 @@ int main(void)
 	int windowWidth, windowHeight;
 	glfwGetWindowSize(window, &windowWidth, &windowHeight);
 	cout << "window height: " << windowWidth << "px, window width: " << windowHeight << "px " << endl << endl;
+	double aspectRatio = (double)windowHeight / (double)windowWidth; 
 
 	Loader loader;
-	Font font{ loader, 0.025 }; 
+	Font font{ loader, 0.025, aspectRatio };
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
 	Cloth cloth{ loader, 2, 100}; 
 	
+	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
+	Sphere mouseDebugSphere{ 0, 0, 0, 0.2, loader };
+
+
 	vector<Light> allLights;					// a dynamic list of lights
 
 	// one light realy far away (without attenuation)
@@ -129,7 +136,7 @@ int main(void)
 	allLights[4].attenuation = Vec3(attenuation);
 
 	// create a new camera object using the current window's aspect ratio 
-	Camera camera{ (float)windowHeight / (float)windowWidth };
+	Camera camera{ aspectRatio };
 
 	// set the backgorund color and enable depth testing
 	glClearColor(0.4f, 0.6f, 0.7f, 0.0f);
@@ -145,20 +152,27 @@ int main(void)
 	{ 
 		// ================================== update ==================================
 		
+		Vec3 spherePos = sphere.getPos(); 
+		Vec3 deltaVector;
+
 		if (UserInput::pollKey(window, GLFW_KEY_UP))
-			spherePosZ -= delta_time * 2;
-			
+			deltaVector.z = -delta_time * 2;			
 		if (UserInput::pollKey(window, GLFW_KEY_DOWN))		
-			spherePosZ += delta_time * 2;
+			deltaVector.z = delta_time * 2;
+
+		if (UserInput::pollKey(window, GLFW_KEY_SPACE))
+			deltaVector.y = delta_time * 2;
+		if (UserInput::pollKey(window, GLFW_KEY_LEFT_SHIFT))
+			deltaVector.y = -delta_time * 2;
 
 		if (UserInput::pollKey(window, GLFW_KEY_LEFT))
-			spherePosX -= delta_time * 2;
-
+			deltaVector.x = -delta_time * 2;
 		if (UserInput::pollKey(window, GLFW_KEY_RIGHT))
-			spherePosX += delta_time * 2;
+			deltaVector.x = delta_time * 2;
 
-		sphere.setPos(spherePosX, 0.5, spherePosZ);
-		
+		spherePos += deltaVector; 
+		sphere.setPos(spherePos);		
+
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
 				
@@ -176,21 +190,56 @@ int main(void)
 		// render the sphere
 		sphere.render(window, camera, allLights);
 
+
+		mouseDebugSphere.render(window, camera, allLights);
+
 		// draw the cloth
 		cloth.render(window, camera, allLights);
 		
 		// wireframe rendering is of be default. 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		
-		font.render("Frame rate: ", -0.95, 0.92);
-		font.setColor(0, 1, 0.5); 
+		font.setColor(0, 1, 0.5);
+		font.render("Frame rate: ", -0.95, 0.92);		
 		font.render((int)(1 / delta_time), -0.65, 0.92);
 
-		font.setColor(1, 1, 0);
-		font.render("Move the sphere with the arrow keys", -0.95, -0.88);
-		
 		font.setColor(1, 1, 1);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
+		
+		font.setColor(1, 1, 0);
+		font.render("Move the sphere with the arrow keys and Space/L-shift", -0.95, -0.88);
+
+		// =============== mouse picker debug here: =============== 
+		Vec3 ray = mousePicker.calculateMouseRay(camera);
+		char tempBuffer[100];
+		ostringstream stream;
+		stream << fixed << setprecision(2) << "Mouse picker ray: ( " << ray.x << "x, " << ray.y << "y, " << ray.z << "z )";
+		strcpy_s(tempBuffer, stream.str().c_str());
+		font.setColor(0, 0, 0);
+		font.render(tempBuffer, -0.95, -0.81);
+
+		Vec3 cameraPos = mousePicker.getRayStartPoint(camera);
+		char tempBuffer2[100];
+		ostringstream stream2;
+		stream2 << fixed << setprecision(2) << "Camera world pos: ( " << cameraPos.x << "x, " << cameraPos.y << "y, " << cameraPos.z << "z )";
+		strcpy_s(tempBuffer2, stream2.str().c_str());
+		font.setColor(0, 0, 0);
+		font.render(tempBuffer2, -0.95, -0.74);
+
+		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0);
+		Vec2 mousePos = UserInput::getMouseNormalizedDeviceCoords((double)windowWidth, (double)windowHeight);
+		char tempBuffer3[100];
+		ostringstream stream3;
+		stream3 << fixed << setprecision(2) << "Ground plane intersection: ( " << planeIntersection.x << "x, " << planeIntersection.y << "y, " << planeIntersection.z << "z )";
+		//stream3 << setprecision(2) << "mouse pos: ( " << mousePos.x <<  "x, " << mousePos.y << "y )";
+		strcpy_s(tempBuffer3, stream3.str().c_str());
+		font.setColor(0, 0, 0);
+		font.render(tempBuffer3, -0.95, -0.67);
+
+		mouseDebugSphere.setPos(planeIntersection);
+
+		// =========================================================
+
 
 		//Swap buffers  
 		glfwSwapBuffers(window);

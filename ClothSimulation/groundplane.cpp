@@ -9,7 +9,9 @@ GroundPlane::GroundPlane(Loader loader)
 
 	// create a ground-plane that is 2x2 meters and scale it so it becomes 100x100 meters. 
 	groundModel = loader.createModel(groundPos, 12, textureCoords, 8, normals, 12, indices, 6);
-	groundModel.setScale(50, 1, 50);
+	Mat4 scaleMatrix; 
+	scaleMatrix.loadScale(50, 1, 50);
+	groundModel.setModelMatrix(scaleMatrix); 
 
 	// load textures attach them to the ground plane. 	
 	GLuint groundTexture = loader.loadBMPtexture("groundTexture.bmp");
@@ -21,18 +23,10 @@ GroundPlane::GroundPlane(Loader loader)
 
 void GroundPlane::render(GLFWwindow * window, Camera camera, vector<Light> allLights)
 {
-	Mat4 projectionMatrix;
-	Mat4 viewMatrix;
-	float modelMatrix[16];
-
-	projectionMatrix = camera.getProjectionMatrix();
-	viewMatrix = camera.getViewMatrix();
-	groundModel.getModelMatrix(modelMatrix);
-
 	groundShader.start();	
-	groundShader.setUniformMat4("projectionMatrix", projectionMatrix.M);
-	groundShader.setUniformMat4("viewMatrix", viewMatrix.M);
-	groundShader.setUniformMat4("modelMatrix", modelMatrix);
+	groundShader.setUniformMat4("projectionMatrix", camera.getProjectionMatrix());
+	groundShader.setUniformMat4("viewMatrix", camera.getViewMatrix());
+	groundShader.setUniformMat4("modelMatrix", groundModel.getModelMatrix());
 	Light::loadLightsToShader(groundShader, allLights); 
 	groundShader.setUniformInt("mainTexture", 0);
 	groundShader.setUniformInt("normalTexture", 1);

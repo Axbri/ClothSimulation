@@ -102,7 +102,7 @@ Vec2 UserInput::getMouseNormalizedDeviceCoords(int screenWithPixels, int screenH
 {
 	double normalizedX = ((mouseX / screenWithPixels) * 2) - 1;
 	double normalizedY = ((mouseY / screenHeightPixels) * 2) - 1;
-	return Vec2(normalizedX, normalizedY);
+	return Vec2(normalizedX, -normalizedY);
 }
 
 // get the velosity of the mouse curser. How mush the curser has moved sice 

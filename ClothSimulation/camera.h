@@ -2,7 +2,6 @@
 
 #include <GL/glew.h> 
 #include <algorithm>
-#include "matrixmath.h"
 #include "userinput.h"
 #include "mat4.h"
 
@@ -11,16 +10,17 @@ using namespace std;
 class Camera
 {
 public:
-	Camera(float aspectRatio);
+	Camera(double aspectRatio);
 	void update(double delta_time);
 	Mat4 getViewMatrix();
 	Mat4 getProjectionMatrix();
+	Vec3 getPosition(); 
+	Vec3 getViewVector(); 
+	double getDistance() const;
 
 private:
 	void updateViewMatrix(); 
-	double xPos;
-	double yPos;
-	double zPos;
+	Vec3 position;
 	double distance;
 	double orbitAngle;
 	double tiltAngle;

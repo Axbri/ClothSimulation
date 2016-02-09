@@ -9,6 +9,7 @@ class Mat4
 public:
 
 	Mat4();
+	Mat4(double data[]);
 	Mat4(const Mat4 &m);
 
 	void loadIdentity(); 
@@ -19,11 +20,11 @@ public:
 	void loadTranslation(double dx, double dy, double dz);
 	void loadPerspectiveProjection(float aspectRatio, float fov);
 
-	Mat4 inverse(const Mat4 &m) const; 
+	Mat4 inverse() const; 
 
 	void operator=(const Mat4 &m);
 	Mat4 operator*(const Mat4 &m) const;
-	Vec4 operator*(const Vec4 &m) const;
+	Vec4 operator*(const Vec4 &vec) const;
 
 	GLfloat M[16];
 	// represents a 4x4 matrix using a array of floats.

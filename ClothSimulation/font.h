@@ -8,7 +8,7 @@ using namespace std;
 class Font
 {
 public:
-	Font(Loader loader, double size);
+	Font(Loader loader, double size, double aspectRatio);
 
 	void setColor(double r, double g, double b);
 	void render(double number, double xPos, double yPos);
@@ -20,6 +20,7 @@ private:
 
 	double Font::getCharWidth(char c);
 
+	double aspectRatio; 
 	GLuint texture; 
 	GLuint vao;
 	float fontSize; 

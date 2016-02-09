@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "mat4.h"
+#include "vec4.h"
 #include "vec3.h"
 #include "vec2.h"
 
@@ -21,7 +23,9 @@ public:
 	void createShader(char *vertexshaderfile, char *fragmentshaderfile);
 
 	void setUniformMat4(char *variableName, float value[]);
+	void setUniformMat4(char *variableName, Mat4 matrix);
 	void setUniformVec4(char *variableName, float x1, float x2, float x3, float x4);
+	void setUniformVec4(char *variableName, Vec4 vector);
 	void setUniformVec3(char *variableName, float x1, float x2, float x3);
 	void setUniformVec3(char *variableName, Vec3 vector);
 	void setUniformVec2(char *variableName, float x1, float x2);

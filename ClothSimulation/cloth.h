@@ -30,5 +30,6 @@ private:
 	double time_passed = 0;
 	double restlength;
 	double size;
+	Vec3 position;	// world position, this is loaded into the model matrix. 
 };
 
