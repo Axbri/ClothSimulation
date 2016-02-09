@@ -99,7 +99,7 @@ int main(void)
 	Font font{ loader, 0.025, aspectRatio };
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
-	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
+	Sphere sphere{ 0, 0.5, -3, 0.3, loader };
 	Cloth cloth{ loader, 2, 100}; 
 	
 	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
