@@ -51,7 +51,7 @@ Vec3 Camera::getPosition()
 
 Vec3 Camera::getViewVector()
 {
-	return Vec3{ sin(orbitAngle) * cos(tiltAngle), sin(tiltAngle), cos(orbitAngle) * cos(tiltAngle) };
+	return Vec3{ -sin(orbitAngle) * cos(tiltAngle), sin(tiltAngle), -cos(orbitAngle) * cos(tiltAngle) };
 }
 
 double Camera::getDistance() const

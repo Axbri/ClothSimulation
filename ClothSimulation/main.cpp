@@ -210,12 +210,14 @@ int main(void)
 		font.render("Move the sphere with the arrow keys and Space/L-shift", -0.95, -0.88);
 
 		// =============== mouse picker debug here: =============== 
+
+		font.setColor(1, 1, 1);
+
 		Vec3 ray = mousePicker.calculateMouseRay(camera);
 		char tempBuffer[100];
 		ostringstream stream;
 		stream << fixed << setprecision(2) << "Mouse picker ray: ( " << ray.x << "x, " << ray.y << "y, " << ray.z << "z )";
-		strcpy_s(tempBuffer, stream.str().c_str());
-		font.setColor(0, 0, 0);
+		strcpy_s(tempBuffer, stream.str().c_str());		
 		font.render(tempBuffer, -0.95, -0.81);
 
 		Vec3 cameraPos = mousePicker.getRayStartPoint(camera);
@@ -223,7 +225,6 @@ int main(void)
 		ostringstream stream2;
 		stream2 << fixed << setprecision(2) << "Camera world pos: ( " << cameraPos.x << "x, " << cameraPos.y << "y, " << cameraPos.z << "z )";
 		strcpy_s(tempBuffer2, stream2.str().c_str());
-		font.setColor(0, 0, 0);
 		font.render(tempBuffer2, -0.95, -0.74);
 
 		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0);
@@ -233,10 +234,9 @@ int main(void)
 		stream3 << fixed << setprecision(2) << "Ground plane intersection: ( " << planeIntersection.x << "x, " << planeIntersection.y << "y, " << planeIntersection.z << "z )";
 		//stream3 << setprecision(2) << "mouse pos: ( " << mousePos.x <<  "x, " << mousePos.y << "y )";
 		strcpy_s(tempBuffer3, stream3.str().c_str());
-		font.setColor(0, 0, 0);
 		font.render(tempBuffer3, -0.95, -0.67);
 
-		mouseDebugSphere.setPos(planeIntersection);
+		mouseDebugSphere.setPos(cameraPos + ray);		//
 
 		// =========================================================
 

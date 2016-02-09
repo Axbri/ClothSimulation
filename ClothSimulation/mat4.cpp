@@ -223,7 +223,9 @@ Mat4 Mat4::inverse() const
 	if (det != 0) {
 		det = 1.0f / det;
 		for (i = 0; i < 16; i++)
+		{
 			invOut[i] = inv[i] * det;
+		}			
 	}
 
 	return Mat4(invOut);
