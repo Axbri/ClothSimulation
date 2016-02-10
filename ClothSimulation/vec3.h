@@ -19,8 +19,10 @@ public:
 
 	void normalize();
 	double length(); 
+	double lengthSquared();
 	void cross(Vec3 v1, Vec3 v2);
-
+	static double pointLineDistance(Vec3 point, Vec3 line);
+	static double toPointDistanceParallelToLine(Vec3 point, Vec3 line);
 	double x, y, z; 
 };
 

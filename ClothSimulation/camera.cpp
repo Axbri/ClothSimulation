@@ -23,7 +23,7 @@ void Camera::update(double delta_time)
 	distance = max(MIN_DOLLY, min(distance, MAX_DOLLY));
 
 	// rotate with the mouse. 
-	if (UserInput::getLeftMouseButton())
+	if (UserInput::getRightMouseButton())
 	{
 		Vec2 mouseVel = UserInput::getMouseVel();
 		orbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;

@@ -29,18 +29,18 @@ Vec3 MousePicker::calculateMouseRay(Camera camera)
 
 	Vec3 mouseRay{ worldSpaceRay.x1, worldSpaceRay.x2, worldSpaceRay.x3 }; 		
 	mouseRay.normalize();
-	currentMouseRay = Vec3{ mouseRay.x, mouseRay.y, mouseRay.z };
-	return Vec3{ currentMouseRay };
+	currentMouseRay = Vec3{ mouseRay };
+	return currentMouseRay;
 }
 
 // calculate the world position of the camera. 
-Vec3 MousePicker::getRayStartPoint(Camera camera)
+Vec3 MousePicker::calculateStartPoint(Camera camera)
 {
 	Vec3 cameraPos{ camera.getPosition() }; 
 	Vec3 viewDirection{ camera.getViewVector() }; 	
 	viewDirection = viewDirection * (camera.getDistance() + 1);	// I dont understand why I need +1 here...
-	currnetCameraPos = cameraPos - viewDirection;
-	return Vec3{ currnetCameraPos };
+	currentStartPoint = cameraPos - viewDirection;
+	return currentStartPoint;
 }
 
 // calculate the world coordinates of the intrecestion point between the 
@@ -50,13 +50,9 @@ Vec3 MousePicker::getRayStartPoint(Camera camera)
 Vec3 MousePicker::getPlaneIntersectionPoint(double planeHeight)
 {
 	planeIntersectionValid = false; 
-
-	Vec3 intesectionPoint = currnetCameraPos;
-
+	Vec3 intesectionPoint = currentStartPoint;
 	double distance = PLANE_SEARCH_DISTANCE / 2.0;
-
 	Vec3 deltaVec = currentMouseRay * distance; 
-
 	intesectionPoint += deltaVec; 
 	
 	for (int i = 0; i < PLANE_SEARCH_ITERATIONS; i++)
@@ -82,6 +78,16 @@ Vec3 MousePicker::getPlaneIntersectionPoint(double planeHeight)
 	{
 		return Vec3{ 0, 0, 0 };
 	}
+}
+
+Vec3 MousePicker::getCurrentRay()
+{
+	return Vec3{ currentMouseRay };
+}
+
+Vec3 MousePicker::getCurrentStartPoint()
+{
+	return Vec3{ currentStartPoint };
 }
 
 bool MousePicker::isPlaneIntersectionValid()

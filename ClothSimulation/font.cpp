@@ -18,20 +18,38 @@ void Font::setColor(double r, double g, double b)
 	blue = b; 
 }
 
-void Font::render(double number, double xPos, double yPos)
+void Font::render(char * name, Vec2 vec, double xPos, double yPos)
 {
-	char temp[20];
+	char tempBuffer[100];
 	ostringstream stream;
-	stream << number;
+	stream << fixed << setprecision(2) << name << ": ( " << vec.x << "x, " << vec.y << "y )";
+	strcpy_s(tempBuffer, stream.str().c_str());
+	render(tempBuffer, xPos, yPos);
+}
+
+void Font::render(char * name, Vec3 vec, double xPos, double yPos)
+{
+	char tempBuffer[100];
+	ostringstream stream;
+	stream << fixed << setprecision(2) << name << ": ( " << vec.x << "x, " << vec.y << "y, " << vec.z << "z )";
+	strcpy_s(tempBuffer, stream.str().c_str());
+	render(tempBuffer, xPos, yPos);
+}
+
+void Font::render(char * name, double number, double xPos, double yPos)
+{
+	char temp[100];
+	ostringstream stream;
+	stream << name << ": " << number;
 	strcpy_s(temp, stream.str().c_str());
 	render(temp, xPos, yPos);
 }
 
-void Font::render(int number, double xPos, double yPos)
+void Font::render(char * name, int number, double xPos, double yPos)
 {
-	char temp[20];
+	char temp[100];
 	ostringstream stream;
-	stream << number;
+	stream << name << ": " << number;
 	strcpy_s(temp, stream.str().c_str());
 	render(temp, xPos, yPos);
 }

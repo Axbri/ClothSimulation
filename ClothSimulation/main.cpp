@@ -99,11 +99,10 @@ int main(void)
 	Font font{ loader, 0.025, aspectRatio };
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
-	Sphere sphere{ 0, 0.5, -3, 0.5, loader };
+	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
 	Cloth cloth{ loader, 2, 100}; 
 	
 	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
-	Sphere mouseDebugSphere{ 0, 0, 0, 0.2, loader };
 
 
 	vector<Light> allLights;					// a dynamic list of lights
@@ -156,6 +155,22 @@ int main(void)
 	{ 
 		// ================================== update ==================================
 		
+		Vec3 ray = mousePicker.calculateMouseRay(camera);
+		Vec3 cameraPos = mousePicker.calculateStartPoint(camera);
+		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(sphere.getRadius());
+
+		// move the sphere with the mouse cursor if the left button is pressed down 
+		double distance = Vec3::pointLineDistance(sphere.getPos() - cameraPos, ray);
+		if (mousePicker.isPlaneIntersectionValid() && UserInput::getLeftMouseButton())
+		{
+			if (distance < sphere.getRadius()) 
+			{
+				sphere.setPos(planeIntersection);
+			}			
+		}
+
+		/*
+		// move the sphere with the keybord
 		Vec3 spherePos = sphere.getPos(); 
 		Vec3 deltaVector;
 
@@ -176,6 +191,7 @@ int main(void)
 
 		spherePos += deltaVector; 
 		sphere.setPos(spherePos);		
+		*/
 
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
@@ -188,62 +204,35 @@ int main(void)
 		groundPlane.render(window, camera, allLights);
 		
 		// enable wireframe rendering if the user hold down the right mouse button. 
-		if (UserInput::getRightMouseButton())
+		if (UserInput::getCenterMouseButton())
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// render the sphere
 		sphere.render(window, camera, allLights);
-
-
-		mouseDebugSphere.render(window, camera, allLights);
-
+		
 		// draw the cloth
 		cloth.render(window, camera, allLights);
 		
 		// wireframe rendering is of be default. 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		
+				
 		font.setColor(0, 1, 0.5);
-		font.render("Frame rate: ", -0.95, 0.92);		
-		font.render((int)(1 / delta_time), -0.65, 0.92);
+		font.render("Frame rate", (int)(1 / delta_time) , -0.95, 0.92);
 
 		font.setColor(1, 1, 1);
+		font.render("Sphere distance", distance, -0.95, 0.88);
+
+		font.setColor(1, 1, 1);
+		font.render("Rotate the camera with right mouse button. ", -0.95, -0.81);		
+		font.render("Move the sphere by holding it with the left button. ", -0.95, -0.88);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
-		
-		font.setColor(1, 1, 0);
-		font.render("Move the sphere with the arrow keys and Space/L-shift", -0.95, -0.88);
 
 		// =============== mouse picker debug here: =============== 
-
-		font.setColor(1, 1, 1);
-
-		Vec3 ray = mousePicker.calculateMouseRay(camera);
-		char tempBuffer[100];
-		ostringstream stream;
-		stream << fixed << setprecision(2) << "Mouse picker ray: ( " << ray.x << "x, " << ray.y << "y, " << ray.z << "z )";
-		strcpy_s(tempBuffer, stream.str().c_str());		
-		font.render(tempBuffer, -0.95, -0.81);
-
-		Vec3 cameraPos = mousePicker.getRayStartPoint(camera);
-		char tempBuffer2[100];
-		ostringstream stream2;
-		stream2 << fixed << setprecision(2) << "Camera world pos: ( " << cameraPos.x << "x, " << cameraPos.y << "y, " << cameraPos.z << "z )";
-		strcpy_s(tempBuffer2, stream2.str().c_str());
-		font.render(tempBuffer2, -0.95, -0.74);
-
-		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0);
-		Vec2 mousePos = UserInput::getMouseNormalizedDeviceCoords((double)windowWidth, (double)windowHeight);
-		char tempBuffer3[100];
-		ostringstream stream3;
-		stream3 << fixed << setprecision(2) << "Ground plane intersection: ( " << planeIntersection.x << "x, " << planeIntersection.y << "y, " << planeIntersection.z << "z )";
-		//stream3 << setprecision(2) << "mouse pos: ( " << mousePos.x <<  "x, " << mousePos.y << "y )";
-		strcpy_s(tempBuffer3, stream3.str().c_str());
-		font.render(tempBuffer3, -0.95, -0.67);
-
-		mouseDebugSphere.setPos(planeIntersection);		//
-
-		// =========================================================
-
+		//font.setColor(1, 1, 1);
+		//font.render("Mouse picker ray", mousePicker.getCurrentRay(), -0.95, -0.81);
+		//font.render("Camera world pos", mousePicker.getCurrentStartPoint(), -0.95, -0.74);
+		//font.render("Ground plane intersection", planeIntersection, -0.95, -0.67);
+		// ===========================================================
 
 		//Swap buffers  
 		glfwSwapBuffers(window);
