@@ -76,17 +76,15 @@ void Mat4::loadTranslation(double dx, double dy, double dz)
 	M[11] = dz;
 }
 
-void Mat4::loadPerspectiveProjection(float aspectRatio, float fov)
+void Mat4::loadPerspectiveProjection(double aspectRatio, double fov, double near, double far)
 {
 	this->loadIdentity();
-	float near = 0.01;
-	float far = 100;
-	float horizontalFov = near * (float)sin(fov);
-	float verticalFov = horizontalFov * aspectRatio;
-	float left = -horizontalFov;
-	float right = horizontalFov;
-	float bottom = -verticalFov;
-	float top = verticalFov;
+	double horizontalFov = near * (float)sin(fov);
+	double verticalFov = horizontalFov * aspectRatio;
+	double left = -horizontalFov;
+	double right = horizontalFov;
+	double bottom = -verticalFov;
+	double top = verticalFov;
 
 	M[0] = (2 * near) / (right - left);
 	M[2] = (right + left) / (right - left);
@@ -260,10 +258,10 @@ Mat4 Mat4::operator*(const Mat4 & m) const
 
 Vec4 Mat4::operator*(const Vec4 & vec) const
 {
-	float x1 = M[0] * vec.x1 + M[1] * vec.x2 + M[2] * vec.x3 + M[3] * vec.x4;
-	float x2 = M[4] * vec.x1 + M[5] * vec.x2 + M[6] * vec.x3 + M[7] * vec.x4;
-	float x3 = M[8] * vec.x1 + M[9] * vec.x2 + M[10] * vec.x3 + M[11] * vec.x4;
-	float x4 = M[12] * vec.x1 + M[13] * vec.x2 + M[14] * vec.x3 + M[15] * vec.x4;
+	double x1 = M[0] * vec.x1 + M[1] * vec.x2 + M[2] * vec.x3 + M[3] * vec.x4;
+	double x2 = M[4] * vec.x1 + M[5] * vec.x2 + M[6] * vec.x3 + M[7] * vec.x4;
+	double x3 = M[8] * vec.x1 + M[9] * vec.x2 + M[10] * vec.x3 + M[11] * vec.x4;
+	double x4 = M[12] * vec.x1 + M[13] * vec.x2 + M[14] * vec.x3 + M[15] * vec.x4;
 
 	return Vec4(x1, x2, x3, x4);
 }

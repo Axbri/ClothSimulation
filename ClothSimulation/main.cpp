@@ -110,13 +110,13 @@ int main(void)
 
 	// one light realy far away (without attenuation)
 	allLights.push_back(Light{ 50, 400, 400 });	
-	allLights[0].color = Vec3(0.6, 0.6, 0.6);
+	allLights[0].color = Vec3(0.3, 0.3, 0.3);
 
 	// 4 point point lights aranged in a square around the cloth	
-	Vec3 frontColor{ 0.8, 0.4, 0.4 };
-	Vec3 backColor{ 0.7, 0.7, 0.9 };
+	Vec3 frontColor{ 0.7, 0.6, 0.6 };
+	Vec3 backColor{ 0.7, 0.6, 0.6 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
-	double distance = 7; 
+	double distance = 10; 
 	double hight = 8;
 
 	allLights.push_back(Light{ distance, hight, distance });
@@ -134,6 +134,10 @@ int main(void)
 	allLights.push_back(Light{ -distance, hight, -distance });
 	allLights[4].color = Vec3(backColor);
 	allLights[4].attenuation = Vec3(attenuation);
+
+	allLights.push_back(Light{ 0, hight, 0 });
+	allLights[5].color = Vec3(frontColor);
+	allLights[5].attenuation = Vec3(attenuation);
 
 	// create a new camera object using the current window's aspect ratio 
 	Camera camera{ aspectRatio };
@@ -236,7 +240,7 @@ int main(void)
 		strcpy_s(tempBuffer3, stream3.str().c_str());
 		font.render(tempBuffer3, -0.95, -0.67);
 
-		mouseDebugSphere.setPos(cameraPos + ray);		//
+		mouseDebugSphere.setPos(planeIntersection);		//
 
 		// =========================================================
 

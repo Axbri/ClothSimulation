@@ -12,7 +12,7 @@ Camera::Camera(double aspectRatio)
 	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
 	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
 	updateViewMatrix(); 
-	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f);
+	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
 }
 
 // Update the cameras position, call this function in the main update loop.
@@ -64,10 +64,7 @@ double Camera::getDistance() const
 // the variables describing it's position and rotation.
 void Camera::updateViewMatrix()
 {	
-	Mat4 mainTranslation;
-	Mat4 orbitRotation;
-	Mat4 tiltRotation;
-	Mat4 distanceTranslation;
+	Mat4 mainTranslation, orbitRotation, tiltRotation, distanceTranslation;
 
 	mainTranslation.loadTranslation((float)-position.x, (float)-position.y, (float)-position.z);
 	orbitRotation.loadRotationY((float)orbitAngle); 
@@ -75,23 +72,4 @@ void Camera::updateViewMatrix()
 	distanceTranslation.loadTranslation(0, 0, (float)-distance); 
 
 	viewMatrix = mainTranslation * orbitRotation * tiltRotation * distanceTranslation; 
-
-
-	/*
-	GLfloat mainTranslation[16]; 	
-	GLfloat orbitRotation[16];
-	GLfloat tiltRotation[16];
-	GLfloat distanceTranslation[16];
-
-	MatrixMath::translateMat4(mainTranslation, (float)-xPos, (float)-yPos, (float)-zPos);
-	MatrixMath::rotyMat4(orbitRotation, (float)orbitAngle);
-	MatrixMath::rotxMat4(tiltRotation, (float)tiltAngle);
-	MatrixMath::translateMat4(distanceTranslation, 0, 0, (float)-distance);
-
-	GLfloat temp1[16];
-	GLfloat temp2[16];	
-	MatrixMath::multMat4(mainTranslation, orbitRotation, temp1);
-	MatrixMath::multMat4(tiltRotation, distanceTranslation, temp2);
-	MatrixMath::multMat4(temp1, temp2, viewMatrix);
-	*/
 }

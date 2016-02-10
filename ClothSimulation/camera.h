@@ -18,6 +18,9 @@ public:
 	Vec3 getViewVector(); 
 	double getDistance() const;
 
+	const double NEAR_CLIP = 0.01;
+	const double FAR_CLIP = 100;
+
 private:
 	void updateViewMatrix(); 
 	Vec3 position;
@@ -31,4 +34,5 @@ private:
 	const double DOLLY_SENSITIVITY = 0.1;
 	const double MIN_DOLLY = 0.5;
 	const double MAX_DOLLY = 10;
+	
 };
