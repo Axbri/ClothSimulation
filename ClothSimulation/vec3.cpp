@@ -88,17 +88,13 @@ void Vec3::cross(Vec3 v1, Vec3 v2)
 
 double Vec3::pointLineDistance(Vec3 point, Vec3 line)
 {
-	double pointDotLine = (point * line); 
-	double lineLengthSquared = line.lengthSquared();
-
-	Vec3 uParalellN = line * (pointDotLine / lineLengthSquared);
+	Vec3 uParalellN = line * ((point * line) / line.lengthSquared());
 	Vec3 uOrtogonalN = point - uParalellN; 
-
 	return uOrtogonalN.length();
 }
 
 double Vec3::toPointDistanceParallelToLine(Vec3 point, Vec3 line)
 {
-	Vec3 uParalellN = line * ((point * line) / (line.length() * line.length()));
+	Vec3 uParalellN = line * ((point * line) / line.lengthSquared());
 	return uParalellN.length();
 }
