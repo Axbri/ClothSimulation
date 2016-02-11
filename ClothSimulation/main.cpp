@@ -48,7 +48,7 @@ GLFWwindow* init()
 
 	//Declare a window object  
 	GLFWwindow* window;
-	window = glfwCreateWindow(1500, 950, "Cloth simulator 2016", NULL, NULL);
+	window = glfwCreateWindow(1200, 800, "Cloth simulator 2016", NULL, NULL);
 
 	//If the window couldn't be created  
 	if (!window)
