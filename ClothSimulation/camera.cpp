@@ -75,23 +75,4 @@ void Camera::updateViewMatrix()
 	distanceTranslation.loadTranslation(0, 0, (float)-distance); 
 
 	viewMatrix = mainTranslation * orbitRotation * tiltRotation * distanceTranslation; 
-
-
-	/*
-	GLfloat mainTranslation[16]; 	
-	GLfloat orbitRotation[16];
-	GLfloat tiltRotation[16];
-	GLfloat distanceTranslation[16];
-
-	MatrixMath::translateMat4(mainTranslation, (float)-xPos, (float)-yPos, (float)-zPos);
-	MatrixMath::rotyMat4(orbitRotation, (float)orbitAngle);
-	MatrixMath::rotxMat4(tiltRotation, (float)tiltAngle);
-	MatrixMath::translateMat4(distanceTranslation, 0, 0, (float)-distance);
-
-	GLfloat temp1[16];
-	GLfloat temp2[16];	
-	MatrixMath::multMat4(mainTranslation, orbitRotation, temp1);
-	MatrixMath::multMat4(tiltRotation, distanceTranslation, temp2);
-	MatrixMath::multMat4(temp1, temp2, viewMatrix);
-	*/
 }
