@@ -18,7 +18,7 @@ public:
 	void loadRotationZ(double angle);
 	void loadScale(double sx, double sy, double sz); 
 	void loadTranslation(double dx, double dy, double dz);
-	void loadPerspectiveProjection(float aspectRatio, float fov);
+	void loadPerspectiveProjection(double aspectRatio, double fov, double near, double far);
 
 	Mat4 inverse() const; 
 

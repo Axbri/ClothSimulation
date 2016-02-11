@@ -12,7 +12,7 @@ Camera::Camera(double aspectRatio)
 	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
 	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
 	updateViewMatrix(); 
-	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f);
+	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
 }
 
 // Update the cameras position, call this function in the main update loop.
@@ -23,7 +23,7 @@ void Camera::update(double delta_time)
 	distance = max(MIN_DOLLY, min(distance, MAX_DOLLY));
 
 	// rotate with the mouse. 
-	if (UserInput::getLeftMouseButton())
+	if (UserInput::getRightMouseButton())
 	{
 		Vec2 mouseVel = UserInput::getMouseVel();
 		orbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;
@@ -51,7 +51,7 @@ Vec3 Camera::getPosition()
 
 Vec3 Camera::getViewVector()
 {
-	return Vec3{ sin(orbitAngle) * cos(tiltAngle), sin(tiltAngle), cos(orbitAngle) * cos(tiltAngle) };
+	return Vec3{ -sin(orbitAngle) * cos(tiltAngle), sin(tiltAngle), -cos(orbitAngle) * cos(tiltAngle) };
 }
 
 double Camera::getDistance() const
@@ -64,10 +64,7 @@ double Camera::getDistance() const
 // the variables describing it's position and rotation.
 void Camera::updateViewMatrix()
 {	
-	Mat4 mainTranslation;
-	Mat4 orbitRotation;
-	Mat4 tiltRotation;
-	Mat4 distanceTranslation;
+	Mat4 mainTranslation, orbitRotation, tiltRotation, distanceTranslation;
 
 	mainTranslation.loadTranslation((float)-position.x, (float)-position.y, (float)-position.z);
 	orbitRotation.loadRotationY((float)orbitAngle); 

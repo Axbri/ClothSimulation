@@ -12,7 +12,7 @@ uniform vec3 lightColor[8];
 uniform vec3 lightAttenuation[8];
 
 const float shineDampener = 2.0; 
-const float reflectance = 0.5; 
+const float reflectance = 0.1; 
 const float ambient = 0.15; 
 
 void main (void) 

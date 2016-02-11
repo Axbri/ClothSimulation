@@ -74,9 +74,27 @@ double Vec3::length()
 	return sqrt(x * x + y * y + z * z);
 }
 
+double Vec3::lengthSquared()
+{
+	return x * x + y * y + z * z;
+}
+
 void Vec3::cross(Vec3 v1, Vec3 v2)
 {
 	x = v1.y * v2.z - v1.z * v2.y; 
 	y = v1.z * v2.x - v1.x * v2.z;
 	z = v1.x * v2.y - v1.y * v2.x;
+}
+
+double Vec3::pointLineDistance(Vec3 point, Vec3 line)
+{
+	Vec3 uParalellN = line * ((point * line) / line.lengthSquared());
+	Vec3 uOrtogonalN = point - uParalellN; 
+	return uOrtogonalN.length();
+}
+
+double Vec3::toPointDistanceParallelToLine(Vec3 point, Vec3 line)
+{
+	Vec3 uParalellN = line * ((point * line) / line.lengthSquared());
+	return uParalellN.length();
 }

@@ -51,6 +51,7 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	}
 	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);	
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
+	updateModelMatrix(); 
 }
 
 void Sphere::updateModelMatrix()

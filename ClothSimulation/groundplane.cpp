@@ -14,7 +14,7 @@ GroundPlane::GroundPlane(Loader loader)
 	groundModel.setModelMatrix(scaleMatrix); 
 
 	// load textures attach them to the ground plane. 	
-	GLuint groundTexture = loader.loadBMPtexture("groundTexture.bmp");
+	GLuint groundTexture = loader.loadBMPtexture("groundTextureCoords.bmp");
 	groundModel.set_texture(groundTexture);
 	normalMapTexture = loader.loadBMPtexture("tile_normal.bmp"); 
 
