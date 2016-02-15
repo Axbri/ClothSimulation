@@ -2,22 +2,16 @@
 
 
 
-MousePicker::MousePicker(Vec2 screenSize)
-{
-	this->screenSize = Vec2{ screenSize }; 
+MousePicker::MousePicker()
+{ 
 	this->planeIntersectionValid = false;
-}
-
-void MousePicker::setScreenSize(Vec2 size)
-{
-	screenSize = Vec2{ size };
 }
 
 // Calculate the vector from the camera into the world trough the mouse cursor. 
 // The returned vector is in world coordinates, and it is normalized. 
 Vec3 MousePicker::calculateMouseRay(Camera camera)
 {
-	Vec2 normalizedDeviceCoords{ UserInput::getMouseNormalizedDeviceCoords(screenSize.x, screenSize.y) };
+	Vec2 normalizedDeviceCoords{ UserInput::getMouseNormalizedDeviceCoords() };
 	Vec4 clipSpaceCoords{ normalizedDeviceCoords.x, normalizedDeviceCoords.y, -1.0f, 1.0f };
 
 	Mat4 inverseProjectionMatrix{ camera.getProjectionMatrix().inverse() };

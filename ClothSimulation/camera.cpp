@@ -18,6 +18,10 @@ Camera::Camera(double aspectRatio)
 // Update the cameras position, call this function in the main update loop.
 void Camera::update(double delta_time)
 {
+
+	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
+	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
+
 	// zoom with the mouse scroll wheel. 
 	distance += -UserInput::getMouseDeltaScroll() * DOLLY_SENSITIVITY * distance;
 	distance = max(MIN_DOLLY, min(distance, MAX_DOLLY));

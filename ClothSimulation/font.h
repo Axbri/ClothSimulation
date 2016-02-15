@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "vec3.h"
 #include "vec2.h"
+#include "userinput.h"
 #include <iomanip>
 
 using namespace std;
@@ -11,7 +12,7 @@ using namespace std;
 class Font
 {
 public:
-	Font(Loader loader, double size, double aspectRatio);
+	Font(Loader loader, double size);
 
 	void setColor(double r, double g, double b);
 	void render(char *name, Vec2 vec, double xPos, double yPos);

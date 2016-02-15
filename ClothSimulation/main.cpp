@@ -48,7 +48,7 @@ GLFWwindow* init()
 
 	//Declare a window object  
 	GLFWwindow* window;
-	window = glfwCreateWindow(1200, 800, "Cloth simulator 2016", NULL, NULL);
+	window = glfwCreateWindow(UserInput::getWindowSize().x, UserInput::getWindowSize().y, "Cloth simulator 2016", NULL, NULL);
 
 	//If the window couldn't be created  
 	if (!window)
@@ -66,6 +66,7 @@ GLFWwindow* init()
 	glfwSetCursorPosCallback(window, UserInput::mouse_pos_callback);
 	glfwSetMouseButtonCallback(window, UserInput::mouse_button_callback);
 	glfwSetScrollCallback(window, UserInput::scroll_callback);
+	glfwSetFramebufferSizeCallback(window, UserInput::framebuffer_size_callback);
 
 	//Initialize GLEW   
 	glewExperimental = GL_TRUE;
@@ -90,19 +91,16 @@ int main(void)
 {
 	GLFWwindow* window = init();			// init GLFW and GLEW
 
-	int windowWidth, windowHeight;
-	glfwGetWindowSize(window, &windowWidth, &windowHeight);
-	cout << "window height: " << windowWidth << "px, window width: " << windowHeight << "px " << endl << endl;
-	double aspectRatio = (double)windowHeight / (double)windowWidth; 
+	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
 
 	Loader loader;
-	Font font{ loader, 0.025, aspectRatio };
+	Font font{ loader, 0.025};
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
 	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };
 	
-	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
+	MousePicker mousePicker{ };
 
 
 	vector<Light> allLights;					// a dynamic list of lights
@@ -226,6 +224,8 @@ int main(void)
 		font.render("Rotate the camera with right mouse button. ", -0.95, -0.81);		
 		font.render("Move the sphere by holding it with the left button. ", -0.95, -0.88);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
+
+		font.render("Window size", UserInput::getWindowSize(), -0.95, -0.0);
 
 		// =============== mouse picker debug here: =============== 
 		//font.setColor(1, 1, 1);
