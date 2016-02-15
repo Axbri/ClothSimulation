@@ -23,7 +23,6 @@ public:
 	void cleanUp(); 
 
 private: 
-
 	double Font::getCharWidth(char c);
 
 	double aspectRatio; 

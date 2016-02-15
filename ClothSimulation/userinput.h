@@ -11,7 +11,6 @@ public:
 	static void mouse_pos_callback(GLFWwindow* window, double x, double y);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 		
 	static bool pollKey(GLFWwindow* window, int key);

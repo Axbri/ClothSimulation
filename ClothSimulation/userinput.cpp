@@ -82,12 +82,16 @@ void UserInput::scroll_callback(GLFWwindow* window, double xoffset, double yoffs
 	deltaScroll = yoffset;
 }
 
+// this is a callback function that is automaticaly called every time the size of the frambuffer 
+// (the part of the screen the openGL renders to) changes. This function saves the new size 
+// of the framebuffer to a variable and adjusts the openGL Viewport. 
 void UserInput::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
 	windowSizePixels = Vec2(width, height);
 	glViewport(0, 0, width, height);
 }
 
+// check if a key on the keyborad is pressed or not. Returns true if it is, otherwise false. 
 bool UserInput::pollKey(GLFWwindow* window, int key)
 {
 	int state = glfwGetKey(window, key);
@@ -97,7 +101,8 @@ bool UserInput::pollKey(GLFWwindow* window, int key)
 		return false;
 }
 
-// Get the absolute pixel position of the mouse curser in the window. The possition is returnet in pixel coordinates
+// Get the absolute pixel position of the mouse curser in the window. 
+// The possition is returnet in pixel coordinates
 Vec2 UserInput::getMousePos()
 {
 	return Vec2(mouseX, mouseY); 
@@ -157,8 +162,3 @@ Vec2 UserInput::getWindowSize()
 {
 	return Vec2{ windowSizePixels };
 }
-
-
-
-
-

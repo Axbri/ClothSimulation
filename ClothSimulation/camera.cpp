@@ -5,13 +5,14 @@ using namespace std;
 
 // create a new instance of the camera class, this inizializes all 
 // variables and creates the perspective projection matrix for the camera. 
-Camera::Camera(double aspectRatio)
+Camera::Camera()
 {
 	position = Vec3{ 0.0f, 1.2f, 0.0f };
 	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 
 	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
 	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
 	updateViewMatrix(); 
+	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
 	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
 }
 

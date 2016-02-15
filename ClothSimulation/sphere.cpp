@@ -30,9 +30,7 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 		}
 	}
 
-	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };
-
-	
+	int topLeft{ 0 }, topRight{ 0 }, bottomLeft{ 0 }, bottomRight{ 0 };	
 	for (int p{ 0 }; p < NUMBER_OF_SEGMENTS -1; p++)
 	{
 		for (int a{ 0 }; a < NUMBER_OF_SEGMENTS -1; a++)

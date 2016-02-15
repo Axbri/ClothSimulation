@@ -48,7 +48,8 @@ GLFWwindow* init()
 
 	//Declare a window object  
 	GLFWwindow* window;
-	window = glfwCreateWindow(UserInput::getWindowSize().x, UserInput::getWindowSize().y, "Cloth simulator 2016", NULL, NULL);
+	window = glfwCreateWindow(UserInput::getWindowSize().x, UserInput::getWindowSize().y, 
+		"Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", NULL, NULL);
 
 	//If the window couldn't be created  
 	if (!window)
@@ -91,17 +92,14 @@ int main(void)
 {
 	GLFWwindow* window = init();			// init GLFW and GLEW
 
-	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
-
 	Loader loader;
 	Font font{ loader, 0.025};
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
-	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };
-	
+	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };	
 	MousePicker mousePicker{ };
-
+	Camera camera{};
 
 	vector<Light> allLights;					// a dynamic list of lights
 
@@ -136,8 +134,7 @@ int main(void)
 	allLights[5].color = Vec3(frontColor);
 	allLights[5].attenuation = Vec3(attenuation);
 
-	// create a new camera object using the current window's aspect ratio 
-	Camera camera{ aspectRatio };
+	
 
 	// set the backgorund color and enable depth testing
 	glClearColor(0.4f, 0.6f, 0.7f, 0.0f);
@@ -218,15 +215,14 @@ int main(void)
 		font.render("Frame rate", (int)(1 / delta_time) , -0.95, 0.92);
 
 		font.setColor(1, 1, 1);
-		font.render("Sphere distance", distance, -0.95, 0.88);
+		font.render("Sphere distance", distance, -0.95, 0.86);
 
 		font.setColor(1, 1, 1);
 		font.render("Rotate the camera with right mouse button. ", -0.95, -0.81);		
 		font.render("Move the sphere by holding it with the left button. ", -0.95, -0.88);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
 
-		font.render("Window size", UserInput::getWindowSize(), -0.95, -0.0);
-
+		//font.render("Window size", UserInput::getWindowSize(), -0.95, -0.0);		// window size debug
 		// =============== mouse picker debug here: =============== 
 		//font.setColor(1, 1, 1);
 		//font.render("Mouse picker ray", mousePicker.getCurrentRay(), -0.95, -0.81);
@@ -244,10 +240,7 @@ int main(void)
 		delta_time = glfwGetTime() - previus_time;
 		previus_time = glfwGetTime();
 
-		// show framerate in the title of the window
-		ostringstream strs;
-		strs << "Framerate: " << (int)(1 / delta_time) << "FPS";
-		glfwSetWindowTitle(window, strs.str().c_str());
+		
 
 	} while (!glfwWindowShouldClose(window));
 
