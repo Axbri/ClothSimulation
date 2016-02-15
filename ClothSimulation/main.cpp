@@ -100,7 +100,7 @@ int main(void)
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
-	Cloth cloth{ loader, 2, 100}; 
+	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };
 	
 	MousePicker mousePicker{ Vec2{ (double)windowWidth ,(double)windowHeight} };
 
