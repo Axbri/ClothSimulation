@@ -29,7 +29,7 @@ static void error_callback(int error, const char* description)
 
 // This function inizializes GLFW and OpenGL and 
 // opens a window and returns a pointer to the window. 
-GLFWwindow* init()
+GLFWwindow* createWindow()
 {
 	//Set the error callback  
 	glfwSetErrorCallback(error_callback);
@@ -87,31 +87,16 @@ GLFWwindow* init()
 	return window;
 }
 
-// This is the main function that starts the program. 
-int main(void)
-{
-	GLFWwindow* window = init();			// init GLFW and GLEW
-
-	Loader loader;
-	Font font{ loader, 0.025};
-	GroundPlane groundPlane{ loader };
-	double spherePosZ{ -3 }, spherePosX{ 0 };
-	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
-	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };	
-	MousePicker mousePicker{ };
-	Camera camera{};
-
-	vector<Light> allLights;					// a dynamic list of lights
-
+void addLights(vector<Light> &allLights) {
 	// one light realy far away (without attenuation)
-	allLights.push_back(Light{ 50, 400, 400 });	
+	allLights.push_back(Light{ 50, 400, 400 });
 	allLights[0].color = Vec3(0.3, 0.3, 0.3);
 
 	// 4 point point lights aranged in a square around the cloth	
 	Vec3 frontColor{ 0.7, 0.6, 0.6 };
 	Vec3 backColor{ 0.7, 0.6, 0.6 };
 	Vec3 attenuation{ 1.0, 0.01, 0.008 };
-	double distance = 10; 
+	double distance = 10;
 	double hight = 8;
 
 	allLights.push_back(Light{ distance, hight, distance });
@@ -133,7 +118,24 @@ int main(void)
 	allLights.push_back(Light{ 0, hight, 0 });
 	allLights[5].color = Vec3(frontColor);
 	allLights[5].attenuation = Vec3(attenuation);
+}
 
+// This is the main function that starts the program. 
+int main(void)
+{
+	GLFWwindow* window = createWindow();			// init GLFW and GLEW
+
+	Loader loader;
+	Font font{ loader, 0.025};
+	GroundPlane groundPlane{ loader };
+	double spherePosZ{ -3 }, spherePosX{ 0 };
+	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
+	Cloth cloth{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };	
+	MousePicker mousePicker{ };
+	Camera camera{};
+
+	vector<Light> allLights;	// a dynamic list of lights
+	addLights(allLights);		// add all the lights to the list
 	
 
 	// set the backgorund color and enable depth testing
@@ -144,7 +146,8 @@ int main(void)
 	glCullFace(GL_FRONT);
 		
 	// variables used in the main loop 
-	double previus_time = 0, delta_time = 0; 
+	double previus_time{ 0 }, delta_time{ 0 }, accumulated_time{ 0 };
+	int framerate{ 0 }, frames_this_second{ 0 };
 
 	do //Main Loop  
 	{ 
@@ -163,31 +166,7 @@ int main(void)
 				sphere.setPos(planeIntersection);
 			}			
 		}
-
-		/*
-		// move the sphere with the keybord
-		Vec3 spherePos = sphere.getPos(); 
-		Vec3 deltaVector;
-
-		if (UserInput::pollKey(window, GLFW_KEY_UP))
-			deltaVector.z = -delta_time * 2;			
-		if (UserInput::pollKey(window, GLFW_KEY_DOWN))		
-			deltaVector.z = delta_time * 2;
-
-		if (UserInput::pollKey(window, GLFW_KEY_SPACE))
-			deltaVector.y = delta_time * 2;
-		if (UserInput::pollKey(window, GLFW_KEY_LEFT_SHIFT))
-			deltaVector.y = -delta_time * 2;
-
-		if (UserInput::pollKey(window, GLFW_KEY_LEFT))
-			deltaVector.x = -delta_time * 2;
-		if (UserInput::pollKey(window, GLFW_KEY_RIGHT))
-			deltaVector.x = delta_time * 2;
-
-		spherePos += deltaVector; 
-		sphere.setPos(spherePos);		
-		*/
-
+			
 		cloth.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
 				
@@ -198,8 +177,8 @@ int main(void)
 		// draw the groundplane
 		groundPlane.render(window, camera, allLights);
 		
-		// enable wireframe rendering if the user hold down the right mouse button. 
-		if (UserInput::getCenterMouseButton())
+		// enable wireframe rendering if the user hold down the W key on the keyboard 
+		if (UserInput::pollKey(window, GLFW_KEY_W))
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// render the sphere
@@ -211,25 +190,18 @@ int main(void)
 		// wireframe rendering is of be default. 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				
+		// render all the text: 
 		font.setColor(0, 1, 0.5);
-		font.render("Frame rate", (int)(1 / delta_time) , -0.95, 0.92);
+		font.render("Frame rate", framerate, -0.95, 0.92);
 
 		font.setColor(1, 1, 1);
 		font.render("Sphere distance", distance, -0.95, 0.86);
 
 		font.setColor(1, 1, 1);
-		font.render("Rotate the camera with right mouse button. ", -0.95, -0.81);		
-		font.render("Move the sphere by holding it with the left button. ", -0.95, -0.88);
+		font.render("Rotate the camera with center mouse button. ", -0.95, -0.81);		
+		font.render("Move the sphere by holding it with the left mouse button. ", -0.95, -0.88);
 		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
-
-		//font.render("Window size", UserInput::getWindowSize(), -0.95, -0.0);		// window size debug
-		// =============== mouse picker debug here: =============== 
-		//font.setColor(1, 1, 1);
-		//font.render("Mouse picker ray", mousePicker.getCurrentRay(), -0.95, -0.81);
-		//font.render("Camera world pos", mousePicker.getCurrentStartPoint(), -0.95, -0.74);
-		//font.render("Ground plane intersection", planeIntersection, -0.95, -0.67);
-		// ===========================================================
-
+				
 		//Swap buffers  
 		glfwSwapBuffers(window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...  
@@ -240,8 +212,15 @@ int main(void)
 		delta_time = glfwGetTime() - previus_time;
 		previus_time = glfwGetTime();
 
-		
-
+		accumulated_time += delta_time; 
+		frames_this_second++; 
+		if (accumulated_time > 1)
+		{
+			accumulated_time -= 1;
+			framerate = frames_this_second; 
+			frames_this_second = 0; 
+		}
+			
 	} while (!glfwWindowShouldClose(window));
 
 	cloth.cleanUp(); 
