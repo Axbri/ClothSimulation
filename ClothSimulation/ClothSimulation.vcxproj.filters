@@ -168,5 +168,8 @@
     <Image Include="tile_normal.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="groundTextureCoords.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
