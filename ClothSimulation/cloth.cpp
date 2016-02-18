@@ -107,7 +107,7 @@ Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 	clothModel = loader.createModel(positions, positionIndex, textureCoords, textureCoordIndex, normals, normalIndex, indices, indicesIndex);	
 	
 
-	GLuint clothTexture = loader.loadBMPtexture("textil01.bmp");
+	GLuint clothTexture = loader.loadBMPtexture("textil01.bmp");		// textil01
 	clothModel.set_texture(clothTexture);
 }
 
@@ -119,6 +119,7 @@ Cloth::~Cloth()
 // update the cloth, this function will handle the phisics simulation of the cloth. 
 void Cloth::update(double delta_time, double time, Sphere sphere)
 {
+	Vec3 g = Vec3(0, -9.81, 0);
 
 	double step = 0.016; // 60 uppdateringar per sekund
 	bool use_forces = true;
@@ -141,8 +142,8 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					calculate_force(x, y, k);
 					verlet_forces(x, y, step, 25);
 					collision(x, y, sphere);
-				}
-				
+					}
+
 			}
 		}
 	}
