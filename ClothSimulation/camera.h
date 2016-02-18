@@ -35,7 +35,7 @@ private:
 
 	const double MOUSE_ROTATION_SENSITIVITY = 0.015;
 	const double DOLLY_SENSITIVITY = 0.1;
-	const double MIN_DOLLY = 0.5;
+	const double MIN_DOLLY = 1.5;
 	const double MAX_DOLLY = 10;	
 
 	const double SMOOTH_DOLLY = 7;

@@ -19,6 +19,8 @@ void main (void)
 {
 	vec4 textureColor = texture(mainTexture, interpolatedTextureCoords * 3);
 		
+	textureColor = min(textureColor * 1.5, 1.0); 
+		
 	vec3 normal = normalize(interpolatedNormal); 	
 	vec3 unitToCameraVector = normalize(toCameraVector);	
 	vec3 totalDiffuse = vec3(0.0); 
@@ -41,7 +43,16 @@ void main (void)
 	totalDiffuse = min(totalDiffuse, 1.0);
 	totalSpecular = min(totalSpecular, 1.0);
 	
+	float velvetFracor = 1 - dot(normal, unitToCameraVector);
+	float velvetAmount = 0.65; 
+	
+	velvetFracor = clamp(velvetFracor * velvetAmount - 0.5, 0, 1); 
+	
+	vec3 velvetColor = vec3(1, 1, 1); 
+	
 	vec3 materialAndLighting = textureColor.xyz * totalDiffuse + totalSpecular; 
+	
+	materialAndLighting = mix(materialAndLighting, velvetColor, velvetFracor); 
 	
 	pixel_color = vec4(materialAndLighting, 1.0);
 }

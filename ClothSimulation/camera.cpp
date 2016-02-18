@@ -38,7 +38,7 @@ void Camera::update(double delta_time)
 		Vec2 mouseVel = UserInput::getMouseVel();
 		targetOrbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;
 		targetTiltAngle -= mouseVel.y * MOUSE_ROTATION_SENSITIVITY;
-		targetTiltAngle = max(-3.14 / 2, min(targetTiltAngle, 3.14 / 2));
+		targetTiltAngle = max(-3.14 / 2, min(targetTiltAngle, 0.0));
 	}
 
 	// smoothly move the camera around according to the target values. 
