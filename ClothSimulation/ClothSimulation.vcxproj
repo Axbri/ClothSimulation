@@ -184,6 +184,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="mousepicker.h" />
     <ClInclude Include="particle.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="userinput.h" />
@@ -211,6 +212,9 @@
     <Image Include="testTexture.bmp" />
     <Image Include="textil01.bmp" />
     <Image Include="tile_normal.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ClothSimulation.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

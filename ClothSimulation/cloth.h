@@ -31,5 +31,11 @@ private:
 	double restlength;
 	double size;
 	Vec3 position;	// world position, this is loaded into the model matrix. 
+	void resolve_constraint(int x, int y);
+	void calculate_force(int x, int y, double k[]);
+	void verlet_constraints(int x, int y, double step, double damping);
+	void verlet_forces(int x, int y, double step, double damping);
+	void collision(int x, int y, Sphere sphere);
+	void reset_forces();
 };
 
