@@ -122,7 +122,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 	Vec3 g = Vec3(0, -9.81, 0);
 
 	double step = 0.016; // 60 uppdateringar per sekund
-	bool use_forces = true;
+	bool use_constraints = false;
 	double k[3] = { 10000, 10000, 10000 };
 	time_passed += delta_time;
 	if (time_passed > step)
@@ -134,7 +134,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 		{
 			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 			{
-				if (!use_forces) {
+				if (use_constraints) {
 					resolve_constraint(x, y);
 					verlet_constraints(x, y, step, 0.98);
 					collision(x, y, sphere);
