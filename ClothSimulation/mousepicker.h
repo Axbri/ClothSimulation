@@ -9,9 +9,7 @@ class MousePicker
 {
 public:
 
-	MousePicker(Vec2 screenSize);
-
-	void setScreenSize(Vec2 size);
+	MousePicker();
 	Vec3 calculateMouseRay(Camera camera); 
 	Vec3 calculateStartPoint(Camera camera);
 	Vec3 getPlaneIntersectionPoint(double planeHeight);
@@ -23,7 +21,6 @@ public:
 private: 
 	int PLANE_SEARCH_DISTANCE = 50;
 	int PLANE_SEARCH_ITERATIONS = 100; 
-	Vec2 screenSize;
 	bool planeIntersectionValid; 
 	Vec3 currentMouseRay; 
 	Vec3 currentStartPoint; 

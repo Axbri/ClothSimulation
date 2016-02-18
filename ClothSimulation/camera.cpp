@@ -5,32 +5,48 @@ using namespace std;
 
 // create a new instance of the camera class, this inizializes all 
 // variables and creates the perspective projection matrix for the camera. 
-Camera::Camera(double aspectRatio)
+Camera::Camera()
 {
-	position = Vec3{ 0.0f, 1.2f, 0.0f };
-	distance = 2.5f;	// the distance from the camera the the center position in OpenGL units. 
-	orbitAngle = 1.2f;	// the camera's orbiting angle around the center position in radians
-	tiltAngle = -0.5f;	// the camera's tilt angle around the center position in radians
+	position = Vec3{ 0.0f, 0.8f, 0.0f };
+	distance = (MIN_DOLLY + MAX_DOLLY) / 2.0;	// the distance from the camera the the center position in OpenGL units. 
+	orbitAngle = 1.2;	// the camera's orbiting angle around the center position in radians
+	tiltAngle = 0.5;	// the camera's tilt angle around the center position in radians
+
+	targetDistance = 0; 
+	targetOrbitAngle = 0;
+	targetTiltAngle = 0; 
+
 	updateViewMatrix(); 
+	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
 	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
 }
 
 // Update the cameras position, call this function in the main update loop.
 void Camera::update(double delta_time)
 {
-	// zoom with the mouse scroll wheel. 
-	distance += -UserInput::getMouseDeltaScroll() * DOLLY_SENSITIVITY * distance;
-	distance = max(MIN_DOLLY, min(distance, MAX_DOLLY));
+	// use the aspect ratio of the window to update the projekction matrix. 
+	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;
+	projMatrix.loadPerspectiveProjection(aspectRatio, 1.2f, NEAR_CLIP, FAR_CLIP);
 
-	// rotate with the mouse. 
-	if (UserInput::getRightMouseButton())
+	// user input: zoom with the mouse scroll wheel. 
+	targetDistance += -UserInput::getMouseDeltaScroll() * DOLLY_SENSITIVITY * targetDistance;
+	targetDistance = max(MIN_DOLLY, min(targetDistance, MAX_DOLLY));
+
+	// user input: rotate with the mouse. 
+	if (UserInput::getCenterMouseButton())
 	{
 		Vec2 mouseVel = UserInput::getMouseVel();
-		orbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;
-		tiltAngle -= mouseVel.y * MOUSE_ROTATION_SENSITIVITY;
-		tiltAngle = max(-3.14 / 2, min(tiltAngle, 3.14 / 2));
+		targetOrbitAngle -= mouseVel.x * MOUSE_ROTATION_SENSITIVITY;
+		targetTiltAngle -= mouseVel.y * MOUSE_ROTATION_SENSITIVITY;
+		targetTiltAngle = max(-3.14 / 2, min(targetTiltAngle, 3.14 / 2));
 	}
+
+	// smoothly move the camera around according to the target values. 
+	distance += (targetDistance - distance) * SMOOTH_DOLLY * delta_time;
+	orbitAngle += (targetOrbitAngle - orbitAngle) * SMOOTH_MOUSE_MOVMENT * delta_time;
+	tiltAngle += (targetTiltAngle - tiltAngle) * SMOOTH_MOUSE_MOVMENT * delta_time;
 	
+	// update the view matrix with the new position of the camera. 
 	updateViewMatrix(); 
 }
 
@@ -58,7 +74,6 @@ double Camera::getDistance() const
 {
 	return distance;
 }
-
 
 // This function also updates the camera's view matrix using 
 // the variables describing it's position and rotation.

@@ -8,6 +8,7 @@ bool UserInput::leftMouseButton = false;
 bool UserInput::centerMouseButton = false;
 bool UserInput::rightMouseButton = false;
 double UserInput::deltaScroll = 0.0;
+Vec2 UserInput::windowSizePixels = Vec2{ 1200, 800 }; 
 
 // Callback function for keyboard input from the user. 
 // This function is called automaticaly every time a key on the keybord is pressed or relesed. 
@@ -24,8 +25,8 @@ void UserInput::key_callback(GLFWwindow* window, int key, int scancode, int acti
 // This function is called automaticaly every time the mouse cursor is moved. 
 void UserInput::mouse_pos_callback(GLFWwindow* window, double x, double y)
 {
-	float previusMouseX = mouseX;
-	float previusMouseY = mouseY;
+	double previusMouseX = mouseX;
+	double previusMouseY = mouseY;
 	mouseX = x;
 	mouseY = y;
 	MouseSpeedX = mouseX - previusMouseX; 
@@ -81,6 +82,16 @@ void UserInput::scroll_callback(GLFWwindow* window, double xoffset, double yoffs
 	deltaScroll = yoffset;
 }
 
+// this is a callback function that is automaticaly called every time the size of the frambuffer 
+// (the part of the screen the openGL renders to) changes. This function saves the new size 
+// of the framebuffer to a variable and adjusts the openGL Viewport. 
+void UserInput::framebuffer_size_callback(GLFWwindow * window, int width, int height)
+{
+	windowSizePixels = Vec2(width, height);
+	glViewport(0, 0, width, height);
+}
+
+// check if a key on the keyborad is pressed or not. Returns true if it is, otherwise false. 
 bool UserInput::pollKey(GLFWwindow* window, int key)
 {
 	int state = glfwGetKey(window, key);
@@ -90,7 +101,8 @@ bool UserInput::pollKey(GLFWwindow* window, int key)
 		return false;
 }
 
-// Get the absolute pixel position of the mouse curser in the window. The possition is returnet in pixel coordinates
+// Get the absolute pixel position of the mouse curser in the window. 
+// The possition is returnet in pixel coordinates
 Vec2 UserInput::getMousePos()
 {
 	return Vec2(mouseX, mouseY); 
@@ -98,10 +110,10 @@ Vec2 UserInput::getMousePos()
 
 // Get the absolute pixel position of the mouse curser in the window. The position is returned in 
 // normalized device coordinates. coords ranging from -1 to 1. 
-Vec2 UserInput::getMouseNormalizedDeviceCoords(int screenWithPixels, int screenHeightPixels)
+Vec2 UserInput::getMouseNormalizedDeviceCoords()
 {
-	double normalizedX = ((mouseX / screenWithPixels) * 2) - 1;
-	double normalizedY = ((mouseY / screenHeightPixels) * 2) - 1;
+	double normalizedX = ((mouseX / windowSizePixels.x) * 2) - 1;
+	double normalizedY = ((mouseY / windowSizePixels.y) * 2) - 1;
 	return Vec2(normalizedX, -normalizedY);
 }
 
@@ -146,7 +158,7 @@ double UserInput::getMouseDeltaScroll()
 	return temp;
 }
 
-
-
-
-
+Vec2 UserInput::getWindowSize()
+{
+	return Vec2{ windowSizePixels };
+}

@@ -1,6 +1,6 @@
 #include "cloth.h"
 
-Cloth::Cloth(Loader loader, double size, double totalWeight)
+Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 {
 	theLoader = loader;
 	shader.createShader( "mainVertex.glsl", "mainFragment.glsl" );
@@ -102,7 +102,7 @@ Cloth::Cloth(Loader loader, double size, double totalWeight)
 		}
 	}
 
-	position = Vec3{ -1, 2.5, 0 };	// position of the cloth in the world. 
+	position = pos;	// position of the cloth in the world. 
 
 	clothModel = loader.createModel(positions, positionIndex, textureCoords, textureCoordIndex, normals, normalIndex, indices, indicesIndex);	
 	
@@ -120,7 +120,6 @@ Cloth::~Cloth()
 void Cloth::update(double delta_time, double time, Sphere sphere)
 {
 	Vec3 g = Vec3(0, -9.81, 0);
-	//Vec3 g = Vec3(0, 0, -9.81);
 
 	double step = 0.016; // 60 uppdateringar per sekund
 	double nv = (double)NUMBER_OF_VERTICES;
@@ -206,6 +205,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					particles[x][y].pos += (p_curr - p_old)*0.98 + g*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
 					particles[x][y].pos_old = p_curr;
 
+					// sfärkollision: 
 					Vec3 pos = sphere.getPos();
 					double rad = sphere.getRadius();
 					Vec3 delta = pos - (particles[x][y].pos + position);
@@ -214,17 +214,28 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					{
 						double diff = (deltalength - rad*1.05) / deltalength; // generalisera margin
 						particles[x][y].pos += delta*diff;
-					}				
+					}	
+
+					// markplanskollision: 
+					particles[x][y].pos.y = max(particles[x][y].pos.y, 0.02 - position.y);
 				}
 			}
 		}
 	}
 
-	particles[0][0].pos = Vec3(0+0.1, 0, 0);
+	for (int i{ 0 }; i < (NUMBER_OF_VERTICES); i++)
+	{
+		if (i % 8 == 0 || i % 8 == 1)
+		{
+			particles[i][0].pos = Vec3(((double)i / (double)(NUMBER_OF_VERTICES - 1)) * size, 0, 0);
+		}			
+	}
+
+	//particles[0][0].pos = Vec3(0+0.1, 0, 0);
 	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
-	particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
+	//particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
 	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
-	particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
+	//particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
 	// update the model matrix desribing the position of this cloth in the world. 
 	Mat4 modelMatrix;
