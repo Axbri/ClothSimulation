@@ -12,7 +12,7 @@ class Sphere
 public:
 	Sphere(double x, double y, double z, double r, Loader loader);
 
-	void updateModelMatrix();
+	void updateModelMatrix(double deltaTime);
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp();
 	void setPos(Vec3 pos);
@@ -22,6 +22,7 @@ public:
 private: 
 	static const int NUMBER_OF_SEGMENTS = 32;
 	Vec3 position; 
+	Vec3 targetPosition;
 	double radius; 
 	Model sphereModel;
 	Shader sphereShader;

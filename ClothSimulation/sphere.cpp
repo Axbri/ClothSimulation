@@ -49,11 +49,16 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	}
 	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);	
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
-	updateModelMatrix(); 
 }
 
-void Sphere::updateModelMatrix()
+void Sphere::updateModelMatrix(double deltaTime)
 {
+	double DAMPENING = 10;		// hur långsam sfären är
+
+	position += (targetPosition - position) * DAMPENING * deltaTime;
+
+	// position = targetPosition; 
+
 	Mat4 translation;
 	translation.loadTranslation(position.x, position.y, position.z);
 	sphereModel.setModelMatrix(translation);
@@ -87,8 +92,10 @@ void Sphere::cleanUp()
 
 void Sphere::setPos(Vec3 pos)
 {	
-	position = pos;
-	updateModelMatrix(); 
+	targetPosition = pos; 
+
+	//position = pos;
+	//updateModelMatrix(); 
 }
 
 Vec3 Sphere::getPos() 

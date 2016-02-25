@@ -168,6 +168,8 @@ int main(void)
 			}			
 		}
 			
+		sphere.updateModelMatrix(delta_time);
+
 		cloth1.update(delta_time, previus_time, sphere);
 		//cloth2.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
