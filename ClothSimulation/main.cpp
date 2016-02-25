@@ -131,7 +131,7 @@ int main(void)
 	double spherePosZ{ -3 }, spherePosX{ 0 };
 	Sphere sphere{ 0, 0.2, 2, 0.2, loader };
 	Cloth cloth1{ loader, Vec3{ -0.5, 1.2, 0 }, 1, 100 };	
-	//Cloth cloth2{ loader, Vec3{ 0.5, 1.5, 0 }, 2, 100 };
+	Cloth cloth2{ loader, Vec3{ 0.5, 1.2, 0 }, 1, 100 };
 	MousePicker mousePicker{ };
 	Camera camera{};
 
@@ -170,8 +170,8 @@ int main(void)
 			
 		sphere.updateModelMatrix(delta_time);
 
-		cloth1.update(delta_time, previus_time, sphere);
-		//cloth2.update(delta_time, previus_time, sphere);
+		cloth1.update(delta_time, previus_time, sphere, true);
+		cloth2.update(delta_time, previus_time, sphere, false);
 		camera.update(delta_time);
 				
 		// ================================== render ==================================
@@ -190,7 +190,7 @@ int main(void)
 		
 		// draw the cloth
 		cloth1.render(window, camera, allLights);
-		//cloth2.render(window, camera, allLights);
+		cloth2.render(window, camera, allLights);
 		
 		// wireframe rendering is of be default. 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -229,7 +229,7 @@ int main(void)
 	} while (!glfwWindowShouldClose(window));
 
 	cloth1.cleanUp(); 
-	//cloth2.cleanUp();
+	cloth2.cleanUp();
 	groundPlane.cleanUp(); 
 	loader.cleanUp(); 
 

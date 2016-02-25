@@ -117,12 +117,11 @@ Cloth::~Cloth()
 }
 
 // update the cloth, this function will handle the phisics simulation of the cloth. 
-void Cloth::update(double delta_time, double time, Sphere sphere)
+void Cloth::update(double delta_time, double time, Sphere sphere, bool constraints)
 {
 	Vec3 g = Vec3(0, -9.81, 0);
 
 	double step = 0.016; // 60 uppdateringar per sekund
-	bool use_constraints = false;
 	double k[3] = { 10000, 10000, 10000 };
 	time_passed += delta_time;
 	if (time_passed > step)
@@ -134,13 +133,13 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 		{
 			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 			{
-				if (use_constraints) {
+				if (constraints) {
 					resolve_constraint(x, y);
-					verlet(x, y, step, 0.98);
+					verlet(x, y, step, 0.98, { 0,-9.81,0 });
 					collision(x, y, sphere);
 				} else {
 					calculate_force(x, y, k);
-					verlet(x, y, step, 0.96);
+					verlet(x, y, step, 0.92, { 0,-19.81,0 });
 					collision(x, y, sphere);
 					}
 			}
@@ -269,7 +268,7 @@ void Cloth::resolve_constraint(int x, int y) {
 	double nv = (double)NUMBER_OF_VERTICES;
 	double con_inf[3] = { nv / (120 + nv), nv / (120 + nv), nv / (45 + nv) };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila (0.2,0.2,0.4) för 30 verts
 	//resolve constraints
-	for (int r{ 0 }; r < 2; r++)
+	for (int r{ 0 }; r < 1; r++)
 	{
 		if (y < NUMBER_OF_VERTICES - 1) {
 			// ||||
@@ -397,9 +396,8 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	}
 }
 
-void Cloth::verlet(int x, int y, double step, double damping) {
+void Cloth::verlet(int x, int y, double step, double damping, Vec3 g) {
 	//verlet
-	Vec3 g = Vec3(0, -9.81, 0);
 	double mass = particles[x][y].mass;
 	Vec3 p_curr = Vec3(particles[x][y].pos);
 	Vec3 p_old = Vec3(particles[x][y].pos_old);

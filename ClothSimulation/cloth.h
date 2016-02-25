@@ -15,7 +15,7 @@ public:
 	Cloth(Loader loader, Vec3 pos, double size, double totalWeight);
 	~Cloth();
 
-	void update(double delta_time, double time, Sphere sphere);
+	void update(double delta_time, double time, Sphere sphere, bool constraints);
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp(); 
 
@@ -33,7 +33,7 @@ private:
 	Vec3 position;	// world position, this is loaded into the model matrix. 
 	void resolve_constraint(int x, int y);
 	void calculate_force(int x, int y, double k[]);
-	void verlet(int x, int y, double step, double damping);
+	void verlet(int x, int y, double step, double damping, Vec3 g);
 	void collision(int x, int y, Sphere sphere);
 	void reset_forces();
 };
