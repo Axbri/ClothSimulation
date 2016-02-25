@@ -123,7 +123,9 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 	double step = 0.016; // 60 uppdateringar per sekund
 	bool use_constraints = false;
-	double k[3] = { 10000, 10000, 10000 };
+	//double k[3] = { 10000, 10000, 10000 };
+	double k[3] = { 20000, 20000, 20000 };
+
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
@@ -140,7 +142,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					collision(x, y, sphere);
 				} else {
 					calculate_force(x, y, k);
-					verlet_forces(x, y, step, 25);
+					verlet_forces(x, y, step, 20);
 					collision(x, y, sphere);
 					}
 
