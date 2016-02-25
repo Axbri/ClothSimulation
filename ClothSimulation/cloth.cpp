@@ -136,11 +136,11 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 			{
 				if (use_constraints) {
 					resolve_constraint(x, y);
-					verlet_constraints(x, y, step, 0.98);
+					verlet(x, y, step, 0.98);
 					collision(x, y, sphere);
 				} else {
 					calculate_force(x, y, k);
-					verlet_forces(x, y, step, 25);
+					verlet(x, y, step, 0.98);
 					collision(x, y, sphere);
 					}
 
@@ -352,8 +352,8 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - restlength) / deltalength;
 
-		particles[x][y].force += delta*0.5*diff*k[0];
-		particles[x + 1][y].force -= delta*0.5*diff*k[0];
+		particles[x][y].force += delta*diff*k[0];
+		particles[x + 1][y].force -= delta*diff*k[0];
 
 	}
 	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
@@ -363,8 +363,8 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
 
-		particles[x][y].force += delta*0.5*diff*k[1];
-		particles[x + 1][y + 1].force -= delta*0.5*diff*k[1];
+		particles[x][y].force += delta*diff*k[1];
+		particles[x + 1][y + 1].force -= delta*diff*k[1];
 
 	}
 	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
@@ -373,8 +373,8 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
 
-		particles[x][y + 1].force += delta*0.5*diff*k[1];
-		particles[x + 1][y].force -= delta*0.5*diff*k[1];
+		particles[x][y + 1].force += delta*diff*k[1];
+		particles[x + 1][y].force -= delta*diff*k[1];
 
 	}
 	if (y < NUMBER_OF_VERTICES - 2) {
@@ -383,8 +383,8 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 2 * restlength) / deltalength;
 
-		particles[x][y].force += delta*0.5*diff*k[2];
-		particles[x][y + 2].force -= delta*0.5*diff*k[2];
+		particles[x][y].force += delta*diff*k[2];
+		particles[x][y + 2].force -= delta*diff*k[2];
 
 	}
 	if (x < NUMBER_OF_VERTICES - 2) {
@@ -393,33 +393,19 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 2 * restlength) / deltalength;
 
-		particles[x][y].force += delta*0.5*diff*k[2];
-		particles[x + 2][y].force -= delta*0.5*diff*k[2];
+		particles[x][y].force += delta*diff*k[2];
+		particles[x + 2][y].force -= delta*diff*k[2];
 	}
 }
 
-void Cloth::verlet_constraints(int x, int y, double step, double damping) {
+void Cloth::verlet(int x, int y, double step, double damping) {
 	//verlet
 	Vec3 g = Vec3(0, -9.81, 0);
 	double mass = particles[x][y].mass;
 	Vec3 p_curr = Vec3(particles[x][y].pos);
 	Vec3 p_old = Vec3(particles[x][y].pos_old);
 
-	particles[x][y].pos += (p_curr - p_old)*damping + g*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
-	particles[x][y].pos_old = p_curr;
-}
-
-void Cloth::verlet_forces(int x, int y, double step, double damping) {
-	//verlet
-	Vec3 g = Vec3(0, -9.81, 0);
-	double mass = particles[x][y].mass;
-	Vec3 p_curr = Vec3(particles[x][y].pos);
-	Vec3 p_old = Vec3(particles[x][y].pos_old);
-
-	Vec3 v = (p_curr - p_old)*(1 / step);
-	Vec3 Fd = v*(-1)*damping;
-
-	particles[x][y].pos += p_curr - p_old + (g + particles[x][y].force + Fd)*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
+	particles[x][y].pos += (p_curr - p_old)*damping + (g + particles[x][y].force)*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
 	particles[x][y].pos_old = p_curr;
 }
 
