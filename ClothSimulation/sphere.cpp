@@ -49,11 +49,14 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 	}
 	sphereModel = loader.createTexturelessModel(positions, positionIndex, normals, normalIndex, indices, indicesIndex);	
 	sphereShader.createShader("sphereVertex.glsl", "sphereFragment.glsl");
+
+	targetPosition = position;
+	updateModelMatrix(0.05); 
 }
 
 void Sphere::updateModelMatrix(double deltaTime)
 {
-	double DAMPENING = 10;		// hur långsam sfären är
+	double DAMPENING = 40;		// hur långsam sfären är
 
 	position += (targetPosition - position) * DAMPENING * deltaTime;
 

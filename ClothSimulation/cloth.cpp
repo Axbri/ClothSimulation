@@ -140,7 +140,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					collision(x, y, sphere);
 				} else {
 					calculate_force(x, y, k);
-					verlet(x, y, step, 0.98);
+					verlet(x, y, step, 0.96);
 					collision(x, y, sphere);
 					}
 

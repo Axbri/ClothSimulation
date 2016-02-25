@@ -129,8 +129,8 @@ int main(void)
 	Font font{ loader, 0.025};
 	GroundPlane groundPlane{ loader };
 	double spherePosZ{ -3 }, spherePosX{ 0 };
-	Sphere sphere{ 0, 0.5, 2, 0.5, loader };
-	Cloth cloth1{ loader, Vec3{ -1, 1.5, 0 }, 2, 100 };	
+	Sphere sphere{ 0, 0.2, 2, 0.2, loader };
+	Cloth cloth1{ loader, Vec3{ -0.5, 1.2, 0 }, 1, 100 };	
 	//Cloth cloth2{ loader, Vec3{ 0.5, 1.5, 0 }, 2, 100 };
 	MousePicker mousePicker{ };
 	Camera camera{};
