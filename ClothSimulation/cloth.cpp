@@ -140,7 +140,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 					collision(x, y, sphere);
 				} else {
 					calculate_force(x, y, k);
-					verlet(x, y, step, 0.96);
+					verlet(x, y, step, 0.94);
 					collision(x, y, sphere);
 					}
 			}
@@ -254,7 +254,7 @@ void Cloth::updateNormals()
 
 			vector1 = pos3 - pos1;
 			vector2 = pos2 - pos1;
-			normal = Vec3(0, 0, 0);
+			normal = Vec3{ 0, 0, 0 };
 			normal.cross(vector1, vector2);
 
 			particles[x][y].normal = normal;
@@ -269,7 +269,7 @@ void Cloth::resolve_constraint(int x, int y) {
 	double nv = (double)NUMBER_OF_VERTICES;
 	double con_inf[3] = { nv / (120 + nv), nv / (120 + nv), nv / (45 + nv) };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila (0.2,0.2,0.4) för 30 verts
 	//resolve constraints
-	for (int r{ 0 }; r < 2; r++)
+	for (int r{ 0 }; r < 1; r++)
 	{
 		if (y < NUMBER_OF_VERTICES - 1) {
 			// ||||
