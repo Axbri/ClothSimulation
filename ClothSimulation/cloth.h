@@ -17,7 +17,7 @@ public:
 
 	void setMode(bool useContraints); 
 	void reset(); 
-	void update(double delta_time, double time, Sphere sphere);
+	void update(double delta_time, double time, vector<Sphere> allSpheres);
 	void render(GLFWwindow* window, Camera camera, vector<Light> allLights);
 	void cleanUp(); 
 
@@ -27,7 +27,7 @@ private:
 	void resolve_constraint(int x, int y);
 	void calculate_force(int x, int y, double k[]);
 	void verlet(int x, int y, double step, double damping, Vec3 g);
-	void collision(int x, int y, Sphere sphere);
+	void collision(int x, int y, vector<Sphere> *allSpheres);
 	void reset_forces();
 
 	static const int NUMBER_OF_VERTICES = 34;

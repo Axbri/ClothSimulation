@@ -143,7 +143,7 @@ void Cloth::reset()
 }
 
 // update the cloth, this function will handle the phisics simulation of the cloth. 
-void Cloth::update(double delta_time, double time, Sphere sphere)
+void Cloth::update(double delta_time, double time, vector<Sphere> allSpheres)
 {
 	double step = 0.016; // limit to 60 updates per second
 	time_passed += delta_time;
@@ -162,7 +162,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 					resolve_constraint(x, y);
 					verlet(x, y, step, dampening, gravity);
-					collision(x, y, sphere);
+					collision(x, y, &allSpheres);
 				} 
 				else 
 				{
@@ -172,7 +172,7 @@ void Cloth::update(double delta_time, double time, Sphere sphere)
 
 					calculate_force(x, y, springs);
 					verlet(x, y, step, dampening, gravity);
-					collision(x, y, sphere);
+					collision(x, y, &allSpheres);
 				}
 			}
 		}
@@ -427,16 +427,18 @@ void Cloth::verlet(int x, int y, double step, double damping, Vec3 g) {
 	particles[x][y].pos_old = p_curr;
 }
 
-void Cloth::collision(int x, int y, Sphere sphere) {
+void Cloth::collision(int x, int y, vector<Sphere> *allSpheres) {
 	// sfärkollision: 
-	Vec3 pos = sphere.getPos();
-	double rad = sphere.getRadius();
-	Vec3 delta = pos - (particles[x][y].pos + position);
-	double deltalength = sqrt(delta*delta);
-	if (deltalength < rad * 1.05)
+	for (Sphere &sphere : (*allSpheres))
 	{
-		double diff = (deltalength - rad * 1.05) / deltalength; // generalisera margin
-		particles[x][y].pos += delta * diff;
+		double rad = sphere.getRadius();
+		Vec3 delta = sphere.getPos() - (particles[x][y].pos + position);
+		double deltalength = delta.length();
+		if (deltalength < (rad) * 1.05)
+		{
+			double diff = (deltalength - rad * 1.05) / deltalength; // generalisera margin
+			particles[x][y].pos += delta * diff;
+		}
 	}
 
 	// markplanskollision: 

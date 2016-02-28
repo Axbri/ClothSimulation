@@ -122,6 +122,17 @@ void addLights(vector<Light> &allLights) {
 	allLights[5].attenuation = Vec3(attenuation);
 }
 
+void addSpheres(vector<Sphere> &allSpheres, Loader loader) {
+	Sphere sphere1{ -1, 0.2, -2, 0.2, loader };
+	allSpheres.push_back(sphere1); 
+
+	Sphere sphere2{ 0, 0.2, -2, 0.2, loader };
+	allSpheres.push_back(sphere2);
+
+	Sphere sphere3{ 1, 0.2, -2, 0.2, loader };
+	allSpheres.push_back(sphere3);
+}
+
 // This is the main function that starts the program. 
 int main(void)
 {
@@ -134,8 +145,13 @@ int main(void)
 	Font largefont{ loader, 0.030 };
 
 	GroundPlane groundPlane{ loader };	
+		
+	vector<Sphere> allSpheres;	// a dynamic list of spheres
+	addSpheres(allSpheres, loader);
 
-	Sphere sphere{ 0, 0.2, -2, 0.2, loader };
+
+	cout << "number of spheres: " << allSpheres.size() << endl;
+
 
 	double clothHeightPos{ 1.1 };
 	Cloth cloth1{ loader, Vec3{ -1.2, clothHeightPos, 0 }, 1, 100 };
@@ -166,22 +182,35 @@ int main(void)
 		
 		Vec3 ray = mousePicker.calculateMouseRay(camera);
 		Vec3 cameraPos = mousePicker.calculateStartPoint(camera);
-		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(sphere.getRadius());
 
-		// move the sphere with the mouse cursor if the left button is pressed down 
-		double distance = Vec3::pointLineDistance(sphere.getPos() - cameraPos, ray);
-		if (mousePicker.isPlaneIntersectionValid() && UserInput::getLeftMouseButton())
+		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0.2);
+
+		bool movedAspher{ false };
+
+		for (auto &sphere : allSpheres)
 		{
-			if (distance < sphere.getRadius()) 
+			if (!movedAspher)
 			{
-				sphere.setPos(planeIntersection);
-			}			
-		}
-			
-		sphere.updateModelMatrix(delta_time);
+				// move the sphere with the mouse cursor if the left button is pressed down 
+				double distance = Vec3::pointLineDistance(sphere.getPos() - cameraPos, ray);
+				if (mousePicker.isPlaneIntersectionValid() && UserInput::getLeftMouseButton())
+				{
+					if (distance < sphere.getRadius())
+					{
+						sphere.setPos(planeIntersection);
+						movedAspher = true;
+					}
+				}
 
-		cloth1.update(delta_time, previus_time, sphere);
-		cloth2.update(delta_time, previus_time, sphere);
+				sphere.updateModelMatrix(delta_time);
+			}
+			
+		}
+		
+
+		cloth1.update(delta_time, previus_time, allSpheres);
+		cloth2.update(delta_time, previus_time, allSpheres);
+
 		camera.update(delta_time);
 
 		// reset the cloths when R is pressed
@@ -209,9 +238,12 @@ int main(void)
 		// enable wireframe rendering if the user hold down the W key on the keyboard 
 		if (UserInput::pollKey(window, GLFW_KEY_W))
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				
-		sphere.render(window, camera, allLights);
-		
+			
+		for (auto &sphere : allSpheres)
+		{
+			sphere.render(window, camera, allLights);
+		}
+
 		cloth1.render(window, camera, allLights);
 		cloth2.render(window, camera, allLights);
 		
