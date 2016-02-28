@@ -19,6 +19,8 @@
 #include "light.h"
 #include "userinput.h"
 #include "mousepicker.h"
+#include "ScreenshotTaker.h"
+#include "Skybox.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -126,19 +128,27 @@ int main(void)
 	GLFWwindow* window = createWindow();			// init GLFW and GLEW
 
 	Loader loader;
-	Font font{ loader, 0.025};
-	GroundPlane groundPlane{ loader };
-	double spherePosZ{ -3 }, spherePosX{ 0 };
-	Sphere sphere{ 0, 0.2, 2, 0.2, loader };
-	Cloth cloth1{ loader, Vec3{ -0.5, 1.2, 0 }, 1, 100 };	
-	Cloth cloth2{ loader, Vec3{ 0.5, 1.2, 0 }, 1, 100 };
+	ScreenshotTaker screenshotTaker; 
+	Skybox skybox{ loader };
+	Font smallfont{ loader, 0.022 };
+	Font largefont{ loader, 0.030 };
+
+	GroundPlane groundPlane{ loader };	
+
+	Sphere sphere{ 0, 0.2, -2, 0.2, loader };
+
+	double clothHeightPos{ 1.1 };
+	Cloth cloth1{ loader, Vec3{ -1.2, clothHeightPos, 0 }, 1, 100 };
+	cloth1.setMode(true); 
+	Cloth cloth2{ loader, Vec3{ 0.2, clothHeightPos, 0 }, 1, 100 };
+	cloth2.setMode(false); 
+
 	MousePicker mousePicker{ };
 	Camera camera{};
 
 	vector<Light> allLights;	// a dynamic list of lights
 	addLights(allLights);		// add all the lights to the list
 	
-
 	// set the backgorund color and enable depth testing
 	glClearColor(0.4f, 0.6f, 0.7f, 0.0f);
 	glDepthFunc(GL_LESS);
@@ -170,25 +180,38 @@ int main(void)
 			
 		sphere.updateModelMatrix(delta_time);
 
-		cloth1.update(delta_time, previus_time, sphere, true);
-		cloth2.update(delta_time, previus_time, sphere, false);
+		cloth1.update(delta_time, previus_time, sphere);
+		cloth2.update(delta_time, previus_time, sphere);
 		camera.update(delta_time);
-				
+
+		// reset the cloths when R is pressed
+		if (UserInput::pollKey(window, GLFW_KEY_R))
+		{
+			cloth1.reset(); 
+			cloth2.reset(); 
+		}
+
+		// take a screenshot and save it as a bnp image. 
+		if (UserInput::pollKey(window, GLFW_KEY_F1))
+		{
+			Vec2 size = UserInput::getWindowSize(); 
+			screenshotTaker.screenshot(size.x, size.y);
+		}
+						
 		// ================================== render ==================================
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_CULL_FACE);
+		
+		skybox.render(window, camera);
 
-		// draw the groundplane
 		groundPlane.render(window, camera, allLights);
 		
 		// enable wireframe rendering if the user hold down the W key on the keyboard 
 		if (UserInput::pollKey(window, GLFW_KEY_W))
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		// render the sphere
+				
 		sphere.render(window, camera, allLights);
 		
-		// draw the cloth
 		cloth1.render(window, camera, allLights);
 		cloth2.render(window, camera, allLights);
 		
@@ -196,16 +219,17 @@ int main(void)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				
 		// render all the text: 
-		font.setColor(0, 1, 0.5);
-		font.render("Frame rate", framerate, -0.95, 0.92);
+		largefont.setColor(0, 0.2, 0.4);
+		smallfont.setColor(0, 0.2, 0.4);
+		largefont.render("Frame rate", framerate, -0.95, 0.92);
+		
+		smallfont.render("Rotate the camera with center mouse button. ", -0.95, -0.81);
+		smallfont.render("Move the sphere by holding it with the left mouse button. ", -0.95, -0.86);
+		smallfont.render("Press R to reset", 0.56, -0.81);
+		smallfont.render("Press F1 to save screenshot", 0.35, -0.86);
 
-		font.setColor(1, 1, 1);
-		font.render("Sphere distance", distance, -0.95, 0.86);
-
-		font.setColor(1, 1, 1);
-		font.render("Rotate the camera with center mouse button. ", -0.95, -0.81);		
-		font.render("Move the sphere by holding it with the left mouse button. ", -0.95, -0.88);
-		font.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
+		largefont.setColor(0, 0.3, 0.6);
+		largefont.render("Cloth simulation by Axel Brinkeby, Mikael Lindhe and Eleonora Petersson", -0.95, -0.95);
 				
 		//Swap buffers  
 		glfwSwapBuffers(window);

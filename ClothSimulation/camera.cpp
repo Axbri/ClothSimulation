@@ -7,14 +7,11 @@ using namespace std;
 // variables and creates the perspective projection matrix for the camera. 
 Camera::Camera()
 {
-	position = Vec3{ 0.0f, 0.8f, 0.0f };
-	distance = (MIN_DOLLY + MAX_DOLLY) / 2.0;	// the distance from the camera the the center position in OpenGL units. 
-	orbitAngle = 1.2;	// the camera's orbiting angle around the center position in radians
-	tiltAngle = 0.5;	// the camera's tilt angle around the center position in radians
+	position = Vec3{ 0.0f, 0.6f, 0.0f };
+	targetDistance = distance = MIN_DOLLY + 0.5;	// the distance from the camera the the center position in OpenGL units. 
+	targetOrbitAngle = orbitAngle = 0.1;	// the camera's orbiting angle around the center position in radians
+	targetTiltAngle = tiltAngle = -0.3;	// the camera's tilt angle around the center position in radians
 
-	targetDistance = 0; 
-	targetOrbitAngle = 0;
-	targetTiltAngle = 0; 
 
 	updateViewMatrix(); 
 	double aspectRatio = UserInput::getWindowSize().y / UserInput::getWindowSize().x;

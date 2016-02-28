@@ -14,6 +14,15 @@ Model Loader::createModel(float positions[], int size_pos, float textureCoords[]
 	return Model(vao, size_index, pos_vbo, tex_vbo, norm_vbo);
 }
 
+Model Loader::createModel(float positions[], int size_pos, int indices[], int size_index)
+{
+	GLuint vao = createVao();
+	bindIndicesBuffer(indices, size_index);
+	GLuint pos_vbo = storeDataInAtributeList(0, 3, positions, size_pos);
+	glBindVertexArray(0);
+	return Model(vao, size_index, pos_vbo, 0);
+}
+
 Model Loader::createTexturelessModel(float positions[], int size_pos, float normals[], int size_normals, int indices[], int size_index)
 {
 	GLuint vao = createVao();
@@ -30,6 +39,70 @@ GLuint Loader::create2Dmodel(float positions[], int size_pos)
 	GLuint pos_vbo = storeDataInAtributeList(0, 2, positions, size_pos);
 	glBindVertexArray(0);
 	return vao; 
+}
+
+GLuint Loader::createModel(float positions[], int size_pos)
+{
+	GLuint vao = createVao();
+	GLuint pos_vbo = storeDataInAtributeList(0, 3, positions, size_pos);
+	glBindVertexArray(0);
+	return vao;
+}
+
+void Loader::loadTexImage2D(GLenum target, const char * imagepath)
+{
+	// Data read from the header of the BMP file
+	unsigned char header[54]; // Each BMP file begins by a 54-bytes header
+	unsigned int dataPos;     // Position in the file where the actual data begins
+	unsigned int width, height;
+	unsigned int imageSize;   // = width*height*3	
+	unsigned char *data; // Actual RGB data
+
+						 // Open the file
+	FILE *file;
+	fopen_s(&file, imagepath, "rb");
+
+	if (!file)
+	{
+		printf("Image could not be opened\n");
+		return;
+	}
+
+	// The first thing in the file is a 54-bytes header. Read it. If not 54 bytes read : problem
+	if (fread(header, 1, 54, file) != 54)
+	{
+		printf("Not a correct BMP file\n");
+		return;
+	}
+
+	if (header[0] != 'B' || header[1] != 'M') {
+		printf("Not a correct BMP file\n");
+		return;
+	}
+
+	dataPos = *(int*)&(header[0x0A]);
+	imageSize = *(int*)&(header[0x22]);
+	width = *(int*)&(header[0x12]);
+	height = *(int*)&(header[0x16]);
+
+	// Some BMP files are misformatted, guess missing information
+	if (imageSize == 0)
+		imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
+
+	if (dataPos == 0)
+		dataPos = 54; // The BMP header is done that way
+
+					  // Create a buffer
+	data = new unsigned char[imageSize];
+
+	// Read the actual data from the file into the buffer
+	fread(data, 1, imageSize, file);
+
+	//Everything is in memory now, the file can be closed
+	fclose(file);
+
+	// Give the image to OpenGL
+	glTexImage2D(target, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 }
 
 // Creates a new empty vertex array object and returns it's ID. 
@@ -78,67 +151,14 @@ void Loader::updateDataInAtributeList(GLuint vbo, float data[], int n)
 // Loades a BMP-image and creates a texture using the data. 
 // The texture is uploaded to the GPU and the index of the texture is returned. 
 GLuint Loader::loadBMPtexture(const char * imagepath)
-{
-	// Data read from the header of the BMP file
-	unsigned char header[54]; // Each BMP file begins by a 54-bytes header
-	unsigned int dataPos;     // Position in the file where the actual data begins
-	unsigned int width, height;
-	unsigned int imageSize;   // = width*height*3	
-	unsigned char *data; // Actual RGB data
-
-	// Open the file
-	FILE *file;
-	fopen_s(&file, imagepath, "rb");
-
-	//FILE * file = fopen(imagepath, "rb");
-	if (!file) 
-	{ 
-		printf("Image could not be opened\n"); 
-		return 0; 
-	}
-
-	// The first thing in the file is a 54-bytes header. Read it. If not 54 bytes read : problem
-	if (fread(header, 1, 54, file) != 54) 
-	{ 
-		printf("Not a correct BMP file\n");
-		return false;		
-	}
-
-	if (header[0] != 'B' || header[1] != 'M') {
-		printf("Not a correct BMP file\n");
-		return 0;		
-	}
-
-	dataPos = *(int*)&(header[0x0A]);
-	imageSize = *(int*)&(header[0x22]);
-	width = *(int*)&(header[0x12]);
-	height = *(int*)&(header[0x16]);
-
-	// Some BMP files are misformatted, guess missing information
-	if (imageSize == 0)    
-		imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
-
-	if (dataPos == 0)      
-		dataPos = 54; // The BMP header is done that way
-
-					  // Create a buffer
-	data = new unsigned char[imageSize];
-	
-	// Read the actual data from the file into the buffer
-	fread(data, 1, imageSize, file);
-	
-	//Everything is in memory now, the file can be closed
-	fclose(file);
-
+{	
 	// Create one OpenGL texture
 	GLuint textureID;
 	glGenTextures(1, &textureID);
-	
-	// "Bind" the newly created texture : all future texture functions will modify this texture
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	
-	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+
+	// load the texture data from the file
+	loadTexImage2D(GL_TEXTURE_2D, imagepath); 
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -147,6 +167,30 @@ GLuint Loader::loadBMPtexture(const char * imagepath)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);			
 	// använd anastropisk filtrering
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); 
+
+	textures.push_back(textureID);
+	return textureID;
+}
+
+GLuint Loader::loadBMPcubeTexture(const char * pos_x, const char * neg_x, const char * pos_y, const char * neg_y, const char * pos_z, const char * neg_z)
+{
+	GLuint textureID = 0; 
+	glGenTextures(1, &textureID);
+	//glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, pos_x);
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, neg_x);
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, pos_y);
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, neg_y);
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, pos_z);
+	loadTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, neg_z);
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	textures.push_back(textureID);
 	return textureID;

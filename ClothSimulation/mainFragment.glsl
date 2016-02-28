@@ -14,10 +14,12 @@ uniform vec3 lightAttenuation[8];
 const float shineDampener = 2.0; 
 const float reflectance = 0.1; 
 const float ambient = 0.15; 
+const vec3 velvetColor = vec3(1, 1, 1);
+const float velvetAmount = 0.65;
 
 void main (void) 
 {
-	vec4 textureColor = texture(mainTexture, interpolatedTextureCoords * 3);
+	vec4 textureColor = texture(mainTexture, vec2(interpolatedTextureCoords.x, 1-interpolatedTextureCoords.y));
 		
 	textureColor = min(textureColor * 1.5, 1.0); 
 		
@@ -43,15 +45,9 @@ void main (void)
 	totalDiffuse = min(totalDiffuse, 1.0);
 	totalSpecular = min(totalSpecular, 1.0);
 	
-	float velvetFracor = 1 - dot(normal, unitToCameraVector);
-	float velvetAmount = 0.65; 
-	
-	velvetFracor = clamp(velvetFracor * velvetAmount - 0.5, 0, 1); 
-	
-	vec3 velvetColor = vec3(1, 1, 1); 
-	
-	vec3 materialAndLighting = textureColor.xyz * totalDiffuse + totalSpecular; 
-	
+	float velvetFracor = 1 - dot(normal, unitToCameraVector);	 	
+	velvetFracor = clamp(velvetFracor * velvetAmount - 0.5, 0, 1); 	
+	vec3 materialAndLighting = textureColor.xyz * totalDiffuse + totalSpecular; 	
 	materialAndLighting = mix(materialAndLighting, velvetColor, velvetFracor); 
 	
 	pixel_color = vec4(materialAndLighting, 1.0);

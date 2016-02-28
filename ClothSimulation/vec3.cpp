@@ -51,7 +51,7 @@ void Vec3::operator-=(const Vec3 &v)
 	z -= v.z;
 }
 
-float Vec3::operator*(const Vec3 &v)
+double Vec3::operator*(const Vec3 &v)
 {
 	return x*v.x + y*v.y + z*v.z;
 }
@@ -63,7 +63,7 @@ Vec3 Vec3::operator*(const float &c) const
 
 void Vec3::normalize()
 {
-	float length = this->length();
+	double length = this->length();
 	x *= 1.0 / length;
 	y *= 1.0 / length;
 	z *= 1.0 / length;

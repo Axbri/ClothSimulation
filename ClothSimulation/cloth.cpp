@@ -5,6 +5,8 @@ Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 	theLoader = loader;
 	shader.createShader( "mainVertex.glsl", "mainFragment.glsl" );
 	this->size = size;
+	this->useContraints = true; 
+	this->position = pos;	// position of the cloth in the world. this is used to generate the model matrix. 
 
 	// create all the particles
 	double particleMass = totalWeight / (NUMBER_OF_VERTICES * NUMBER_OF_VERTICES); 
@@ -15,12 +17,10 @@ Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
 			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleZpos = -((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
-			double particleYpos = 0;// 0.05 * (sin(x) + sin(y));
-			// jag bytta platts på z och y här ovan för att få tyget att generar i x-z planet istället
+			double particleZpos = ((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
+			double particleYpos = 0.02 * (sin(particleXpos * 20) + cos(particleZpos * 20));
 			double particleUtextureCoord = ((double)x / (double)NUMBER_OF_VERTICES);
-			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);
-			
+			double particleVtextureCoord = ((double)y / (double)NUMBER_OF_VERTICES);			
 			particles[x][y] = Particle(particleXpos, particleYpos, particleZpos, particleUtextureCoord, particleVtextureCoord, particleMass);
 		}
 	}
@@ -56,7 +56,7 @@ Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 			positions[positionIndex++] = particles[x][y].pos.x;
 			positions[positionIndex++] = particles[x][y].pos.y;
 			positions[positionIndex++] = particles[x][y].pos.z;
-			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.x;
+			textureCoords[textureCoordIndex++] = -particles[x][y].textureCoord.x;
 			textureCoords[textureCoordIndex++] = particles[x][y].textureCoord.y;
 			normals[normalIndex++] = -particles[x][y].normal.x;
 			normals[normalIndex++] = -particles[x][y].normal.y;
@@ -101,14 +101,11 @@ Cloth::Cloth(Loader loader, Vec3 pos, double size, double totalWeight)
 			indices[indicesIndex++] = bottomRight;
 		}
 	}
-
-	position = pos;	// position of the cloth in the world. 
-
 	clothModel = loader.createModel(positions, positionIndex, textureCoords, textureCoordIndex, normals, normalIndex, indices, indicesIndex);	
 	
-
-	GLuint clothTexture = loader.loadBMPtexture("textil01.bmp");		// textil01
-	clothModel.set_texture(clothTexture);
+	contraintsTexture = loader.loadBMPtexture("constraints.bmp");
+	massSpringTexture = loader.loadBMPtexture("massSpring.bmp");
+	clothModel.set_texture(contraintsTexture);
 }
 
 Cloth::~Cloth()
@@ -116,49 +113,79 @@ Cloth::~Cloth()
 	cleanUp(); 
 }
 
-// update the cloth, this function will handle the phisics simulation of the cloth. 
-void Cloth::update(double delta_time, double time, Sphere sphere, bool constraints)
+void Cloth::setMode(bool useContraints)
 {
-	Vec3 g = Vec3(0, -9.81, 0);
+	this->useContraints = useContraints; 
+	
+	if (useContraints)
+	{		
+		clothModel.set_texture(contraintsTexture);
+	}
+	else
+	{
+		clothModel.set_texture(massSpringTexture);
+	}
+}
 
-	double step = 0.016; // 60 uppdateringar per sekund
-	double k[3] = { 10000, 10000, 10000 };
+void Cloth::reset()
+{
+	for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
+	{
+		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
+		{
+			double particleXpos = ((double)x / (double)(NUMBER_OF_VERTICES - 1)) * size;
+			double particleZpos = ((double)y / (double)(NUMBER_OF_VERTICES - 1)) * size;
+			double particleYpos = 0.02 * (sin(particleXpos*20) + cos(particleZpos*20));
+			particles[x][y].pos = Vec3{ particleXpos , particleYpos , particleZpos };
+			particles[x][y].force = Vec3{ 0, 0, 0 }; 
+		}
+	}
+}
+
+// update the cloth, this function will handle the phisics simulation of the cloth. 
+void Cloth::update(double delta_time, double time, Sphere sphere)
+{
+	double step = 0.016; // limit to 60 updates per second
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
 		time_passed -= step;
 		reset_forces();
-		// update the particle's positions
 		for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 		{
 			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 			{
-				if (constraints) {
+				if (this->useContraints)
+				{
+					double dampening = 0.98; 
+					Vec3 gravity{ 0,-9.81,0 };
+
 					resolve_constraint(x, y);
-					verlet(x, y, step, 0.98, { 0,-9.81,0 });
+					verlet(x, y, step, dampening, gravity);
 					collision(x, y, sphere);
-				} else {
-					calculate_force(x, y, k);
-					verlet(x, y, step, 0.92, { 0,-19.81,0 });
+				} 
+				else 
+				{
+					double dampening = 0.92;
+					Vec3 gravity{ 0,-19.81,0 };
+					double springs[3] = { 10000, 10000, 10000 };
+
+					calculate_force(x, y, springs);
+					verlet(x, y, step, dampening, gravity);
 					collision(x, y, sphere);
-					}
+				}
 			}
 		}
 	}
 
+	// hang the clockth in the top vertices
 	for (int i{ 0 }; i < (NUMBER_OF_VERTICES); i++)
 	{
 		if (i % 8 == 0 || i % 8 == 1)
 		{
-			particles[i][0].pos = Vec3(((double)i / (double)(NUMBER_OF_VERTICES - 1)) * size, 0, 0);
+			particles[i][0].pos = Vec3{ ((double)i / (double)(NUMBER_OF_VERTICES - 1)) * size, 0, 0 };
 		}			
 	}
-
-	//particles[0][0].pos = Vec3(0+0.1, 0, 0);
-	//particles[int((NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(size / 4, 0, 0);
-	//particles[int((NUMBER_OF_VERTICES - 1) / 2)][0].pos = Vec3(size / 2, 0, 0);
-	//particles[int((3 * NUMBER_OF_VERTICES - 1) / 4)][0].pos = Vec3(3 * size / 4, 0, 0);
-	//particles[NUMBER_OF_VERTICES - 1][0].pos = Vec3(size-0.1, 0, 0);
 
 	// update the model matrix desribing the position of this cloth in the world. 
 	Mat4 modelMatrix;
@@ -203,7 +230,6 @@ void Cloth::cleanUp()
 // update the vertex buffer objects for positions and normals on the GPU with new data. 
 void Cloth::updateVBOs()
 {
-	// create the new model-arrays: 
 	float positions[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	float normals[NUMBER_OF_VERTICES * NUMBER_OF_VERTICES * 3 * 2];
 	int positionIndex{ 0 }, normalIndex{ 0 };
@@ -233,7 +259,6 @@ void Cloth::updateVBOs()
 			normals[normalIndex++] = -particles[x][y].normal.z;
 		}
 	}
-
 	theLoader.updateDataInAtributeList(clothModel.get_position_vbo(), positions, positionIndex);
 	theLoader.updateDataInAtributeList(clothModel.get_normal_vbo(), normals, normalIndex);
 }
@@ -242,7 +267,6 @@ void Cloth::updateVBOs()
 void Cloth::updateNormals()
 {
 	Vec3 pos1{}, pos2{}, pos3{}, vector1{}, vector2{}, normal{};
-
 	for (int x{ 0 }; x < NUMBER_OF_VERTICES - 1; x++)
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES - 1; y++)
@@ -250,12 +274,10 @@ void Cloth::updateNormals()
 			pos1 = particles[x][y].pos;
 			pos2 = particles[x + 1][y].pos;
 			pos3 = particles[x][y + 1].pos;
-
 			vector1 = pos3 - pos1;
 			vector2 = pos2 - pos1;
-			normal = Vec3(0, 0, 0);
+			normal = Vec3{ 0, 0, 0 };
 			normal.cross(vector1, vector2);
-
 			particles[x][y].normal = normal;
 			particles[x + 1][y].normal = normal;
 			particles[x][y + 1].normal = normal;
@@ -270,62 +292,61 @@ void Cloth::resolve_constraint(int x, int y) {
 	//resolve constraints
 	for (int r{ 0 }; r < 1; r++)
 	{
-		if (y < NUMBER_OF_VERTICES - 1) {
+		if (y < NUMBER_OF_VERTICES - 1) 
+		{
 			// ||||
 			Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x][y + 1].pos -= delta*0.5*diff*con_inf[0];
-
 		}
-		if (x < NUMBER_OF_VERTICES - 1) {
+
+		if (x < NUMBER_OF_VERTICES - 1) 
+		{
 			// ----
 			Vec3 delta = particles[x + 1][y].pos - particles[x][y].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - restlength) / deltalength;
-
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x + 1][y].pos -= delta*0.5*diff*con_inf[0];
-
 		}
-		if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
-			// cross forward
 
+		if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) 
+		{
+			// cross forward
 			Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - 1.4142*restlength) / deltalength;
-
 			particles[x][y].pos += delta*0.5*diff*con_inf[1];
 			particles[x + 1][y + 1].pos -= delta*0.5*diff*con_inf[1];
-
 		}
-		if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
+
+		if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) 
+		{
 			// cross back
 			Vec3 delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - 1.4142*restlength) / deltalength;
-
 			particles[x][y + 1].pos += delta*0.5*diff*con_inf[1];
 			particles[x + 1][y].pos -= delta*0.5*diff*con_inf[1];
-
 		}
-		if (y < NUMBER_OF_VERTICES - 2) {
+
+		if (y < NUMBER_OF_VERTICES - 2) 
+		{
 			// ||||
 			Vec3 delta = particles[x][y + 2].pos - particles[x][y].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - 2 * restlength) / deltalength;
-
 			particles[x][y].pos += delta*0.5*diff*con_inf[2];
 			particles[x][y + 2].pos -= delta*0.5*diff*con_inf[2];
-
 		}
+
 		if (x < NUMBER_OF_VERTICES - 2) {
 			// ----
 			Vec3 delta = particles[x + 2][y].pos - particles[x][y].pos;
 			double deltalength = sqrt(delta*delta);
 			double diff = (deltalength - 2 * restlength) / deltalength;
-
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
 		}
@@ -334,63 +355,64 @@ void Cloth::resolve_constraint(int x, int y) {
 
 void Cloth::calculate_force(int x, int y, double k[]) {
 
-	if (y < NUMBER_OF_VERTICES - 1) {
+	if (y < NUMBER_OF_VERTICES - 1) 
+	{
 		// ||||
 		Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - restlength) / deltalength;
-
 		particles[x][y].force += delta*diff*k[0];
 		particles[x][y + 1].force -= delta*diff*k[0];
-
 	}
-	if (x < NUMBER_OF_VERTICES - 1) {
+
+	if (x < NUMBER_OF_VERTICES - 1) 
+	{
 		// ----
 		Vec3 delta = particles[x + 1][y].pos - particles[x][y].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - restlength) / deltalength;
-
 		particles[x][y].force += delta*diff*k[0];
 		particles[x + 1][y].force -= delta*diff*k[0];
-
 	}
-	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
+
+	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) 
+	{
 		// cross forward
 
 		Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
-
 		particles[x][y].force += delta*diff*k[1];
 		particles[x + 1][y + 1].force -= delta*diff*k[1];
-
 	}
-	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) {
+
+	if (x < NUMBER_OF_VERTICES - 1 && y < NUMBER_OF_VERTICES - 1) 
+	{
 		// cross back
 		Vec3 delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
-
 		particles[x][y + 1].force += delta*diff*k[1];
 		particles[x + 1][y].force -= delta*diff*k[1];
-
 	}
-	if (y < NUMBER_OF_VERTICES - 2) {
+
+	if (y < NUMBER_OF_VERTICES - 2) 
+	{
 		// ||||
 		Vec3 delta = particles[x][y + 2].pos - particles[x][y].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 2 * restlength) / deltalength;
-
 		particles[x][y].force += delta*diff*k[2];
 		particles[x][y + 2].force -= delta*diff*k[2];
 
 	}
-	if (x < NUMBER_OF_VERTICES - 2) {
+
+	if (x < NUMBER_OF_VERTICES - 2) 
+	{
 		// ----
 		Vec3 delta = particles[x + 2][y].pos - particles[x][y].pos;
 		double deltalength = sqrt(delta*delta);
 		double diff = (deltalength - 2 * restlength) / deltalength;
-
 		particles[x][y].force += delta*diff*k[2];
 		particles[x + 2][y].force -= delta*diff*k[2];
 	}
@@ -401,7 +423,6 @@ void Cloth::verlet(int x, int y, double step, double damping, Vec3 g) {
 	double mass = particles[x][y].mass;
 	Vec3 p_curr = Vec3(particles[x][y].pos);
 	Vec3 p_old = Vec3(particles[x][y].pos_old);
-
 	particles[x][y].pos += (p_curr - p_old)*damping + (g + particles[x][y].force)*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
 	particles[x][y].pos_old = p_curr;
 }
@@ -412,10 +433,10 @@ void Cloth::collision(int x, int y, Sphere sphere) {
 	double rad = sphere.getRadius();
 	Vec3 delta = pos - (particles[x][y].pos + position);
 	double deltalength = sqrt(delta*delta);
-	if (deltalength < rad*1.05)
+	if (deltalength < rad * 1.05)
 	{
-		double diff = (deltalength - rad*1.05) / deltalength; // generalisera margin
-		particles[x][y].pos += delta*diff;
+		double diff = (deltalength - rad * 1.05) / deltalength; // generalisera margin
+		particles[x][y].pos += delta * diff;
 	}
 
 	// markplanskollision: 
@@ -427,7 +448,7 @@ void Cloth::reset_forces() {
 	{
 		for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 		{
-			particles[x][y].force = { 0, 0, 0 };
+			particles[x][y].force = Vec3{ 0, 0, 0 };
 		}
 	}
 }
