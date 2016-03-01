@@ -123,13 +123,13 @@ void addLights(vector<Light> &allLights) {
 }
 
 void addSpheres(vector<Sphere> &allSpheres, Loader loader) {
-	Sphere sphere1{ -1, 0.2, -2, 0.2, loader };
+	Sphere sphere1{ -0.7, 0.2, 0, 0.2, loader };
 	allSpheres.push_back(sphere1); 
 
-	Sphere sphere2{ 0, 0.2, -2, 0.2, loader };
-	allSpheres.push_back(sphere2);
+	//Sphere sphere2{ 0, 0.2, -2, 0.2, loader };
+	//allSpheres.push_back(sphere2);
 
-	Sphere sphere3{ 1, 0.2, -2, 0.2, loader };
+	Sphere sphere3{ 0.7, 0.2, 0, 0.2, loader };
 	allSpheres.push_back(sphere3);
 }
 
@@ -148,11 +148,9 @@ int main(void)
 		
 	vector<Sphere> allSpheres;	// a dynamic list of spheres
 	addSpheres(allSpheres, loader);
-
-
+	
 	cout << "number of spheres: " << allSpheres.size() << endl;
-
-
+	
 	double clothHeightPos{ 1.1 };
 	Cloth cloth1{ loader, Vec3{ -1.2, clothHeightPos, 0 }, 1, 100 };
 	cloth1.setMode(true); 

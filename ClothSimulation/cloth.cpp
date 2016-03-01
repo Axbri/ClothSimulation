@@ -431,12 +431,12 @@ void Cloth::collision(int x, int y, vector<Sphere> *allSpheres) {
 	// sfärkollision: 
 	for (Sphere &sphere : (*allSpheres))
 	{
-		double rad = sphere.getRadius();
-		Vec3 delta = sphere.getPos() - (particles[x][y].pos + position);
+		double rad{ sphere.getRadius() };
+		Vec3 delta{ sphere.getPos() - (particles[x][y].pos + position) };
 		double deltalength = delta.length();
 		if (deltalength < (rad) * 1.05)
 		{
-			double diff = (deltalength - rad * 1.05) / deltalength; // generalisera margin
+			double diff{ (deltalength - rad * 1.05) / deltalength }; // generalisera margin
 			particles[x][y].pos += delta * diff;
 		}
 	}
