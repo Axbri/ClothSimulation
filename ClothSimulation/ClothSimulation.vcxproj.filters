@@ -66,6 +66,12 @@
     <ClCompile Include="mat4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenshotTaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -119,6 +125,12 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenshotTaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fontFrag.glsl">
@@ -145,39 +157,11 @@
     <None Include="sphereVertex.glsl">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="cover02.bmp">
+    <None Include="skyFragmentShader.glsl">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="font.bmp">
+    </None>
+    <None Include="skyVertexShader.glsl">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="gaze01.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="groundTexture.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="jeans05.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="testTexture.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="textil01.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="tile_normal.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="groundTextureCoords.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ClothSimulation.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    </None>
   </ItemGroup>
 </Project>

@@ -166,7 +166,9 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mousepicker.cpp" />
     <ClCompile Include="particle.cpp" />
+    <ClCompile Include="ScreenshotTaker.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="userinput.cpp" />
     <ClCompile Include="vec2.cpp" />
@@ -185,7 +187,9 @@
     <ClInclude Include="mousepicker.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ScreenshotTaker.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="userinput.h" />
     <ClInclude Include="vec2.h" />
@@ -199,22 +203,10 @@
     <None Include="groundVertex.glsl" />
     <None Include="mainFragment.glsl" />
     <None Include="mainVertex.glsl" />
+    <None Include="skyFragmentShader.glsl" />
+    <None Include="skyVertexShader.glsl" />
     <None Include="sphereFragment.glsl" />
     <None Include="sphereVertex.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="cover02.bmp" />
-    <Image Include="font.bmp" />
-    <Image Include="gaze01.bmp" />
-    <Image Include="groundTexture.bmp" />
-    <Image Include="groundTextureCoords.bmp" />
-    <Image Include="jeans05.bmp" />
-    <Image Include="testTexture.bmp" />
-    <Image Include="textil01.bmp" />
-    <Image Include="tile_normal.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ClothSimulation.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

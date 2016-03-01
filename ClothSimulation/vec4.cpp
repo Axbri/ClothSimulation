@@ -59,7 +59,7 @@ void Vec4::operator-=(const Vec4 &v)
 	x4 -= v.x4;
 }
 
-float Vec4::operator*(const Vec4 &v)
+double Vec4::operator*(const Vec4 &v)
 {
 	return x1 * v.x1 + x2 * v.x2 + x3 * v.x3 + x4 * v.x4;
 }

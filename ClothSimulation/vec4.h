@@ -14,7 +14,7 @@ public:
 	Vec4 operator-(const Vec4 &v) const;
 	void operator+=(const Vec4 &v);
 	void operator-=(const Vec4 &v);
-	float operator*(const Vec4 &v);
+	double operator*(const Vec4 &v);
 	Vec4 operator*(const float &c) const;
 
 	void normalize();

@@ -56,11 +56,12 @@ Sphere::Sphere(double x, double y, double z, double r, Loader loader)
 
 void Sphere::updateModelMatrix(double deltaTime)
 {
-	double DAMPENING = 40;		// hur långsam sfären är
+	double DAMPENING = 50;		// hur långsam sfären är
 
-	position += (targetPosition - position) * DAMPENING * deltaTime;
+	double amount = min(DAMPENING * deltaTime, 1.0); 
+	position += (targetPosition - position) * amount;
 
-	// position = targetPosition; 
+	// position = targetPosition; // för att få snabba ryckiga rörelser som vi hade det först
 
 	Mat4 translation;
 	translation.loadTranslation(position.x, position.y, position.z);

@@ -51,7 +51,7 @@ void Vec3::operator-=(const Vec3 &v)
 	z -= v.z;
 }
 
-float Vec3::operator*(const Vec3 &v)
+double Vec3::operator*(const Vec3 &v)
 {
 	return x*v.x + y*v.y + z*v.z;
 }
@@ -63,7 +63,7 @@ Vec3 Vec3::operator*(const float &c) const
 
 void Vec3::normalize()
 {
-	float length = this->length();
+	double length = this->length();
 	x *= 1.0 / length;
 	y *= 1.0 / length;
 	z *= 1.0 / length;
@@ -71,12 +71,43 @@ void Vec3::normalize()
 
 double Vec3::length() 
 {
-	return sqrt(x * x + y * y + z * z);
-}
+	double lengthSquared = x * x + y * y + z * z;
+	return lengthSquared * invSqrt(lengthSquared);
+} 
 
 double Vec3::lengthSquared()
 {
 	return x * x + y * y + z * z;
+}
+
+float Vec3::invSqrt(float number)
+{
+	// Magical Square Root Implementation from Quake III
+	long i;
+	float x2, y;
+	const float threehalfs = 1.5F;
+
+	x2 = number * 0.5F;
+	y = number;
+	i = *(long *)&y;  // evil floating point bit level hacking
+	i = 0x5f3759df - (i >> 1); // what the fuck?
+	y = *(float *)&i;
+	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+	// y  = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed
+
+	return y;
+}
+
+float Vec3::squareRoot(float x)	// some other function, does not seam to be more efisient than sqrt(); 
+{
+	unsigned int i = *(unsigned int*)&x;
+
+	// adjust bias
+	i += 127 << 23;
+	// approximation of square root
+	i >>= 1;
+
+	return *(float*)&i;
 }
 
 void Vec3::cross(Vec3 v1, Vec3 v2)

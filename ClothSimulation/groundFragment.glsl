@@ -45,12 +45,12 @@ void main (void)
 	totalDiffuse = min(totalDiffuse, 1.0);
 	totalSpecular = min(totalSpecular, 1.0);
 	
-	vec3 materialAndLighting = textureColor.xyz * totalDiffuse + totalSpecular; 
-	
-	
-	float distance = length(interpolatedPosition); 
-	
-	float alpha = clamp(2-(distance / 20), 0.0, 1.0);
-	
+	vec3 materialAndLighting = textureColor.rgb * totalDiffuse + totalSpecular; 
+		
+	float distance = length(interpolatedPosition); 	
+	//float alpha = clamp(2-(distance / 20), 0.0, 1.0);		// the first version
+	//float alpha = clamp(100 - (distance*10), 0.0, 1.0);	// small circle
+	float alpha = clamp(1.5-(distance / 30), 0.0, 1.0);		
+
 	pixel_color = vec4(materialAndLighting, alpha);
 }
