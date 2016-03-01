@@ -69,12 +69,16 @@ void Vec3::normalize()
 	z *= 1.0 / length;
 }
 
-double Vec3::length() 
+double Vec3::nrlength() 
 {
 	double lengthSquared = x * x + y * y + z * z;
-	return lengthSquared * invSqrt(lengthSquared);
-} 
+	return nrsqrt(lengthSquared, 2); //lengthSquared*invSqrt(lengthSquared);
+}
 
+double Vec3::length() {
+	double lengthSquared = x * x + y * y + z * z;
+	return lengthSquared*invSqrt(lengthSquared);
+}
 double Vec3::lengthSquared()
 {
 	return x * x + y * y + z * z;
@@ -96,6 +100,22 @@ float Vec3::invSqrt(float number)
 	// y  = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed
 
 	return y;
+}
+
+double Vec3::nrsqrt(double x, double guess, int it) {
+	double root = guess;
+	for (int i = 0; i < it; i++) {
+		root = (root - (((root*root) - x) / (2 * root)));
+	}
+	return root;
+}
+
+double Vec3::nrsqrt(double x, int it) {
+	double root = x / 2;
+	for (int i = 0; i < it; i++) {
+		root = (root - (((root*root) - x) / (2 * root)));
+	}
+	return root;
 }
 
 float Vec3::squareRoot(float x)	// some other function, does not seam to be more efisient than sqrt(); 

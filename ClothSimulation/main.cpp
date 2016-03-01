@@ -21,6 +21,7 @@
 #include "mousepicker.h"
 #include "ScreenshotTaker.h"
 #include "Skybox.h"
+#include "Vec3.h"
 
 //Define an error callback  
 static void error_callback(int error, const char* description)
@@ -136,6 +137,7 @@ void addSpheres(vector<Sphere> &allSpheres, Loader loader) {
 // This is the main function that starts the program. 
 int main(void)
 {
+
 	GLFWwindow* window = createWindow();			// init GLFW and GLEW
 
 	Loader loader;
@@ -177,7 +179,7 @@ int main(void)
 	do //Main Loop  
 	{ 
 		// ================================== update ==================================
-		
+		//cout << Vec3::nrsqrt(3, 2);
 		Vec3 ray = mousePicker.calculateMouseRay(camera);
 		Vec3 cameraPos = mousePicker.calculateStartPoint(camera);
 

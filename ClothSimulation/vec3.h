@@ -2,6 +2,12 @@
 
 #include <math.h>
 
+
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <sstream>
+#include <iostream>
+
 class Vec3
 {
 public:
@@ -19,9 +25,12 @@ public:
 
 	void normalize();
 	double length(); 
+	double nrlength();
 	double lengthSquared();
 	float invSqrt(float x);
 	float squareRoot(float x); 
+	double nrsqrt(double x, double guess, int it);
+	double nrsqrt(double x, int it);
 	void cross(Vec3 v1, Vec3 v2);
 	static double pointLineDistance(Vec3 point, Vec3 line);
 	static double toPointDistanceParallelToLine(Vec3 point, Vec3 line);

@@ -89,12 +89,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\include;C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\include;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\include;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\include;C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\include;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\include;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\include;D:\Git\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\include;D:\Git\ClothSimulation\ClothSimulation\opengl-wrappers\glew\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\lib-vc2015;C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\lib;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\lib;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\lib-vc2015</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\lib-vc2015;C:\Users\Axel Brinkeby\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\lib;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glew\lib;C:\Users\Eleonora\Source\Repos\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\lib-vc2015;D:\Git\ClothSimulation\ClothSimulation\opengl-wrappers\glfw\lib-vc2015;D:\Git\ClothSimulation\ClothSimulation\opengl-wrappers\glew\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
