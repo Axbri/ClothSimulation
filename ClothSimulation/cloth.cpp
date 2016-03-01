@@ -296,7 +296,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		{
 			// ||||
 			Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x][y + 1].pos -= delta*0.5*diff*con_inf[0];
@@ -306,7 +306,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		{
 			// ----
 			Vec3 delta = particles[x + 1][y].pos - particles[x][y].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x + 1][y].pos -= delta*0.5*diff*con_inf[0];
@@ -316,7 +316,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		{
 			// cross forward
 			Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - 1.4142*restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[1];
 			particles[x + 1][y + 1].pos -= delta*0.5*diff*con_inf[1];
@@ -326,7 +326,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		{
 			// cross back
 			Vec3 delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - 1.4142*restlength) / deltalength;
 			particles[x][y + 1].pos += delta*0.5*diff*con_inf[1];
 			particles[x + 1][y].pos -= delta*0.5*diff*con_inf[1];
@@ -336,7 +336,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		{
 			// ||||
 			Vec3 delta = particles[x][y + 2].pos - particles[x][y].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - 2 * restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[2];
 			particles[x][y + 2].pos -= delta*0.5*diff*con_inf[2];
@@ -345,7 +345,7 @@ void Cloth::resolve_constraint(int x, int y) {
 		if (x < NUMBER_OF_VERTICES - 2) {
 			// ----
 			Vec3 delta = particles[x + 2][y].pos - particles[x][y].pos;
-			double deltalength = sqrt(delta*delta);
+			double deltalength = delta.length();
 			double diff = (deltalength - 2 * restlength) / deltalength;
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
@@ -359,7 +359,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	{
 		// ||||
 		Vec3 delta = particles[x][y + 1].pos - particles[x][y].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - restlength) / deltalength;
 		particles[x][y].force += delta*diff*k[0];
 		particles[x][y + 1].force -= delta*diff*k[0];
@@ -369,7 +369,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	{
 		// ----
 		Vec3 delta = particles[x + 1][y].pos - particles[x][y].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - restlength) / deltalength;
 		particles[x][y].force += delta*diff*k[0];
 		particles[x + 1][y].force -= delta*diff*k[0];
@@ -380,7 +380,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 		// cross forward
 
 		Vec3 delta = particles[x + 1][y + 1].pos - particles[x][y].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
 		particles[x][y].force += delta*diff*k[1];
 		particles[x + 1][y + 1].force -= delta*diff*k[1];
@@ -390,7 +390,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	{
 		// cross back
 		Vec3 delta = particles[x + 1][y].pos - particles[x][y + 1].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - 1.4142*restlength) / deltalength;
 		particles[x][y + 1].force += delta*diff*k[1];
 		particles[x + 1][y].force -= delta*diff*k[1];
@@ -400,7 +400,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	{
 		// ||||
 		Vec3 delta = particles[x][y + 2].pos - particles[x][y].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - 2 * restlength) / deltalength;
 		particles[x][y].force += delta*diff*k[2];
 		particles[x][y + 2].force -= delta*diff*k[2];
@@ -411,7 +411,7 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 	{
 		// ----
 		Vec3 delta = particles[x + 2][y].pos - particles[x][y].pos;
-		double deltalength = sqrt(delta*delta);
+		double deltalength = delta.length();
 		double diff = (deltalength - 2 * restlength) / deltalength;
 		particles[x][y].force += delta*diff*k[2];
 		particles[x + 2][y].force -= delta*diff*k[2];
@@ -434,6 +434,9 @@ void Cloth::collision(int x, int y, vector<Sphere> *allSpheres) {
 		double rad{ sphere.getRadius() };
 		Vec3 delta{ sphere.getPos() - (particles[x][y].pos + position) };
 		double deltalength = delta.length();
+		//cout << deltalength << ", " << delta.qlength() << endl;
+		//cout << deltalength << " < " << rad*1.05 << endl;
+
 		if (deltalength < (rad) * 1.05)
 		{
 			double diff{ (deltalength - rad * 1.05) / deltalength }; // generalisera margin
