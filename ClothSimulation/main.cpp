@@ -130,8 +130,8 @@ void addSpheres(vector<Sphere> &allSpheres, Loader loader) {
 	//Sphere sphere2{ 0, 0.2, -2, 0.2, loader };
 	//allSpheres.push_back(sphere2);
 
-	Sphere sphere3{ 0.7, 0.2, 0, 0.2, loader };
-	allSpheres.push_back(sphere3);
+	//Sphere sphere3{ 0.7, 0.2, 0, 0.2, loader };
+	//allSpheres.push_back(sphere3);
 }
 
 // This is the main function that starts the program. 
