@@ -145,31 +145,39 @@ void Cloth::reset()
 // update the cloth, this function will handle the phisics simulation of the cloth. 
 void Cloth::update(double delta_time, double time, vector<Sphere> allSpheres)
 {
-	double step = 0.016; // limit to 60 updates per second
+	double step = 0.016; // 0.016; // limit to 60 updates per second
 	time_passed += delta_time;
 	if (time_passed > step)
 	{
 		time_passed -= step;
-		reset_forces();
+
+		double dampening  = 0.98; 
+		double springs[3] = { 10000, 10000, 10000 };
+		//double springs[3] = { 2000, 2000, 2000 };
+		Vec3 gravity{ 0,-9.81,0 };
+
+		dampening = 0.98;
+		gravity = Vec3{ 0,-9.81,0 };
+		
+		if(!(this->useContraints))
+		{
+			 dampening = 0.92;
+			 gravity = Vec3{ 0,-19.81,0 };
+			reset_forces();
+		}
+				
 		for (int x{ 0 }; x < NUMBER_OF_VERTICES; x++)
 		{
 			for (int y{ 0 }; y < NUMBER_OF_VERTICES; y++)
 			{
 				if (this->useContraints)
 				{
-					double dampening = 0.98; 
-					Vec3 gravity{ 0,-9.81,0 };
-
 					resolve_constraint(x, y);
 					verlet(x, y, step, dampening, gravity);
 					collision(x, y, &allSpheres);
 				} 
 				else 
 				{
-					double dampening = 0.92;
-					Vec3 gravity{ 0,-19.81,0 };
-					double springs[3] = { 10000, 10000, 10000 };
-
 					calculate_force(x, y, springs);
 					verlet(x, y, step, dampening, gravity);
 					collision(x, y, &allSpheres);
@@ -290,8 +298,8 @@ void Cloth::resolve_constraint(int x, int y) {
 	double nv = (double)NUMBER_OF_VERTICES;
 	double con_inf[3] = { nv / (120 + nv), nv / (120 + nv), nv / (45 + nv) };  // behöver tweakas, detta funkar okej. Värden nära 1 generellt ostabila (0.2,0.2,0.4) för 30 verts
 	//resolve constraints
-	for (int r{ 0 }; r < 1; r++)
-	{
+	//for (int r{ 0 }; r < 1; r++)
+	//{
 		if (y < NUMBER_OF_VERTICES - 1) 
 		{
 			// ||||
@@ -350,7 +358,7 @@ void Cloth::resolve_constraint(int x, int y) {
 			particles[x][y].pos += delta*0.5*diff*con_inf[0];
 			particles[x + 2][y].pos -= delta*0.5*diff*con_inf[0];
 		}
-	}
+	//}
 }
 
 void Cloth::calculate_force(int x, int y, double k[]) {
@@ -420,26 +428,28 @@ void Cloth::calculate_force(int x, int y, double k[]) {
 
 void Cloth::verlet(int x, int y, double step, double damping, Vec3 g) {
 	//verlet
-	double mass = particles[x][y].mass;
-	Vec3 p_curr = Vec3(particles[x][y].pos);
-	Vec3 p_old = Vec3(particles[x][y].pos_old);
-	particles[x][y].pos += (p_curr - p_old)*damping + (g + particles[x][y].force)*mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
+	//double mass = particles[x][y].mass;
+	Vec3 p_curr{ particles[x][y].pos };
+	//Vec3 p_old{  };
+	particles[x][y].pos += (p_curr - particles[x][y].pos_old)*damping + (g + particles[x][y].force)*particles[x][y].mass*step*step; // 0.98 är dämningsfaktor eftersom p_curr - p_old är velocity, kan användas för att skapa känsla av tyngd. [0.9, 0.99] rekommenderat
 	particles[x][y].pos_old = p_curr;
 }
 
 void Cloth::collision(int x, int y, vector<Sphere> *allSpheres) {
 	// sfärkollision: 
-	for (Sphere &sphere : (*allSpheres))
-	{
-		double rad{ sphere.getRadius() };
-		Vec3 delta{ sphere.getPos() - (particles[x][y].pos + position) };
+	//for (Sphere &sphere : (*allSpheres))
+	//{
+
+		double rad{ allSpheres->at(0).getRadius() };
+		Vec3 delta{ allSpheres->at(0).getPos() - (particles[x][y].pos + position) };
 		double deltalength = delta.length();
 		if (deltalength < (rad) * 1.05)
 		{
 			double diff{ (deltalength - rad * 1.05) / deltalength }; // generalisera margin
 			particles[x][y].pos += delta * diff;
 		}
-	}
+
+	//}
 
 	// markplanskollision: 
 	particles[x][y].pos.y = max(particles[x][y].pos.y, 0.02 - position.y);
