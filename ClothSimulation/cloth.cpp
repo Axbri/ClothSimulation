@@ -160,9 +160,9 @@ void Cloth::update(double delta_time, double time, vector<Sphere> allSpheres)
 					double dampening = 0.98; 
 					Vec3 gravity{ 0,-9.81,0 };
 
-					resolve_constraint(x, y);
-					verlet(x, y, step, dampening, gravity);
-					collision(x, y, &allSpheres);
+					//resolve_constraint(x, y);
+					//verlet(x, y, step, dampening, gravity);
+					//collision(x, y, &allSpheres);
 				} 
 				else 
 				{
@@ -170,9 +170,9 @@ void Cloth::update(double delta_time, double time, vector<Sphere> allSpheres)
 					Vec3 gravity{ 0,-19.81,0 };
 					double springs[3] = { 10000, 10000, 10000 };
 
-					calculate_force(x, y, springs);
-					verlet(x, y, step, dampening, gravity);
-					collision(x, y, &allSpheres);
+					//calculate_force(x, y, springs);
+					//verlet(x, y, step, dampening, gravity);
+					//collision(x, y, &allSpheres);
 				}
 			}
 		}
@@ -434,13 +434,11 @@ void Cloth::collision(int x, int y, vector<Sphere> *allSpheres) {
 		double rad{ sphere.getRadius() };
 		Vec3 delta{ sphere.getPos() - (particles[x][y].pos + position) };
 		double deltalength = delta.length();
-		//cout << deltalength << ", " << delta.qlength() << endl;
-		//cout << deltalength << " < " << rad*1.05 << endl;
 
 		if (deltalength < (rad) * 1.05)
 		{
 			double diff{ (deltalength - rad * 1.05) / deltalength }; // generalisera margin
-			particles[x][y].pos += delta * diff;
+			particles[x][y].pos += delta * rad;
 		}
 	}
 

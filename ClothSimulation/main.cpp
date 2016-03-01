@@ -179,14 +179,13 @@ int main(void)
 	do //Main Loop  
 	{ 
 		// ================================== update ==================================
-		//cout << Vec3::nrsqrt(3, 2);
 		Vec3 ray = mousePicker.calculateMouseRay(camera);
 		Vec3 cameraPos = mousePicker.calculateStartPoint(camera);
 
 		Vec3 planeIntersection = mousePicker.getPlaneIntersectionPoint(0.2);
 
 		bool movedAspher{ false };
-
+		/*
 		for (auto &sphere : allSpheres)
 		{
 			if (!movedAspher)
@@ -205,7 +204,7 @@ int main(void)
 				sphere.updateModelMatrix(delta_time);
 			}
 			
-		}
+		}*/
 		
 
 		cloth1.update(delta_time, previus_time, allSpheres);
